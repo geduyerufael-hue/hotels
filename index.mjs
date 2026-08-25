@@ -8,33 +8,11 @@ function __insertCSS(code) {
   ;style.styleSheet ? (style.styleSheet.cssText = code) : style.appendChild(document.createTextNode(code))
 }
 
-Object.defineProperty(exports, '__esModule', { value: true });
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+import * as React from 'react';
+import React__default, { useLayoutEffect, useEffect, useMemo } from 'react';
 
-var DialogPrimitive = require('@radix-ui/react-dialog');
-var React = require('react');
-
-function _interopNamespace(e) {
-  if (e && e.__esModule) return e;
-  var n = Object.create(null);
-  if (e) {
-    Object.keys(e).forEach(function (k) {
-      if (k !== 'default') {
-        var d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: function () { return e[k]; }
-        });
-      }
-    });
-  }
-  n.default = e;
-  return n;
-}
-
-var DialogPrimitive__namespace = /*#__PURE__*/_interopNamespace(DialogPrimitive);
-var React__namespace = /*#__PURE__*/_interopNamespace(React);
-
-const DrawerContext = React__namespace.default.createContext({
+const DrawerContext = React__default.createContext({
     drawerRef: {
         current: null
     },
@@ -74,7 +52,7 @@ const DrawerContext = React__namespace.default.createContext({
     autoFocus: false
 });
 const useDrawerContext = ()=>{
-    const context = React__namespace.default.useContext(DrawerContext);
+    const context = React__default.useContext(DrawerContext);
     if (!context) {
         throw new Error('useDrawerContext must be used within a Drawer.Root');
     }
@@ -111,7 +89,7 @@ function testPlatform(re) {
 
 // This code comes from https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/overlays/src/usePreventScroll.ts
 const KEYBOARD_BUFFER = 24;
-const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 function chain$1(...callbacks) {
     return (...args)=>{
         for (let callback of callbacks){
@@ -376,7 +354,7 @@ function isInput(target) {
  * Accepts callback refs and RefObject(s)
  */ function useComposedRefs(...refs) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    return React__namespace.useCallback(composeRefs(...refs), refs);
+    return React.useCallback(composeRefs(...refs), refs);
 }
 
 const cache = new WeakMap();
@@ -475,19 +453,19 @@ const DRAG_CLASS = 'vaul-dragging';
 
 // This code comes from https://github.com/radix-ui/primitives/blob/main/packages/react/use-controllable-state/src/useControllableState.tsx
 function useCallbackRef(callback) {
-    const callbackRef = React__namespace.default.useRef(callback);
-    React__namespace.default.useEffect(()=>{
+    const callbackRef = React__default.useRef(callback);
+    React__default.useEffect(()=>{
         callbackRef.current = callback;
     });
     // https://github.com/facebook/react/issues/19240
-    return React__namespace.default.useMemo(()=>(...args)=>callbackRef.current == null ? void 0 : callbackRef.current.call(callbackRef, ...args), []);
+    return React__default.useMemo(()=>(...args)=>callbackRef.current == null ? void 0 : callbackRef.current.call(callbackRef, ...args), []);
 }
 function useUncontrolledState({ defaultProp, onChange }) {
-    const uncontrolledState = React__namespace.default.useState(defaultProp);
+    const uncontrolledState = React__default.useState(defaultProp);
     const [value] = uncontrolledState;
-    const prevValueRef = React__namespace.default.useRef(value);
+    const prevValueRef = React__default.useRef(value);
     const handleChange = useCallbackRef(onChange);
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         if (prevValueRef.current !== value) {
             handleChange(value);
             prevValueRef.current = value;
@@ -507,7 +485,7 @@ function useControllableState({ prop, defaultProp, onChange = ()=>{} }) {
     const isControlled = prop !== undefined;
     const value = isControlled ? prop : uncontrolledProp;
     const handleChange = useCallbackRef(onChange);
-    const setValue = React__namespace.default.useCallback((nextValue)=>{
+    const setValue = React__default.useCallback((nextValue)=>{
         if (isControlled) {
             const setter = nextValue;
             const value = typeof nextValue === 'function' ? setter(prop) : nextValue;
@@ -533,11 +511,11 @@ function useSnapPoints({ activeSnapPointProp, setActiveSnapPointProp, snapPoints
         defaultProp: snapPoints == null ? void 0 : snapPoints[0],
         onChange: setActiveSnapPointProp
     });
-    const [windowDimensions, setWindowDimensions] = React__namespace.default.useState(typeof window !== 'undefined' ? {
+    const [windowDimensions, setWindowDimensions] = React__default.useState(typeof window !== 'undefined' ? {
         innerWidth: window.innerWidth,
         innerHeight: window.innerHeight
     } : undefined);
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         function onResize() {
             setWindowDimensions({
                 innerWidth: window.innerWidth,
@@ -547,11 +525,11 @@ function useSnapPoints({ activeSnapPointProp, setActiveSnapPointProp, snapPoints
         window.addEventListener('resize', onResize);
         return ()=>window.removeEventListener('resize', onResize);
     }, []);
-    const isLastSnapPoint = React__namespace.default.useMemo(()=>activeSnapPoint === (snapPoints == null ? void 0 : snapPoints[snapPoints.length - 1]) || null, [
+    const isLastSnapPoint = React__default.useMemo(()=>activeSnapPoint === (snapPoints == null ? void 0 : snapPoints[snapPoints.length - 1]) || null, [
         snapPoints,
         activeSnapPoint
     ]);
-    const activeSnapPointIndex = React__namespace.default.useMemo(()=>{
+    const activeSnapPointIndex = React__default.useMemo(()=>{
         var _snapPoints_findIndex;
         return (_snapPoints_findIndex = snapPoints == null ? void 0 : snapPoints.findIndex((snapPoint)=>snapPoint === activeSnapPoint)) != null ? _snapPoints_findIndex : null;
     }, [
@@ -559,7 +537,7 @@ function useSnapPoints({ activeSnapPointProp, setActiveSnapPointProp, snapPoints
         activeSnapPoint
     ]);
     const shouldFade = snapPoints && snapPoints.length > 0 && (fadeFromIndex || fadeFromIndex === 0) && !Number.isNaN(fadeFromIndex) && snapPoints[fadeFromIndex] === activeSnapPoint || !snapPoints;
-    const snapPointsOffset = React__namespace.default.useMemo(()=>{
+    const snapPointsOffset = React__default.useMemo(()=>{
         const containerSize = container ? {
             width: container.getBoundingClientRect().width,
             height: container.getBoundingClientRect().height
@@ -595,11 +573,11 @@ function useSnapPoints({ activeSnapPointProp, setActiveSnapPointProp, snapPoints
         windowDimensions,
         container
     ]);
-    const activeSnapPointOffset = React__namespace.default.useMemo(()=>activeSnapPointIndex !== null ? snapPointsOffset == null ? void 0 : snapPointsOffset[activeSnapPointIndex] : null, [
+    const activeSnapPointOffset = React__default.useMemo(()=>activeSnapPointIndex !== null ? snapPointsOffset == null ? void 0 : snapPointsOffset[activeSnapPointIndex] : null, [
         snapPointsOffset,
         activeSnapPointIndex
     ]);
-    const snapToPoint = React__namespace.default.useCallback((dimension)=>{
+    const snapToPoint = React__default.useCallback((dimension)=>{
         var _snapPointsOffset_findIndex;
         const newSnapPointIndex = (_snapPointsOffset_findIndex = snapPointsOffset == null ? void 0 : snapPointsOffset.findIndex((snapPointDim)=>snapPointDim === dimension)) != null ? _snapPointsOffset_findIndex : null;
         onSnapPointChange(newSnapPointIndex);
@@ -627,7 +605,7 @@ function useSnapPoints({ activeSnapPointProp, setActiveSnapPointProp, snapPoints
         overlayRef,
         setActiveSnapPoint
     ]);
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         if (activeSnapPoint || activeSnapPointProp) {
             var _snapPoints_findIndex;
             const newIndex = (_snapPoints_findIndex = snapPoints == null ? void 0 : snapPoints.findIndex((snapPoint)=>snapPoint === activeSnapPointProp || snapPoint === activeSnapPoint)) != null ? _snapPoints_findIndex : -1;
@@ -736,12 +714,12 @@ function useSnapPoints({ activeSnapPointProp, setActiveSnapPointProp, snapPoints
 const noop = ()=>()=>{};
 function useScaleBackground() {
     const { direction, isOpen, shouldScaleBackground, setBackgroundColorOnScale, noBodyStyles } = useDrawerContext();
-    const timeoutIdRef = React__namespace.default.useRef(null);
-    const initialBackgroundColor = React.useMemo(()=>document.body.style.backgroundColor, []);
+    const timeoutIdRef = React__default.useRef(null);
+    const initialBackgroundColor = useMemo(()=>document.body.style.backgroundColor, []);
     function getScale() {
         return (window.innerWidth - WINDOW_TOP_OFFSET) / window.innerWidth;
     }
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         if (isOpen && shouldScaleBackground) {
             if (timeoutIdRef.current) clearTimeout(timeoutIdRef.current);
             const wrapper = document.querySelector('[data-vaul-drawer-wrapper]') || document.querySelector('[vaul-drawer-wrapper]');
@@ -790,9 +768,9 @@ let previousBodyPosition = null;
  * https://github.com/emilkowalski/vaul/issues/433
  * And more that I discovered, but were just not reported.
  */ function usePositionFixed({ isOpen, modal, nested, hasBeenOpened, preventScrollRestoration, noBodyStyles }) {
-    const [activeUrl, setActiveUrl] = React__namespace.default.useState(()=>typeof window !== 'undefined' ? window.location.href : '');
-    const scrollPos = React__namespace.default.useRef(0);
-    const setPositionFixed = React__namespace.default.useCallback(()=>{
+    const [activeUrl, setActiveUrl] = React__default.useState(()=>typeof window !== 'undefined' ? window.location.href : '');
+    const scrollPos = React__default.useRef(0);
+    const setPositionFixed = React__default.useCallback(()=>{
         // All browsers on iOS will return true here.
         if (!isSafari()) return;
         // If previousBodyPosition is already set, don't set it again.
@@ -825,7 +803,7 @@ let previousBodyPosition = null;
     }, [
         isOpen
     ]);
-    const restorePositionSetting = React__namespace.default.useCallback(()=>{
+    const restorePositionSetting = React__default.useCallback(()=>{
         // All browsers on iOS will return true here.
         if (!isSafari()) return;
         if (previousBodyPosition !== null && !noBodyStyles) {
@@ -846,7 +824,7 @@ let previousBodyPosition = null;
     }, [
         activeUrl
     ]);
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         function onScroll() {
             scrollPos.current = window.scrollY;
         }
@@ -856,7 +834,7 @@ let previousBodyPosition = null;
             window.removeEventListener('scroll', onScroll);
         };
     }, []);
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         if (!modal) return;
         return ()=>{
             if (typeof document === 'undefined') return;
@@ -869,7 +847,7 @@ let previousBodyPosition = null;
         modal,
         restorePositionSetting
     ]);
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         if (nested || !hasBeenOpened) return;
         // This is needed to force Safari toolbar to show **before** the drawer starts animating to prevent a gnarly shift from happening
         if (isOpen) {
@@ -924,25 +902,25 @@ function Root({ open: openProp, onOpenChange, children, onDrag: onDragProp, onRe
             }
         }
     });
-    const [hasBeenOpened, setHasBeenOpened] = React__namespace.default.useState(false);
-    const [isDragging, setIsDragging] = React__namespace.default.useState(false);
-    const [justReleased, setJustReleased] = React__namespace.default.useState(false);
-    const overlayRef = React__namespace.default.useRef(null);
-    const openTime = React__namespace.default.useRef(null);
-    const dragStartTime = React__namespace.default.useRef(null);
-    const dragEndTime = React__namespace.default.useRef(null);
-    const lastTimeDragPrevented = React__namespace.default.useRef(null);
-    const isAllowedToDrag = React__namespace.default.useRef(false);
-    const nestedOpenChangeTimer = React__namespace.default.useRef(null);
-    const pointerStart = React__namespace.default.useRef(0);
-    const keyboardIsOpen = React__namespace.default.useRef(false);
-    const shouldAnimate = React__namespace.default.useRef(!defaultOpen);
-    const previousDiffFromInitial = React__namespace.default.useRef(0);
-    const drawerRef = React__namespace.default.useRef(null);
-    const drawerHeightRef = React__namespace.default.useRef(((_drawerRef_current = drawerRef.current) == null ? void 0 : _drawerRef_current.getBoundingClientRect().height) || 0);
-    const drawerWidthRef = React__namespace.default.useRef(((_drawerRef_current1 = drawerRef.current) == null ? void 0 : _drawerRef_current1.getBoundingClientRect().width) || 0);
-    const initialDrawerHeight = React__namespace.default.useRef(0);
-    const onSnapPointChange = React__namespace.default.useCallback((activeSnapPointIndex)=>{
+    const [hasBeenOpened, setHasBeenOpened] = React__default.useState(false);
+    const [isDragging, setIsDragging] = React__default.useState(false);
+    const [justReleased, setJustReleased] = React__default.useState(false);
+    const overlayRef = React__default.useRef(null);
+    const openTime = React__default.useRef(null);
+    const dragStartTime = React__default.useRef(null);
+    const dragEndTime = React__default.useRef(null);
+    const lastTimeDragPrevented = React__default.useRef(null);
+    const isAllowedToDrag = React__default.useRef(false);
+    const nestedOpenChangeTimer = React__default.useRef(null);
+    const pointerStart = React__default.useRef(0);
+    const keyboardIsOpen = React__default.useRef(false);
+    const shouldAnimate = React__default.useRef(!defaultOpen);
+    const previousDiffFromInitial = React__default.useRef(0);
+    const drawerRef = React__default.useRef(null);
+    const drawerHeightRef = React__default.useRef(((_drawerRef_current = drawerRef.current) == null ? void 0 : _drawerRef_current.getBoundingClientRect().height) || 0);
+    const drawerWidthRef = React__default.useRef(((_drawerRef_current1 = drawerRef.current) == null ? void 0 : _drawerRef_current1.getBoundingClientRect().width) || 0);
+    const initialDrawerHeight = React__default.useRef(0);
+    const onSnapPointChange = React__default.useCallback((activeSnapPointIndex)=>{
         // Change openTime ref when we reach the last snap point to prevent dragging for 500ms incase it's scrollable.
         if (snapPoints && activeSnapPointIndex === snapPointsOffset.length - 1) openTime.current = new Date();
     }, []);
@@ -1126,12 +1104,12 @@ function Root({ open: openProp, onOpenChange, children, onDrag: onDragProp, onRe
             }
         }
     }
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         window.requestAnimationFrame(()=>{
             shouldAnimate.current = true;
         });
     }, []);
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         var _window_visualViewport;
         function onVisualViewportChange() {
             if (!drawerRef.current || !repositionInputs) return;
@@ -1295,7 +1273,7 @@ function Root({ open: openProp, onOpenChange, children, onDrag: onDragProp, onRe
         onReleaseProp == null ? void 0 : onReleaseProp(event, true);
         resetDrawer();
     }
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         // Trigger enter animation without using CSS animation
         if (isOpen) {
             set(document.documentElement, {
@@ -1350,7 +1328,7 @@ function Root({ open: openProp, onOpenChange, children, onDrag: onDragProp, onRe
             });
         }
     }
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         if (!modal) {
             // Need to do this manually unfortunately
             window.requestAnimationFrame(()=>{
@@ -1360,7 +1338,7 @@ function Root({ open: openProp, onOpenChange, children, onDrag: onDragProp, onRe
     }, [
         modal
     ]);
-    return /*#__PURE__*/ React__namespace.default.createElement(DialogPrimitive__namespace.Root, {
+    return /*#__PURE__*/ React__default.createElement(DialogPrimitive.Root, {
         defaultOpen: defaultOpen,
         onOpenChange: (open)=>{
             if (!dismissible && !open) return;
@@ -1372,7 +1350,7 @@ function Root({ open: openProp, onOpenChange, children, onDrag: onDragProp, onRe
             setIsOpen(open);
         },
         open: isOpen
-    }, /*#__PURE__*/ React__namespace.default.createElement(DrawerContext.Provider, {
+    }, /*#__PURE__*/ React__default.createElement(DrawerContext.Provider, {
         value: {
             activeSnapPoint,
             snapPoints,
@@ -1406,7 +1384,7 @@ function Root({ open: openProp, onOpenChange, children, onDrag: onDragProp, onRe
         }
     }, children));
 }
-const Overlay = /*#__PURE__*/ React__namespace.default.forwardRef(function({ ...rest }, ref) {
+const Overlay = /*#__PURE__*/ React__default.forwardRef(function({ ...rest }, ref) {
     const { overlayRef, snapPoints, onRelease, shouldFade, isOpen, modal, shouldAnimate } = useDrawerContext();
     const composedRef = useComposedRefs(ref, overlayRef);
     const hasSnapPoints = snapPoints && snapPoints.length > 0;
@@ -1414,10 +1392,10 @@ const Overlay = /*#__PURE__*/ React__namespace.default.forwardRef(function({ ...
     if (!modal) {
         return null;
     }
-    const onMouseUp = React__namespace.default.useCallback((event)=>onRelease(event), [
+    const onMouseUp = React__default.useCallback((event)=>onRelease(event), [
         onRelease
     ]);
-    return /*#__PURE__*/ React__namespace.default.createElement(DialogPrimitive__namespace.Overlay, {
+    return /*#__PURE__*/ React__default.createElement(DialogPrimitive.Overlay, {
         onMouseUp: onMouseUp,
         ref: composedRef,
         "data-vaul-overlay": "",
@@ -1428,14 +1406,14 @@ const Overlay = /*#__PURE__*/ React__namespace.default.forwardRef(function({ ...
     });
 });
 Overlay.displayName = 'Drawer.Overlay';
-const Content = /*#__PURE__*/ React__namespace.default.forwardRef(function({ onPointerDownOutside, style, onOpenAutoFocus, ...rest }, ref) {
+const Content = /*#__PURE__*/ React__default.forwardRef(function({ onPointerDownOutside, style, onOpenAutoFocus, ...rest }, ref) {
     const { drawerRef, onPress, onRelease, onDrag, keyboardIsOpen, snapPointsOffset, activeSnapPointIndex, modal, isOpen, direction, snapPoints, container, handleOnly, shouldAnimate, autoFocus } = useDrawerContext();
     // Needed to use transition instead of animations
-    const [delayedSnapPoints, setDelayedSnapPoints] = React__namespace.default.useState(false);
+    const [delayedSnapPoints, setDelayedSnapPoints] = React__default.useState(false);
     const composedRef = useComposedRefs(ref, drawerRef);
-    const pointerStartRef = React__namespace.default.useRef(null);
-    const lastKnownPointerEventRef = React__namespace.default.useRef(null);
-    const wasBeyondThePointRef = React__namespace.default.useRef(false);
+    const pointerStartRef = React__default.useRef(null);
+    const lastKnownPointerEventRef = React__default.useRef(null);
+    const wasBeyondThePointRef = React__default.useRef(false);
     const hasSnapPoints = snapPoints && snapPoints.length > 0;
     useScaleBackground();
     const isDeltaInDirection = (delta, direction, threshold = 0)=>{
@@ -1461,7 +1439,7 @@ const Content = /*#__PURE__*/ React__namespace.default.forwardRef(function({ onP
         wasBeyondThePointRef.current = true;
         return true;
     };
-    React__namespace.default.useEffect(()=>{
+    React__default.useEffect(()=>{
         if (hasSnapPoints) {
             window.requestAnimationFrame(()=>{
                 setDelayedSnapPoints(true);
@@ -1473,7 +1451,7 @@ const Content = /*#__PURE__*/ React__namespace.default.forwardRef(function({ onP
         wasBeyondThePointRef.current = false;
         onRelease(event);
     }
-    return /*#__PURE__*/ React__namespace.default.createElement(DialogPrimitive__namespace.Content, {
+    return /*#__PURE__*/ React__default.createElement(DialogPrimitive.Content, {
         "data-vaul-drawer-direction": direction,
         "data-vaul-drawer": "",
         "data-vaul-delayed-snap-points": delayedSnapPoints ? 'true' : 'false',
@@ -1556,10 +1534,10 @@ const Content = /*#__PURE__*/ React__namespace.default.forwardRef(function({ onP
 Content.displayName = 'Drawer.Content';
 const LONG_HANDLE_PRESS_TIMEOUT = 250;
 const DOUBLE_TAP_TIMEOUT = 120;
-const Handle = /*#__PURE__*/ React__namespace.default.forwardRef(function({ preventCycle = false, children, ...rest }, ref) {
+const Handle = /*#__PURE__*/ React__default.forwardRef(function({ preventCycle = false, children, ...rest }, ref) {
     const { closeDrawer, isDragging, snapPoints, activeSnapPoint, setActiveSnapPoint, dismissible, handleOnly, isOpen, onPress, onDrag } = useDrawerContext();
-    const closeTimeoutIdRef = React__namespace.default.useRef(null);
-    const shouldCancelInteractionRef = React__namespace.default.useRef(false);
+    const closeTimeoutIdRef = React__default.useRef(null);
+    const shouldCancelInteractionRef = React__default.useRef(false);
     function handleStartCycle() {
         // Stop if this is the second click of a double click
         if (shouldCancelInteractionRef.current) {
@@ -1606,7 +1584,7 @@ const Handle = /*#__PURE__*/ React__namespace.default.forwardRef(function({ prev
         }
         shouldCancelInteractionRef.current = false;
     }
-    return /*#__PURE__*/ React__namespace.default.createElement("div", {
+    return /*#__PURE__*/ React__default.createElement("div", {
         onClick: handleStartCycle,
         onPointerCancel: handleCancelInteraction,
         onPointerDown: (e)=>{
@@ -1622,7 +1600,7 @@ const Handle = /*#__PURE__*/ React__namespace.default.forwardRef(function({ prev
         "data-vaul-handle": "",
         "aria-hidden": "true",
         ...rest
-    }, /*#__PURE__*/ React__namespace.default.createElement("span", {
+    }, /*#__PURE__*/ React__default.createElement("span", {
         "data-vaul-handle-hitarea": "",
         "aria-hidden": "true"
     }, children));
@@ -1633,7 +1611,7 @@ function NestedRoot({ onDrag, onOpenChange, open: nestedIsOpen, ...rest }) {
     if (!onNestedDrag) {
         throw new Error('Drawer.NestedRoot must be placed in another drawer');
     }
-    return /*#__PURE__*/ React__namespace.default.createElement(Root, {
+    return /*#__PURE__*/ React__default.createElement(Root, {
         nested: true,
         open: nestedIsOpen,
         onClose: ()=>{
@@ -1656,7 +1634,7 @@ function NestedRoot({ onDrag, onOpenChange, open: nestedIsOpen, ...rest }) {
 function Portal(props) {
     const context = useDrawerContext();
     const { container = context.container, ...portalProps } = props;
-    return /*#__PURE__*/ React__namespace.default.createElement(DialogPrimitive__namespace.Portal, {
+    return /*#__PURE__*/ React__default.createElement(DialogPrimitive.Portal, {
         container: container,
         ...portalProps
     });
@@ -1666,18 +1644,12 @@ const Drawer = {
     NestedRoot,
     Content,
     Overlay,
-    Trigger: DialogPrimitive__namespace.Trigger,
+    Trigger: DialogPrimitive.Trigger,
     Portal,
     Handle,
-    Close: DialogPrimitive__namespace.Close,
-    Title: DialogPrimitive__namespace.Title,
-    Description: DialogPrimitive__namespace.Description
+    Close: DialogPrimitive.Close,
+    Title: DialogPrimitive.Title,
+    Description: DialogPrimitive.Description
 };
 
-exports.Content = Content;
-exports.Drawer = Drawer;
-exports.Handle = Handle;
-exports.NestedRoot = NestedRoot;
-exports.Overlay = Overlay;
-exports.Portal = Portal;
-exports.Root = Root;
+export { Content, Drawer, Handle, NestedRoot, Overlay, Portal, Root };

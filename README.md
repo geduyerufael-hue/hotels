@@ -1,7 +1,35 @@
-# vitest
+https://github.com/emilkowalski/vaul/assets/36730035/fdf8c5e8-ade8-433b-8bb0-4ce10e722516
 
-[![NPM version](https://img.shields.io/npm/v/vitest?color=a1b858&label=)](https://www.npmjs.com/package/vitest)
+Vaul is an unstyled drawer component for React that can be used as a Dialog replacement on tablet and mobile devices. You can read about why and how it was built [here](https://emilkowal.ski/ui/building-a-drawer-component).
 
-Next generation testing framework powered by Vite.
+## Usage
 
-[GitHub](https://github.com/vitest-dev/vitest) | [Documentation](https://vitest.dev/)
+To start using the library, install it in your project:,
+
+```bash
+npm install vaul
+```
+
+Use the drawer in your app.
+
+```jsx
+import { Drawer } from 'vaul';
+
+function MyComponent() {
+  return (
+    <Drawer.Root>
+      <Drawer.Trigger>Open</Drawer.Trigger>
+      <Drawer.Portal>
+        <Drawer.Content>
+          <Drawer.Title>Title</Drawer.Title>
+        </Drawer.Content>
+        <Drawer.Overlay />
+      </Drawer.Portal>
+    </Drawer.Root>
+  );
+}
+```
+
+## Documentation
+
+Find the full API reference and examples in the [documentation](https://vaul.emilkowal.ski/getting-started).
