@@ -1,15 +1,22 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getTicks = getTicks;
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _DataUtils = require("../util/DataUtils");
+var _DOMUtils = require("../util/DOMUtils");
+var _Global = require("../util/Global");
+var _TickUtils = require("../util/TickUtils");
+var _getEquidistantTicks = require("./getEquidistantTicks");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-import isFunction from 'lodash/isFunction';
-import { mathSign, isNumber } from '../util/DataUtils';
-import { getStringSize } from '../util/DOMUtils';
-import { Global } from '../util/Global';
-import { isVisible, getTickBoundaries, getNumberIntervalTicks, getAngledTickWidth } from '../util/TickUtils';
-import { getEquidistantTicks } from './getEquidistantTicks';
 function getTicksEnd(sign, boundaries, getTickSize, ticks, minTickGap) {
   var result = (ticks || []).slice();
   var len = result.length;
@@ -34,7 +41,7 @@ function getTicksEnd(sign, boundaries, getTickSize, ticks, minTickGap) {
         tickCoord: entry.coordinate
       });
     }
-    var isShow = isVisible(sign, entry.tickCoord, getSize, start, end);
+    var isShow = (0, _TickUtils.isVisible)(sign, entry.tickCoord, getSize, start, end);
     if (isShow) {
       end = entry.tickCoord - sign * (getSize() / 2 + minTickGap);
       result[i] = _objectSpread(_objectSpread({}, entry), {}, {
@@ -60,7 +67,7 @@ function getTicksStart(sign, boundaries, getTickSize, ticks, minTickGap, preserv
     result[len - 1] = tail = _objectSpread(_objectSpread({}, tail), {}, {
       tickCoord: tailGap > 0 ? tail.coordinate - tailGap * sign : tail.coordinate
     });
-    var isTailShow = isVisible(sign, tail.tickCoord, function () {
+    var isTailShow = (0, _TickUtils.isVisible)(sign, tail.tickCoord, function () {
       return tailSize;
     }, start, end);
     if (isTailShow) {
@@ -90,7 +97,7 @@ function getTicksStart(sign, boundaries, getTickSize, ticks, minTickGap, preserv
         tickCoord: entry.coordinate
       });
     }
-    var isShow = isVisible(sign, entry.tickCoord, getSize, start, end);
+    var isShow = (0, _TickUtils.isVisible)(sign, entry.tickCoord, getSize, start, end);
     if (isShow) {
       start = entry.tickCoord + sign * (getSize() / 2 + minTickGap);
       result[i] = _objectSpread(_objectSpread({}, entry), {}, {
@@ -103,7 +110,7 @@ function getTicksStart(sign, boundaries, getTickSize, ticks, minTickGap, preserv
   }
   return result;
 }
-export function getTicks(props, fontSize, letterSpacing) {
+function getTicks(props, fontSize, letterSpacing) {
   var tick = props.tick,
     ticks = props.ticks,
     viewBox = props.viewBox,
@@ -116,12 +123,12 @@ export function getTicks(props, fontSize, letterSpacing) {
   if (!ticks || !ticks.length || !tick) {
     return [];
   }
-  if (isNumber(interval) || Global.isSsr) {
-    return getNumberIntervalTicks(ticks, typeof interval === 'number' && isNumber(interval) ? interval : 0);
+  if ((0, _DataUtils.isNumber)(interval) || _Global.Global.isSsr) {
+    return (0, _TickUtils.getNumberIntervalTicks)(ticks, typeof interval === 'number' && (0, _DataUtils.isNumber)(interval) ? interval : 0);
   }
   var candidates = [];
   var sizeKey = orientation === 'top' || orientation === 'bottom' ? 'width' : 'height';
-  var unitSize = unit && sizeKey === 'width' ? getStringSize(unit, {
+  var unitSize = unit && sizeKey === 'width' ? (0, _DOMUtils.getStringSize)(unit, {
     fontSize: fontSize,
     letterSpacing: letterSpacing
   }) : {
@@ -129,20 +136,20 @@ export function getTicks(props, fontSize, letterSpacing) {
     height: 0
   };
   var getTickSize = function getTickSize(content, index) {
-    var value = isFunction(tickFormatter) ? tickFormatter(content.value, index) : content.value;
+    var value = (0, _isFunction["default"])(tickFormatter) ? tickFormatter(content.value, index) : content.value;
     // Recharts only supports angles when sizeKey === 'width'
-    return sizeKey === 'width' ? getAngledTickWidth(getStringSize(value, {
+    return sizeKey === 'width' ? (0, _TickUtils.getAngledTickWidth)((0, _DOMUtils.getStringSize)(value, {
       fontSize: fontSize,
       letterSpacing: letterSpacing
-    }), unitSize, angle) : getStringSize(value, {
+    }), unitSize, angle) : (0, _DOMUtils.getStringSize)(value, {
       fontSize: fontSize,
       letterSpacing: letterSpacing
     })[sizeKey];
   };
-  var sign = ticks.length >= 2 ? mathSign(ticks[1].coordinate - ticks[0].coordinate) : 1;
-  var boundaries = getTickBoundaries(viewBox, sign, sizeKey);
+  var sign = ticks.length >= 2 ? (0, _DataUtils.mathSign)(ticks[1].coordinate - ticks[0].coordinate) : 1;
+  var boundaries = (0, _TickUtils.getTickBoundaries)(viewBox, sign, sizeKey);
   if (interval === 'equidistantPreserveStart') {
-    return getEquidistantTicks(sign, boundaries, getTickSize, ticks, minTickGap);
+    return (0, _getEquidistantTicks.getEquidistantTicks)(sign, boundaries, getTickSize, ticks, minTickGap);
   }
   if (interval === 'preserveStart' || interval === 'preserveStartEnd') {
     candidates = getTicksStart(sign, boundaries, getTickSize, ticks, minTickGap, interval === 'preserveStartEnd');

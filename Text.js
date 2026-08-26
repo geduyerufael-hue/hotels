@@ -1,5 +1,23 @@
+"use strict";
+
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Text = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _isNil = _interopRequireDefault(require("lodash/isNil"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _DataUtils = require("../util/DataUtils");
+var _Global = require("../util/Global");
+var _ReactUtils = require("../util/ReactUtils");
+var _DOMUtils = require("../util/DOMUtils");
+var _ReduceCSSCalc = require("../util/ReduceCSSCalc");
 var _excluded = ["x", "y", "lineHeight", "capHeight", "scaleToFit", "textAnchor", "verticalAnchor", "fill"],
   _excluded2 = ["dx", "dy", "angle", "className", "breakAll"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } } return target; }
@@ -9,14 +27,6 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-import React, { useMemo } from 'react';
-import isNil from 'lodash/isNil';
-import clsx from 'clsx';
-import { isNumber, isNumOrStr } from '../util/DataUtils';
-import { Global } from '../util/Global';
-import { filterProps } from '../util/ReactUtils';
-import { getStringSize } from '../util/DOMUtils';
-import { reduceCSSCalc } from '../util/ReduceCSSCalc';
 var BREAKING_SPACES = /[ \f\n\r\t\v\u2028\u2029]+/;
 var calculateWordWidths = function calculateWordWidths(_ref) {
   var children = _ref.children,
@@ -24,7 +34,7 @@ var calculateWordWidths = function calculateWordWidths(_ref) {
     style = _ref.style;
   try {
     var words = [];
-    if (!isNil(children)) {
+    if (!(0, _isNil["default"])(children)) {
       if (breakAll) {
         words = children.toString().split('');
       } else {
@@ -34,10 +44,10 @@ var calculateWordWidths = function calculateWordWidths(_ref) {
     var wordsWithComputedWidth = words.map(function (word) {
       return {
         word: word,
-        width: getStringSize(word, style).width
+        width: (0, _DOMUtils.getStringSize)(word, style).width
       };
     });
-    var spaceWidth = breakAll ? 0 : getStringSize("\xA0", style).width;
+    var spaceWidth = breakAll ? 0 : (0, _DOMUtils.getStringSize)("\xA0", style).width;
     return {
       wordsWithComputedWidth: wordsWithComputedWidth,
       spaceWidth: spaceWidth
@@ -51,7 +61,7 @@ var calculateWordsByLines = function calculateWordsByLines(_ref2, initialWordsWi
     children = _ref2.children,
     style = _ref2.style,
     breakAll = _ref2.breakAll;
-  var shouldLimitLines = isNumber(maxLines);
+  var shouldLimitLines = (0, _DataUtils.isNumber)(maxLines);
   var text = children;
   var calculate = function calculate() {
     var words = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
@@ -127,7 +137,7 @@ var calculateWordsByLines = function calculateWordsByLines(_ref2, initialWordsWi
   return trimmedResult || originalResult;
 };
 var getWordsWithoutCalculate = function getWordsWithoutCalculate(children) {
-  var words = !isNil(children) ? children.toString().split(BREAKING_SPACES) : [];
+  var words = !(0, _isNil["default"])(children) ? children.toString().split(BREAKING_SPACES) : [];
   return [{
     words: words
   }];
@@ -140,7 +150,7 @@ var getWordsByLines = function getWordsByLines(_ref4) {
     breakAll = _ref4.breakAll,
     maxLines = _ref4.maxLines;
   // Only perform calculations if using features that require them (multiline, scaleToFit)
-  if ((width || scaleToFit) && !Global.isSsr) {
+  if ((width || scaleToFit) && !_Global.Global.isSsr) {
     var wordsWithComputedWidth, spaceWidth;
     var wordWidths = calculateWordWidths({
       breakAll: breakAll,
@@ -165,7 +175,7 @@ var getWordsByLines = function getWordsByLines(_ref4) {
   return getWordsWithoutCalculate(children);
 };
 var DEFAULT_FILL = '#808080';
-export var Text = function Text(_ref5) {
+var Text = exports.Text = function Text(_ref5) {
   var _ref5$x = _ref5.x,
     propsX = _ref5$x === void 0 ? 0 : _ref5$x,
     _ref5$y = _ref5.y,
@@ -183,7 +193,7 @@ export var Text = function Text(_ref5) {
     _ref5$fill = _ref5.fill,
     fill = _ref5$fill === void 0 ? DEFAULT_FILL : _ref5$fill,
     props = _objectWithoutProperties(_ref5, _excluded);
-  var wordsByLines = useMemo(function () {
+  var wordsByLines = (0, _react.useMemo)(function () {
     return getWordsByLines({
       breakAll: props.breakAll,
       children: props.children,
@@ -199,28 +209,28 @@ export var Text = function Text(_ref5) {
     className = props.className,
     breakAll = props.breakAll,
     textProps = _objectWithoutProperties(props, _excluded2);
-  if (!isNumOrStr(propsX) || !isNumOrStr(propsY)) {
+  if (!(0, _DataUtils.isNumOrStr)(propsX) || !(0, _DataUtils.isNumOrStr)(propsY)) {
     return null;
   }
-  var x = propsX + (isNumber(dx) ? dx : 0);
-  var y = propsY + (isNumber(dy) ? dy : 0);
+  var x = propsX + ((0, _DataUtils.isNumber)(dx) ? dx : 0);
+  var y = propsY + ((0, _DataUtils.isNumber)(dy) ? dy : 0);
   var startDy;
   switch (verticalAnchor) {
     case 'start':
-      startDy = reduceCSSCalc("calc(".concat(capHeight, ")"));
+      startDy = (0, _ReduceCSSCalc.reduceCSSCalc)("calc(".concat(capHeight, ")"));
       break;
     case 'middle':
-      startDy = reduceCSSCalc("calc(".concat((wordsByLines.length - 1) / 2, " * -").concat(lineHeight, " + (").concat(capHeight, " / 2))"));
+      startDy = (0, _ReduceCSSCalc.reduceCSSCalc)("calc(".concat((wordsByLines.length - 1) / 2, " * -").concat(lineHeight, " + (").concat(capHeight, " / 2))"));
       break;
     default:
-      startDy = reduceCSSCalc("calc(".concat(wordsByLines.length - 1, " * -").concat(lineHeight, ")"));
+      startDy = (0, _ReduceCSSCalc.reduceCSSCalc)("calc(".concat(wordsByLines.length - 1, " * -").concat(lineHeight, ")"));
       break;
   }
   var transforms = [];
   if (scaleToFit) {
     var lineWidth = wordsByLines[0].width;
     var width = props.width;
-    transforms.push("scale(".concat((isNumber(width) ? width / lineWidth : 1) / lineWidth, ")"));
+    transforms.push("scale(".concat(((0, _DataUtils.isNumber)(width) ? width / lineWidth : 1) / lineWidth, ")"));
   }
   if (angle) {
     transforms.push("rotate(".concat(angle, ", ").concat(x, ", ").concat(y, ")"));
@@ -228,10 +238,10 @@ export var Text = function Text(_ref5) {
   if (transforms.length) {
     textProps.transform = transforms.join(' ');
   }
-  return /*#__PURE__*/React.createElement("text", _extends({}, filterProps(textProps, true), {
+  return /*#__PURE__*/_react["default"].createElement("text", _extends({}, (0, _ReactUtils.filterProps)(textProps, true), {
     x: x,
     y: y,
-    className: clsx('recharts-text', className),
+    className: (0, _clsx["default"])('recharts-text', className),
     textAnchor: textAnchor,
     fill: fill.includes('url') ? DEFAULT_FILL : fill
   }), wordsByLines.map(function (line, index) {
@@ -240,7 +250,7 @@ export var Text = function Text(_ref5) {
       /*#__PURE__*/
       // duplicate words will cause duplicate keys
       // eslint-disable-next-line react/no-array-index-key
-      React.createElement("tspan", {
+      _react["default"].createElement("tspan", {
         x: x,
         dy: index === 0 ? startDy : lineHeight,
         key: "".concat(words, "-").concat(index)

@@ -1,6 +1,12 @@
-import { isVisible } from '../util/TickUtils';
-import { getEveryNthWithCondition } from '../util/getEveryNthWithCondition';
-export function getEquidistantTicks(sign, boundaries, getTickSize, ticks, minTickGap) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getEquidistantTicks = getEquidistantTicks;
+var _TickUtils = require("../util/TickUtils");
+var _getEveryNthWithCondition = require("../util/getEveryNthWithCondition");
+function getEquidistantTicks(sign, boundaries, getTickSize, ticks, minTickGap) {
   var result = (ticks || []).slice();
   var initialStart = boundaries.start,
     end = boundaries.end;
@@ -18,7 +24,7 @@ export function getEquidistantTicks(sign, boundaries, getTickSize, ticks, minTic
       // Break condition - If we have evaluate all the ticks, then we are done.
       if (entry === undefined) {
         return {
-          v: getEveryNthWithCondition(ticks, stepsize)
+          v: (0, _getEveryNthWithCondition.getEveryNthWithCondition)(ticks, stepsize)
         };
       }
 
@@ -33,7 +39,7 @@ export function getEquidistantTicks(sign, boundaries, getTickSize, ticks, minTic
       };
       var tickCoord = entry.coordinate;
       // We will always show the first tick.
-      var isShow = index === 0 || isVisible(sign, tickCoord, getSize, start, end);
+      var isShow = index === 0 || (0, _TickUtils.isVisible)(sign, tickCoord, getSize, start, end);
       if (!isShow) {
         // Start all over with a larger stepsize
         index = 0;

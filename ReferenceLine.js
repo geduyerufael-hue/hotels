@@ -1,4 +1,23 @@
+"use strict";
+
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getEndPoints = exports.ReferenceLine = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _some = _interopRequireDefault(require("lodash/some"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _Layer = require("../container/Layer");
+var _Label = require("../component/Label");
+var _IfOverflowMatches = require("../util/IfOverflowMatches");
+var _DataUtils = require("../util/DataUtils");
+var _CartesianUtils = require("../util/CartesianUtils");
+var _LogUtils = require("../util/LogUtils");
+var _ReactUtils = require("../util/ReactUtils");
+var _chartLayoutContext = require("../context/chartLayoutContext");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -20,23 +39,9 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-/**
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); } /**
  * @fileOverview Reference Line
  */
-import React from 'react';
-import isFunction from 'lodash/isFunction';
-import some from 'lodash/some';
-import clsx from 'clsx';
-import { Layer } from '../container/Layer';
-import { Label } from '../component/Label';
-import { ifOverflowMatches } from '../util/IfOverflowMatches';
-import { isNumOrStr } from '../util/DataUtils';
-import { createLabeledScales, rectWithCoords } from '../util/CartesianUtils';
-import { warn } from '../util/LogUtils';
-import { filterProps } from '../util/ReactUtils';
-import { useClipPathId, useViewBox, useXAxisOrThrow, useYAxisOrThrow } from '../context/chartLayoutContext';
-
 /**
  * This excludes `viewBox` prop from svg for two reasons:
  * 1. The components wants viewBox of object type, and svg wants string
@@ -46,19 +51,19 @@ import { useClipPathId, useViewBox, useXAxisOrThrow, useYAxisOrThrow } from '../
 
 var renderLine = function renderLine(option, props) {
   var line;
-  if ( /*#__PURE__*/React.isValidElement(option)) {
-    line = /*#__PURE__*/React.cloneElement(option, props);
-  } else if (isFunction(option)) {
+  if ( /*#__PURE__*/_react["default"].isValidElement(option)) {
+    line = /*#__PURE__*/_react["default"].cloneElement(option, props);
+  } else if ((0, _isFunction["default"])(option)) {
     line = option(props);
   } else {
-    line = /*#__PURE__*/React.createElement("line", _extends({}, props, {
+    line = /*#__PURE__*/_react["default"].createElement("line", _extends({}, props, {
       className: "recharts-reference-line-line"
     }));
   }
   return line;
 };
 // TODO: ScaleHelper
-export var getEndPoints = function getEndPoints(scales, isFixedX, isFixedY, isSegment, viewBox, position, xAxisOrientation, yAxisOrientation, props) {
+var getEndPoints = exports.getEndPoints = function getEndPoints(scales, isFixedX, isFixedY, isSegment, viewBox, position, xAxisOrientation, yAxisOrientation, props) {
   var x = viewBox.x,
     y = viewBox.y,
     width = viewBox.width,
@@ -68,7 +73,7 @@ export var getEndPoints = function getEndPoints(scales, isFixedX, isFixedY, isSe
     var coord = scales.y.apply(yCoord, {
       position: position
     });
-    if (ifOverflowMatches(props, 'discard') && !scales.y.isInRange(coord)) {
+    if ((0, _IfOverflowMatches.ifOverflowMatches)(props, 'discard') && !scales.y.isInRange(coord)) {
       return null;
     }
     var points = [{
@@ -85,7 +90,7 @@ export var getEndPoints = function getEndPoints(scales, isFixedX, isFixedY, isSe
     var _coord = scales.x.apply(xCoord, {
       position: position
     });
-    if (ifOverflowMatches(props, 'discard') && !scales.x.isInRange(_coord)) {
+    if ((0, _IfOverflowMatches.ifOverflowMatches)(props, 'discard') && !scales.x.isInRange(_coord)) {
       return null;
     }
     var _points = [{
@@ -104,7 +109,7 @@ export var getEndPoints = function getEndPoints(scales, isFixedX, isFixedY, isSe
         position: position
       });
     });
-    if (ifOverflowMatches(props, 'discard') && some(_points2, function (p) {
+    if ((0, _IfOverflowMatches.ifOverflowMatches)(props, 'discard') && (0, _some["default"])(_points2, function (p) {
       return !scales.isInRange(p);
     })) {
       return null;
@@ -122,20 +127,20 @@ function ReferenceLineImpl(props) {
     shape = props.shape,
     className = props.className,
     alwaysShow = props.alwaysShow;
-  var clipPathId = useClipPathId();
-  var xAxis = useXAxisOrThrow(xAxisId);
-  var yAxis = useYAxisOrThrow(yAxisId);
-  var viewBox = useViewBox();
+  var clipPathId = (0, _chartLayoutContext.useClipPathId)();
+  var xAxis = (0, _chartLayoutContext.useXAxisOrThrow)(xAxisId);
+  var yAxis = (0, _chartLayoutContext.useYAxisOrThrow)(yAxisId);
+  var viewBox = (0, _chartLayoutContext.useViewBox)();
   if (!clipPathId || !viewBox) {
     return null;
   }
-  warn(alwaysShow === undefined, 'The alwaysShow prop is deprecated. Please use ifOverflow="extendDomain" instead.');
-  var scales = createLabeledScales({
+  (0, _LogUtils.warn)(alwaysShow === undefined, 'The alwaysShow prop is deprecated. Please use ifOverflow="extendDomain" instead.');
+  var scales = (0, _CartesianUtils.createLabeledScales)({
     x: xAxis.scale,
     y: yAxis.scale
   });
-  var isX = isNumOrStr(fixedX);
-  var isY = isNumOrStr(fixedY);
+  var isX = (0, _DataUtils.isNumOrStr)(fixedX);
+  var isY = (0, _DataUtils.isNumOrStr)(fixedY);
   var isSegment = segment && segment.length === 2;
   var endPoints = getEndPoints(scales, isX, isY, isSegment, viewBox, props.position, xAxis.orientation, yAxis.orientation, props);
   if (!endPoints) {
@@ -148,18 +153,18 @@ function ReferenceLineImpl(props) {
     _endPoints$2 = _endPoints[1],
     x2 = _endPoints$2.x,
     y2 = _endPoints$2.y;
-  var clipPath = ifOverflowMatches(props, 'hidden') ? "url(#".concat(clipPathId, ")") : undefined;
+  var clipPath = (0, _IfOverflowMatches.ifOverflowMatches)(props, 'hidden') ? "url(#".concat(clipPathId, ")") : undefined;
   var lineProps = _objectSpread(_objectSpread({
     clipPath: clipPath
-  }, filterProps(props, true)), {}, {
+  }, (0, _ReactUtils.filterProps)(props, true)), {}, {
     x1: x1,
     y1: y1,
     x2: x2,
     y2: y2
   });
-  return /*#__PURE__*/React.createElement(Layer, {
-    className: clsx('recharts-reference-line', className)
-  }, renderLine(shape, lineProps), Label.renderCallByParent(props, rectWithCoords({
+  return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
+    className: (0, _clsx["default"])('recharts-reference-line', className)
+  }, renderLine(shape, lineProps), _Label.Label.renderCallByParent(props, (0, _CartesianUtils.rectWithCoords)({
     x1: x1,
     y1: y1,
     x2: x2,
@@ -168,7 +173,7 @@ function ReferenceLineImpl(props) {
 }
 
 // eslint-disable-next-line react/prefer-stateless-function -- requires static defaultProps
-export var ReferenceLine = /*#__PURE__*/function (_React$Component) {
+var ReferenceLine = exports.ReferenceLine = /*#__PURE__*/function (_React$Component) {
   function ReferenceLine() {
     _classCallCheck(this, ReferenceLine);
     return _callSuper(this, ReferenceLine, arguments);
@@ -177,10 +182,10 @@ export var ReferenceLine = /*#__PURE__*/function (_React$Component) {
   return _createClass(ReferenceLine, [{
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement(ReferenceLineImpl, this.props);
+      return /*#__PURE__*/_react["default"].createElement(ReferenceLineImpl, this.props);
     }
   }]);
-}(React.Component);
+}(_react["default"].Component);
 _defineProperty(ReferenceLine, "displayName", 'ReferenceLine');
 _defineProperty(ReferenceLine, "defaultProps", {
   isFront: false,

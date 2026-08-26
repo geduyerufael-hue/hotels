@@ -1,5 +1,44 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getAxisMapByAxes = exports.generateCategoricalChart = exports.createDefaultState = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _isNil = _interopRequireDefault(require("lodash/isNil"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _range = _interopRequireDefault(require("lodash/range"));
+var _get = _interopRequireDefault(require("lodash/get"));
+var _sortBy = _interopRequireDefault(require("lodash/sortBy"));
+var _throttle = _interopRequireDefault(require("lodash/throttle"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _tinyInvariant = _interopRequireDefault(require("tiny-invariant"));
+var _Surface = require("../container/Surface");
+var _Layer = require("../container/Layer");
+var _Tooltip = require("../component/Tooltip");
+var _Legend = require("../component/Legend");
+var _Dot = require("../shape/Dot");
+var _Rectangle = require("../shape/Rectangle");
+var _ReactUtils = require("../util/ReactUtils");
+var _Brush = require("../cartesian/Brush");
+var _DOMUtils = require("../util/DOMUtils");
+var _DataUtils = require("../util/DataUtils");
+var _ChartUtils = require("../util/ChartUtils");
+var _DetectReferenceElementsDomain = require("../util/DetectReferenceElementsDomain");
+var _PolarUtils = require("../util/PolarUtils");
+var _ShallowEqual = require("../util/ShallowEqual");
+var _Events = require("../util/Events");
+var _types = require("../util/types");
+var _AccessibilityManager = require("./AccessibilityManager");
+var _isDomainSpecifiedByUser = require("../util/isDomainSpecifiedByUser");
+var _ActiveShapeUtils = require("../util/ActiveShapeUtils");
+var _Cursor = require("../component/Cursor");
+var _chartLayoutContext = require("../context/chartLayoutContext");
 var _excluded = ["item"],
   _excluded2 = ["children", "className", "width", "height", "style", "compact", "title", "desc"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -28,39 +67,7 @@ function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbol
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-import React, { Component, cloneElement, isValidElement, forwardRef } from 'react';
-import isNil from 'lodash/isNil';
-import isFunction from 'lodash/isFunction';
-import range from 'lodash/range';
-import get from 'lodash/get';
-import sortBy from 'lodash/sortBy';
-import throttle from 'lodash/throttle';
-import clsx from 'clsx';
-// eslint-disable-next-line no-restricted-imports
-
-import invariant from 'tiny-invariant';
-import { Surface } from '../container/Surface';
-import { Layer } from '../container/Layer';
-import { Tooltip } from '../component/Tooltip';
-import { Legend } from '../component/Legend';
-import { Dot } from '../shape/Dot';
-import { isInRectangle } from '../shape/Rectangle';
-import { filterProps, findAllByType, findChildByType, getDisplayName, getReactEventByType, isChildrenEqual, parseChildIndex, renderByOrder, validateWidthHeight } from '../util/ReactUtils';
-import { Brush } from '../cartesian/Brush';
-import { getOffset } from '../util/DOMUtils';
-import { findEntryInArray, getAnyElementOfObject, hasDuplicate, isNumber, uniqueId } from '../util/DataUtils';
-import { appendOffsetOfLegend, calculateActiveTickIndex, combineEventHandlers, getBandSizeOfAxis, getBarPosition, getBarSizeList, getDomainOfDataByKey, getDomainOfItemsWithSameAxis, getDomainOfStackGroups, getLegendProps, getMainColorOfGraphicItem, getStackedDataOfItem, getStackGroupsByAxisId, getTicksOfAxis, getTooltipItem, isCategoricalAxis, parseDomainOfCategoryAxis, parseErrorBarsOfAxis, parseSpecifiedDomain } from '../util/ChartUtils';
-import { detectReferenceElementsDomain } from '../util/DetectReferenceElementsDomain';
-import { inRangeOfSector, polarToCartesian } from '../util/PolarUtils';
-import { shallowEqual } from '../util/ShallowEqual';
-import { eventCenter, SYNC_EVENT } from '../util/Events';
-import { adaptEventHandlers } from '../util/types';
-import { AccessibilityManager } from './AccessibilityManager';
-import { isDomainSpecifiedByUser } from '../util/isDomainSpecifiedByUser';
-import { getActiveShapeIndexForTooltip, isFunnel, isPie, isScatter } from '../util/ActiveShapeUtils';
-import { Cursor } from '../component/Cursor';
-import { ChartLayoutContextProvider } from '../context/chartLayoutContext';
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } // eslint-disable-next-line no-restricted-imports
 var ORIENT_MAP = {
   xAxis: ['bottom', 'top'],
   yAxis: ['left', 'right']
@@ -121,14 +128,14 @@ var getActiveCoordinate = function getActiveCoordinate(layout, tooltipTicks, act
     if (layout === 'centric') {
       var _angle = entry.coordinate;
       var _radius = rangeObj.radius;
-      return _objectSpread(_objectSpread(_objectSpread({}, rangeObj), polarToCartesian(rangeObj.cx, rangeObj.cy, _radius, _angle)), {}, {
+      return _objectSpread(_objectSpread(_objectSpread({}, rangeObj), (0, _PolarUtils.polarToCartesian)(rangeObj.cx, rangeObj.cy, _radius, _angle)), {}, {
         angle: _angle,
         radius: _radius
       });
     }
     var radius = entry.coordinate;
     var angle = rangeObj.angle;
-    return _objectSpread(_objectSpread(_objectSpread({}, rangeObj), polarToCartesian(rangeObj.cx, rangeObj.cy, radius, angle)), {}, {
+    return _objectSpread(_objectSpread(_objectSpread({}, rangeObj), (0, _PolarUtils.polarToCartesian)(rangeObj.cx, rangeObj.cy, radius, angle)), {}, {
       angle: angle,
       radius: radius
     });
@@ -149,7 +156,7 @@ var getDisplayedData = function getDisplayedData(data, _ref) {
   if (itemsData.length > 0) {
     return itemsData;
   }
-  if (data && data.length && isNumber(dataStartIndex) && isNumber(dataEndIndex)) {
+  if (data && data.length && (0, _DataUtils.isNumber)(dataStartIndex) && (0, _DataUtils.isNumber)(dataEndIndex)) {
     return data.slice(dataStartIndex, dataEndIndex + 1);
   }
   return [];
@@ -192,14 +199,14 @@ var getTooltipContent = function getTooltipContent(state, chartData, activeIndex
     if (tooltipAxis.dataKey && !tooltipAxis.allowDuplicatedCategory) {
       // graphic child has data props
       var entries = data === undefined ? displayedData : data;
-      payload = findEntryInArray(entries, tooltipAxis.dataKey, activeLabel);
+      payload = (0, _DataUtils.findEntryInArray)(entries, tooltipAxis.dataKey, activeLabel);
     } else {
       payload = data && data[activeIndex] || displayedData[activeIndex];
     }
     if (!payload) {
       return result;
     }
-    return [].concat(_toConsumableArray(result), [getTooltipItem(child, payload)]);
+    return [].concat(_toConsumableArray(result), [(0, _ChartUtils.getTooltipItem)(child, payload)]);
   }, []);
 };
 
@@ -220,7 +227,7 @@ var getTooltipData = function getTooltipData(state, chartData, layout, rangeObj)
   var ticks = state.orderedTooltipTicks,
     axis = state.tooltipAxis,
     tooltipTicks = state.tooltipTicks;
-  var activeIndex = calculateActiveTickIndex(pos, ticks, tooltipTicks, axis);
+  var activeIndex = (0, _ChartUtils.calculateActiveTickIndex)(pos, ticks, tooltipTicks, axis);
   if (activeIndex >= 0 && tooltipTicks) {
     var activeLabel = tooltipTicks[activeIndex] && tooltipTicks[activeIndex].value;
     var activePayload = getTooltipContent(state, chartData, activeIndex, activeLabel);
@@ -247,7 +254,7 @@ var getTooltipData = function getTooltipData(state, chartData, layout, rangeObj)
  * @param {Number} dataEndIndex   The end index of the data series when a brush is applied
  * @return {Object}      Configuration
  */
-export var getAxisMapByAxes = function getAxisMapByAxes(props, _ref2) {
+var getAxisMapByAxes = exports.getAxisMapByAxes = function getAxisMapByAxes(props, _ref2) {
   var axes = _ref2.axes,
     graphicalItems = _ref2.graphicalItems,
     axisType = _ref2.axisType,
@@ -258,7 +265,7 @@ export var getAxisMapByAxes = function getAxisMapByAxes(props, _ref2) {
   var layout = props.layout,
     children = props.children,
     stackOffset = props.stackOffset;
-  var isCategorical = isCategoricalAxis(layout, axisType);
+  var isCategorical = (0, _ChartUtils.isCategoricalAxis)(layout, axisType);
 
   // Eliminate duplicated axes
   return axes.reduce(function (result, child) {
@@ -295,14 +302,14 @@ export var getAxisMapByAxes = function getAxisMapByAxes(props, _ref2) {
      * The only thing that would prohibit short-circuiting is when the user doesn't allow data overflow,
      * because the axis is supposed to ignore the specified domain that way.
      */
-    if (isDomainSpecifiedByUser(childProps.domain, allowDataOverflow, type)) {
-      domain = parseSpecifiedDomain(childProps.domain, null, allowDataOverflow);
+    if ((0, _isDomainSpecifiedByUser.isDomainSpecifiedByUser)(childProps.domain, allowDataOverflow, type)) {
+      domain = (0, _ChartUtils.parseSpecifiedDomain)(childProps.domain, null, allowDataOverflow);
       /* The chart can be categorical and have the domain specified in numbers
        * we still need to calculate the categorical domain
        * TODO: refactor this more
        */
       if (isCategorical && (type === 'number' || scale !== 'auto')) {
-        categoricalDomain = getDomainOfDataByKey(displayedData, dataKey, 'category');
+        categoricalDomain = (0, _ChartUtils.getDomainOfDataByKey)(displayedData, dataKey, 'category');
       }
     }
 
@@ -315,35 +322,35 @@ export var getAxisMapByAxes = function getAxisMapByAxes(props, _ref2) {
       var childDomain = (_childProps$domain = childProps.domain) !== null && _childProps$domain !== void 0 ? _childProps$domain : defaultDomain;
       if (dataKey) {
         // has dataKey in <Axis />
-        domain = getDomainOfDataByKey(displayedData, dataKey, type);
+        domain = (0, _ChartUtils.getDomainOfDataByKey)(displayedData, dataKey, type);
         if (type === 'category' && isCategorical) {
           // the field type is category data and this axis is categorical axis
-          var duplicate = hasDuplicate(domain);
+          var duplicate = (0, _DataUtils.hasDuplicate)(domain);
           if (allowDuplicatedCategory && duplicate) {
             duplicateDomain = domain;
             // When category axis has duplicated text, serial numbers are used to generate scale
-            domain = range(0, len);
+            domain = (0, _range["default"])(0, len);
           } else if (!allowDuplicatedCategory) {
             // remove duplicated category
-            domain = parseDomainOfCategoryAxis(childDomain, domain, child).reduce(function (finalDomain, entry) {
+            domain = (0, _ChartUtils.parseDomainOfCategoryAxis)(childDomain, domain, child).reduce(function (finalDomain, entry) {
               return finalDomain.indexOf(entry) >= 0 ? finalDomain : [].concat(_toConsumableArray(finalDomain), [entry]);
             }, []);
           }
         } else if (type === 'category') {
           // the field type is category data and this axis is numerical axis
           if (!allowDuplicatedCategory) {
-            domain = parseDomainOfCategoryAxis(childDomain, domain, child).reduce(function (finalDomain, entry) {
-              return finalDomain.indexOf(entry) >= 0 || entry === '' || isNil(entry) ? finalDomain : [].concat(_toConsumableArray(finalDomain), [entry]);
+            domain = (0, _ChartUtils.parseDomainOfCategoryAxis)(childDomain, domain, child).reduce(function (finalDomain, entry) {
+              return finalDomain.indexOf(entry) >= 0 || entry === '' || (0, _isNil["default"])(entry) ? finalDomain : [].concat(_toConsumableArray(finalDomain), [entry]);
             }, []);
           } else {
             // eliminate undefined or null or empty string
             domain = domain.filter(function (entry) {
-              return entry !== '' && !isNil(entry);
+              return entry !== '' && !(0, _isNil["default"])(entry);
             });
           }
         } else if (type === 'number') {
           // the field type is numerical
-          var errorBarsDomain = parseErrorBarsOfAxis(displayedData, graphicalItems.filter(function (item) {
+          var errorBarsDomain = (0, _ChartUtils.parseErrorBarsOfAxis)(displayedData, graphicalItems.filter(function (item) {
             var _defaultProps2, _defaultProps3;
             var itemAxisId = axisIdKey in item.props ? item.props[axisIdKey] : (_defaultProps2 = item.type.defaultProps) === null || _defaultProps2 === void 0 ? void 0 : _defaultProps2[axisIdKey];
             var itemHide = 'hide' in item.props ? item.props.hide : (_defaultProps3 = item.type.defaultProps) === null || _defaultProps3 === void 0 ? void 0 : _defaultProps3.hide;
@@ -354,16 +361,16 @@ export var getAxisMapByAxes = function getAxisMapByAxes(props, _ref2) {
           }
         }
         if (isCategorical && (type === 'number' || scale !== 'auto')) {
-          categoricalDomain = getDomainOfDataByKey(displayedData, dataKey, 'category');
+          categoricalDomain = (0, _ChartUtils.getDomainOfDataByKey)(displayedData, dataKey, 'category');
         }
       } else if (isCategorical) {
         // the axis is a categorical axis
-        domain = range(0, len);
+        domain = (0, _range["default"])(0, len);
       } else if (stackGroups && stackGroups[axisId] && stackGroups[axisId].hasStack && type === 'number') {
         // when stackOffset is 'expand', the domain may be calculated as [0, 1.000000000002]
-        domain = stackOffset === 'expand' ? [0, 1] : getDomainOfStackGroups(stackGroups[axisId].stackGroups, dataStartIndex, dataEndIndex);
+        domain = stackOffset === 'expand' ? [0, 1] : (0, _ChartUtils.getDomainOfStackGroups)(stackGroups[axisId].stackGroups, dataStartIndex, dataEndIndex);
       } else {
-        domain = getDomainOfItemsWithSameAxis(displayedData, graphicalItems.filter(function (item) {
+        domain = (0, _ChartUtils.getDomainOfItemsWithSameAxis)(displayedData, graphicalItems.filter(function (item) {
           var itemAxisId = axisIdKey in item.props ? item.props[axisIdKey] : item.type.defaultProps[axisIdKey];
           var itemHide = 'hide' in item.props ? item.props.hide : item.type.defaultProps.hide;
           return itemAxisId === axisId && (includeHidden || !itemHide);
@@ -371,9 +378,9 @@ export var getAxisMapByAxes = function getAxisMapByAxes(props, _ref2) {
       }
       if (type === 'number') {
         // To detect wether there is any reference lines whose props alwaysShow is true
-        domain = detectReferenceElementsDomain(children, domain, axisId, axisType, ticks);
+        domain = (0, _DetectReferenceElementsDomain.detectReferenceElementsDomain)(children, domain, axisId, axisType, ticks);
         if (childDomain) {
-          domain = parseSpecifiedDomain(childDomain, domain, allowDataOverflow);
+          domain = (0, _ChartUtils.parseSpecifiedDomain)(childDomain, domain, allowDataOverflow);
         }
       } else if (type === 'category' && childDomain) {
         var axisDomain = childDomain;
@@ -426,7 +433,7 @@ var getAxisMapByItems = function getAxisMapByItems(props, _ref3) {
     dataEndIndex: dataEndIndex
   });
   var len = displayedData.length;
-  var isCategorical = isCategoricalAxis(layout, axisType);
+  var isCategorical = (0, _ChartUtils.isCategoricalAxis)(layout, axisType);
   var index = -1;
 
   // The default type of x-axis is category axis,
@@ -441,24 +448,24 @@ var getAxisMapByItems = function getAxisMapByItems(props, _ref3) {
       index++;
       var domain;
       if (isCategorical) {
-        domain = range(0, len);
+        domain = (0, _range["default"])(0, len);
       } else if (stackGroups && stackGroups[axisId] && stackGroups[axisId].hasStack) {
-        domain = getDomainOfStackGroups(stackGroups[axisId].stackGroups, dataStartIndex, dataEndIndex);
-        domain = detectReferenceElementsDomain(children, domain, axisId, axisType);
+        domain = (0, _ChartUtils.getDomainOfStackGroups)(stackGroups[axisId].stackGroups, dataStartIndex, dataEndIndex);
+        domain = (0, _DetectReferenceElementsDomain.detectReferenceElementsDomain)(children, domain, axisId, axisType);
       } else {
-        domain = parseSpecifiedDomain(originalDomain, getDomainOfItemsWithSameAxis(displayedData, graphicalItems.filter(function (item) {
+        domain = (0, _ChartUtils.parseSpecifiedDomain)(originalDomain, (0, _ChartUtils.getDomainOfItemsWithSameAxis)(displayedData, graphicalItems.filter(function (item) {
           var _defaultProps4, _defaultProps5;
           var itemAxisId = axisIdKey in item.props ? item.props[axisIdKey] : (_defaultProps4 = item.type.defaultProps) === null || _defaultProps4 === void 0 ? void 0 : _defaultProps4[axisIdKey];
           var itemHide = 'hide' in item.props ? item.props.hide : (_defaultProps5 = item.type.defaultProps) === null || _defaultProps5 === void 0 ? void 0 : _defaultProps5.hide;
           return itemAxisId === axisId && !itemHide;
         }), 'number', layout), Axis.defaultProps.allowDataOverflow);
-        domain = detectReferenceElementsDomain(children, domain, axisId, axisType);
+        domain = (0, _DetectReferenceElementsDomain.detectReferenceElementsDomain)(children, domain, axisId, axisType);
       }
       return _objectSpread(_objectSpread({}, result), {}, _defineProperty({}, axisId, _objectSpread(_objectSpread({
         axisType: axisType
       }, Axis.defaultProps), {}, {
         hide: true,
-        orientation: get(ORIENT_MAP, "".concat(axisType, ".").concat(index % 2), null),
+        orientation: (0, _get["default"])(ORIENT_MAP, "".concat(axisType, ".").concat(index % 2), null),
         domain: domain,
         originalDomain: originalDomain,
         isCategorical: isCategorical,
@@ -493,7 +500,7 @@ var getAxisMap = function getAxisMap(props, _ref4) {
   var children = props.children;
   var axisIdKey = "".concat(axisType, "Id");
   // Get all the instance of Axis
-  var axes = findAllByType(children, AxisComp);
+  var axes = (0, _ReactUtils.findAllByType)(children, AxisComp);
   var axisMap = {};
   if (axes && axes.length) {
     axisMap = getAxisMapByAxes(props, {
@@ -519,15 +526,15 @@ var getAxisMap = function getAxisMap(props, _ref4) {
   return axisMap;
 };
 var tooltipTicksGenerator = function tooltipTicksGenerator(axisMap) {
-  var axis = getAnyElementOfObject(axisMap);
-  var tooltipTicks = getTicksOfAxis(axis, false, true);
+  var axis = (0, _DataUtils.getAnyElementOfObject)(axisMap);
+  var tooltipTicks = (0, _ChartUtils.getTicksOfAxis)(axis, false, true);
   return {
     tooltipTicks: tooltipTicks,
-    orderedTooltipTicks: sortBy(tooltipTicks, function (o) {
+    orderedTooltipTicks: (0, _sortBy["default"])(tooltipTicks, function (o) {
       return o.coordinate;
     }),
     tooltipAxis: axis,
-    tooltipAxisBandSize: getBandSizeOfAxis(axis, tooltipTicks)
+    tooltipAxisBandSize: (0, _ChartUtils.getBandSizeOfAxis)(axis, tooltipTicks)
   };
 };
 
@@ -536,10 +543,10 @@ var tooltipTicksGenerator = function tooltipTicksGenerator(axisMap) {
  * @param {Object} props Props object to use when creating the default state
  * @return {Object} Whole new state
  */
-export var createDefaultState = function createDefaultState(props) {
+var createDefaultState = exports.createDefaultState = function createDefaultState(props) {
   var children = props.children,
     defaultShowTooltip = props.defaultShowTooltip;
-  var brushItem = findChildByType(children, Brush);
+  var brushItem = (0, _ReactUtils.findChildByType)(children, _Brush.Brush);
   var startIndex = 0;
   var endIndex = 0;
   if (props.data && props.data.length !== 0) {
@@ -567,7 +574,7 @@ var hasGraphicalBarItem = function hasGraphicalBarItem(graphicalItems) {
     return false;
   }
   return graphicalItems.some(function (item) {
-    var name = getDisplayName(item && item.type);
+    var name = (0, _ReactUtils.getDisplayName)(item && item.type);
     return name && name.indexOf('Bar') >= 0;
   });
 };
@@ -616,8 +623,8 @@ var calculateOffset = function calculateOffset(_ref5, prevLegendBBox) {
     height = props.height,
     children = props.children;
   var margin = props.margin || {};
-  var brushItem = findChildByType(children, Brush);
-  var legendItem = findChildByType(children, Legend);
+  var brushItem = (0, _ReactUtils.findChildByType)(children, _Brush.Brush);
+  var legendItem = (0, _ReactUtils.findChildByType)(children, _Legend.Legend);
   var offsetH = Object.keys(yAxisMap).reduce(function (result, id) {
     var entry = yAxisMap[id];
     var orientation = entry.orientation;
@@ -633,7 +640,7 @@ var calculateOffset = function calculateOffset(_ref5, prevLegendBBox) {
     var entry = xAxisMap[id];
     var orientation = entry.orientation;
     if (!entry.mirror && !entry.hide) {
-      return _objectSpread(_objectSpread({}, result), {}, _defineProperty({}, orientation, get(result, "".concat(orientation)) + entry.height));
+      return _objectSpread(_objectSpread({}, result), {}, _defineProperty({}, orientation, (0, _get["default"])(result, "".concat(orientation)) + entry.height));
     }
     return result;
   }, {
@@ -643,11 +650,11 @@ var calculateOffset = function calculateOffset(_ref5, prevLegendBBox) {
   var offset = _objectSpread(_objectSpread({}, offsetV), offsetH);
   var brushBottom = offset.bottom;
   if (brushItem) {
-    offset.bottom += brushItem.props.height || Brush.defaultProps.height;
+    offset.bottom += brushItem.props.height || _Brush.Brush.defaultProps.height;
   }
   if (legendItem && prevLegendBBox) {
     // @ts-expect-error margin is optional in props but required in appendOffsetOfLegend
-    offset = appendOffsetOfLegend(offset, graphicalItems, props, prevLegendBBox);
+    offset = (0, _ChartUtils.appendOffsetOfLegend)(offset, graphicalItems, props, prevLegendBBox);
   }
   var offsetWidth = width - offset.left - offset.right;
   var offsetHeight = height - offset.top - offset.bottom;
@@ -670,7 +677,7 @@ var getCartesianAxisSize = function getCartesianAxisSize(axisObj, axisName) {
   // This is only supported for Bar charts (i.e. charts with cartesian axes), so we should never get here
   return undefined;
 };
-export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
+var generateCategoricalChart = exports.generateCategoricalChart = function generateCategoricalChart(_ref6) {
   var chartName = _ref6.chartName,
     GraphicalChild = _ref6.GraphicalChild,
     _ref6$defaultTooltipE = _ref6.defaultTooltipEventType,
@@ -724,21 +731,21 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
          * axisId on the chart and axisId on the axis. zAxis does not get passed in the map for ComposedChart,
          * leave it out of the check for now.
          */
-        !(axisMap && axisMap[id] || entry.axisType === 'zAxis') ? process.env.NODE_ENV !== "production" ? invariant(false, "Specifying a(n) ".concat(entry.axisType, "Id requires a corresponding ").concat(entry.axisType
+        !(axisMap && axisMap[id] || entry.axisType === 'zAxis') ? process.env.NODE_ENV !== "production" ? (0, _tinyInvariant["default"])(false, "Specifying a(n) ".concat(entry.axisType, "Id requires a corresponding ").concat(entry.axisType
         // @ts-expect-error we should stop reading data from ReactElements
-        , "Id on the targeted graphical component ").concat((_item$type$displayNam = item === null || item === void 0 || (_item$type = item.type) === null || _item$type === void 0 ? void 0 : _item$type.displayName) !== null && _item$type$displayNam !== void 0 ? _item$type$displayNam : '')) : invariant(false) : void 0;
+        , "Id on the targeted graphical component ").concat((_item$type$displayNam = item === null || item === void 0 || (_item$type = item.type) === null || _item$type === void 0 ? void 0 : _item$type.displayName) !== null && _item$type$displayNam !== void 0 ? _item$type$displayNam : '')) : (0, _tinyInvariant["default"])(false) : void 0;
 
         // the axis we are currently formatting
         var axis = axisMap[id];
-        return _objectSpread(_objectSpread({}, result), {}, _defineProperty(_defineProperty({}, entry.axisType, axis), "".concat(entry.axisType, "Ticks"), getTicksOfAxis(axis)));
+        return _objectSpread(_objectSpread({}, result), {}, _defineProperty(_defineProperty({}, entry.axisType, axis), "".concat(entry.axisType, "Ticks"), (0, _ChartUtils.getTicksOfAxis)(axis)));
       }, axisObjInitialValue);
       var cateAxis = axisObj[cateAxisName];
       var cateTicks = axisObj["".concat(cateAxisName, "Ticks")];
-      var stackedData = stackGroups && stackGroups[numericAxisId] && stackGroups[numericAxisId].hasStack && getStackedDataOfItem(item, stackGroups[numericAxisId].stackGroups);
-      var itemIsBar = getDisplayName(item.type).indexOf('Bar') >= 0;
-      var bandSize = getBandSizeOfAxis(cateAxis, cateTicks);
+      var stackedData = stackGroups && stackGroups[numericAxisId] && stackGroups[numericAxisId].hasStack && (0, _ChartUtils.getStackedDataOfItem)(item, stackGroups[numericAxisId].stackGroups);
+      var itemIsBar = (0, _ReactUtils.getDisplayName)(item.type).indexOf('Bar') >= 0;
+      var bandSize = (0, _ChartUtils.getBandSizeOfAxis)(cateAxis, cateTicks);
       var barPosition = [];
-      var sizeList = hasBar && getBarSizeList({
+      var sizeList = hasBar && (0, _ChartUtils.getBarSizeList)({
         barSize: barSize,
         stackGroups: stackGroups,
         totalSize: getCartesianAxisSize(axisObj, cateAxisName)
@@ -746,9 +753,9 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
       if (itemIsBar) {
         var _ref7, _getBandSizeOfAxis;
         // If it is bar, calculate the position of bar
-        var maxBarSize = isNil(childMaxBarSize) ? globalMaxBarSize : childMaxBarSize;
-        var barBandSize = (_ref7 = (_getBandSizeOfAxis = getBandSizeOfAxis(cateAxis, cateTicks, true)) !== null && _getBandSizeOfAxis !== void 0 ? _getBandSizeOfAxis : maxBarSize) !== null && _ref7 !== void 0 ? _ref7 : 0;
-        barPosition = getBarPosition({
+        var maxBarSize = (0, _isNil["default"])(childMaxBarSize) ? globalMaxBarSize : childMaxBarSize;
+        var barBandSize = (_ref7 = (_getBandSizeOfAxis = (0, _ChartUtils.getBandSizeOfAxis)(cateAxis, cateTicks, true)) !== null && _getBandSizeOfAxis !== void 0 ? _getBandSizeOfAxis : maxBarSize) !== null && _ref7 !== void 0 ? _ref7 : 0;
+        barPosition = (0, _ChartUtils.getBarPosition)({
           barGap: barGap,
           barCategoryGap: barCategoryGap,
           bandSize: barBandSize !== bandSize ? barBandSize : bandSize,
@@ -784,7 +791,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           }))), {}, _defineProperty(_defineProperty(_defineProperty({
             key: item.key || "item-".concat(index)
           }, numericAxisName, axisObj[numericAxisName]), cateAxisName, axisObj[cateAxisName]), "animationId", updateId)),
-          childIndex: parseChildIndex(item, props.children),
+          childIndex: (0, _ReactUtils.parseChildIndex)(item, props.children),
           item: item
         });
       }
@@ -811,7 +818,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
       dataStartIndex = _ref8.dataStartIndex,
       dataEndIndex = _ref8.dataEndIndex,
       updateId = _ref8.updateId;
-    if (!validateWidthHeight({
+    if (!(0, _ReactUtils.validateWidthHeight)({
       props: props
     })) {
       return null;
@@ -824,8 +831,8 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
     var _getAxisNameByLayout2 = getAxisNameByLayout(layout),
       numericAxisName = _getAxisNameByLayout2.numericAxisName,
       cateAxisName = _getAxisNameByLayout2.cateAxisName;
-    var graphicalItems = findAllByType(children, GraphicalChild);
-    var stackGroups = getStackGroupsByAxisId(data, graphicalItems, "".concat(numericAxisName, "Id"), "".concat(cateAxisName, "Id"), stackOffset, reverseStackOrder);
+    var graphicalItems = (0, _ReactUtils.findAllByType)(children, GraphicalChild);
+    var stackGroups = (0, _ChartUtils.getStackGroupsByAxisId)(data, graphicalItems, "".concat(numericAxisName, "Id"), "".concat(cateAxisName, "Id"), stackOffset, reverseStackOrder);
     var axisObj = axisComponents.reduce(function (result, entry) {
       var name = "".concat(entry.axisType, "Map");
       return _objectSpread(_objectSpread({}, result), {}, _defineProperty({}, name, getAxisMap(props, _objectSpread(_objectSpread({}, entry), {}, {
@@ -866,7 +873,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
       _classCallCheck(this, CategoricalChartWrapper);
       _this = _callSuper(this, CategoricalChartWrapper, [_props]);
       _defineProperty(_this, "eventEmitterSymbol", Symbol('rechartsEventEmitter'));
-      _defineProperty(_this, "accessibilityManager", new AccessibilityManager());
+      _defineProperty(_this, "accessibilityManager", new _AccessibilityManager.AccessibilityManager());
       _defineProperty(_this, "handleLegendBBoxUpdate", function (box) {
         if (box) {
           var _this$state = _this.state,
@@ -930,7 +937,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           _this.setState(_nextState);
           _this.triggerSyncEvent(_nextState);
           var onMouseEnter = _this.props.onMouseEnter;
-          if (isFunction(onMouseEnter)) {
+          if ((0, _isFunction["default"])(onMouseEnter)) {
             onMouseEnter(_nextState, e);
           }
         }
@@ -945,7 +952,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         _this.setState(nextState);
         _this.triggerSyncEvent(nextState);
         var onMouseMove = _this.props.onMouseMove;
-        if (isFunction(onMouseMove)) {
+        if ((0, _isFunction["default"])(onMouseMove)) {
           onMouseMove(nextState, e);
         }
       });
@@ -1000,14 +1007,14 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         _this.setState(nextState);
         _this.triggerSyncEvent(nextState);
         var onMouseLeave = _this.props.onMouseLeave;
-        if (isFunction(onMouseLeave)) {
+        if ((0, _isFunction["default"])(onMouseLeave)) {
           onMouseLeave(nextState, e);
         }
       });
       _defineProperty(_this, "handleOuterEvent", function (e) {
-        var eventName = getReactEventByType(e);
-        var event = get(_this.props, "".concat(eventName));
-        if (eventName && isFunction(event)) {
+        var eventName = (0, _ReactUtils.getReactEventByType)(e);
+        var event = (0, _get["default"])(_this.props, "".concat(eventName));
+        if (eventName && (0, _isFunction["default"])(event)) {
           var _mouse;
           var mouse;
           if (/.*touch.*/i.test(eventName)) {
@@ -1027,21 +1034,21 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           _this.setState(_nextState2);
           _this.triggerSyncEvent(_nextState2);
           var onClick = _this.props.onClick;
-          if (isFunction(onClick)) {
+          if ((0, _isFunction["default"])(onClick)) {
             onClick(_nextState2, e);
           }
         }
       });
       _defineProperty(_this, "handleMouseDown", function (e) {
         var onMouseDown = _this.props.onMouseDown;
-        if (isFunction(onMouseDown)) {
+        if ((0, _isFunction["default"])(onMouseDown)) {
           var _nextState3 = _this.getMouseInfo(e);
           onMouseDown(_nextState3, e);
         }
       });
       _defineProperty(_this, "handleMouseUp", function (e) {
         var onMouseUp = _this.props.onMouseUp;
-        if (isFunction(onMouseUp)) {
+        if ((0, _isFunction["default"])(onMouseUp)) {
           var _nextState4 = _this.getMouseInfo(e);
           onMouseUp(_nextState4, e);
         }
@@ -1063,21 +1070,21 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
       });
       _defineProperty(_this, "handleDoubleClick", function (e) {
         var onDoubleClick = _this.props.onDoubleClick;
-        if (isFunction(onDoubleClick)) {
+        if ((0, _isFunction["default"])(onDoubleClick)) {
           var _nextState5 = _this.getMouseInfo(e);
           onDoubleClick(_nextState5, e);
         }
       });
       _defineProperty(_this, "handleContextMenu", function (e) {
         var onContextMenu = _this.props.onContextMenu;
-        if (isFunction(onContextMenu)) {
+        if ((0, _isFunction["default"])(onContextMenu)) {
           var _nextState6 = _this.getMouseInfo(e);
           onContextMenu(_nextState6, e);
         }
       });
       _defineProperty(_this, "triggerSyncEvent", function (data) {
         if (_this.props.syncId !== undefined) {
-          eventCenter.emit(SYNC_EVENT, _this.props.syncId, data, _this.eventEmitterSymbol);
+          _Events.eventCenter.emit(_Events.SYNC_EVENT, _this.props.syncId, data, _this.eventEmitterSymbol);
         }
       });
       _defineProperty(_this, "applySyncEvent", function (data) {
@@ -1159,7 +1166,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         var isActive = (_element$props$active = element.props.active) !== null && _element$props$active !== void 0 ? _element$props$active : isTooltipActive;
         var layout = _this.props.layout;
         var key = element.key || '_recharts-cursor';
-        return /*#__PURE__*/React.createElement(Cursor, {
+        return /*#__PURE__*/_react["default"].createElement(_Cursor.Cursor, {
           key: key,
           activeCoordinate: activeCoordinate,
           activePayload: activePayload,
@@ -1174,15 +1181,15 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         });
       });
       _defineProperty(_this, "renderPolarAxis", function (element, displayName, index) {
-        var axisType = get(element, 'type.axisType');
-        var axisMap = get(_this.state, "".concat(axisType, "Map"));
+        var axisType = (0, _get["default"])(element, 'type.axisType');
+        var axisMap = (0, _get["default"])(_this.state, "".concat(axisType, "Map"));
         var elementDefaultProps = element.type.defaultProps;
         var elementProps = elementDefaultProps !== undefined ? _objectSpread(_objectSpread({}, elementDefaultProps), element.props) : element.props;
         var axisOption = axisMap && axisMap[elementProps["".concat(axisType, "Id")]];
-        return /*#__PURE__*/cloneElement(element, _objectSpread(_objectSpread({}, axisOption), {}, {
-          className: clsx(axisType, axisOption.className),
+        return /*#__PURE__*/(0, _react.cloneElement)(element, _objectSpread(_objectSpread({}, axisOption), {}, {
+          className: (0, _clsx["default"])(axisType, axisOption.className),
           key: element.key || "".concat(displayName, "-").concat(index),
-          ticks: getTicksOfAxis(axisOption, true)
+          ticks: (0, _ChartUtils.getTicksOfAxis)(axisOption, true)
         }));
       });
       _defineProperty(_this, "renderPolarGrid", function (element) {
@@ -1193,17 +1200,17 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         var _this$state4 = _this.state,
           radiusAxisMap = _this$state4.radiusAxisMap,
           angleAxisMap = _this$state4.angleAxisMap;
-        var radiusAxis = getAnyElementOfObject(radiusAxisMap);
-        var angleAxis = getAnyElementOfObject(angleAxisMap);
+        var radiusAxis = (0, _DataUtils.getAnyElementOfObject)(radiusAxisMap);
+        var angleAxis = (0, _DataUtils.getAnyElementOfObject)(angleAxisMap);
         var cx = angleAxis.cx,
           cy = angleAxis.cy,
           innerRadius = angleAxis.innerRadius,
           outerRadius = angleAxis.outerRadius;
-        return /*#__PURE__*/cloneElement(element, {
-          polarAngles: Array.isArray(polarAngles) ? polarAngles : getTicksOfAxis(angleAxis, true).map(function (entry) {
+        return /*#__PURE__*/(0, _react.cloneElement)(element, {
+          polarAngles: Array.isArray(polarAngles) ? polarAngles : (0, _ChartUtils.getTicksOfAxis)(angleAxis, true).map(function (entry) {
             return entry.coordinate;
           }),
-          polarRadius: Array.isArray(polarRadius) ? polarRadius : getTicksOfAxis(radiusAxis, true).map(function (entry) {
+          polarRadius: Array.isArray(polarRadius) ? polarRadius : (0, _ChartUtils.getTicksOfAxis)(radiusAxis, true).map(function (entry) {
             return entry.coordinate;
           }),
           cx: cx,
@@ -1226,7 +1233,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           height = _this$props2.height;
         var margin = _this.props.margin || {};
         var legendWidth = width - (margin.left || 0) - (margin.right || 0);
-        var props = getLegendProps({
+        var props = (0, _ChartUtils.getLegendProps)({
           children: children,
           formattedGraphicalItems: formattedGraphicalItems,
           legendWidth: legendWidth,
@@ -1237,7 +1244,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         }
         var item = props.item,
           otherProps = _objectWithoutProperties(props, _excluded);
-        return /*#__PURE__*/cloneElement(item, _objectSpread(_objectSpread({}, otherProps), {}, {
+        return /*#__PURE__*/(0, _react.cloneElement)(item, _objectSpread(_objectSpread({}, otherProps), {}, {
           chartWidth: width,
           chartHeight: height,
           margin: margin,
@@ -1253,7 +1260,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         var _this$props3 = _this.props,
           children = _this$props3.children,
           accessibilityLayer = _this$props3.accessibilityLayer;
-        var tooltipItem = findChildByType(children, Tooltip);
+        var tooltipItem = (0, _ReactUtils.findChildByType)(children, _Tooltip.Tooltip);
         if (!tooltipItem) {
           return null;
         }
@@ -1268,7 +1275,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         // and we respect the user to enable customisation.
         // The Tooltip is active if the user has set isActive, or if the tooltip is active due to a mouse event.
         var isActive = (_tooltipItem$props$ac = tooltipItem.props.active) !== null && _tooltipItem$props$ac !== void 0 ? _tooltipItem$props$ac : isTooltipActive;
-        return /*#__PURE__*/cloneElement(tooltipItem, {
+        return /*#__PURE__*/(0, _react.cloneElement)(tooltipItem, {
           viewBox: _objectSpread(_objectSpread({}, offset), {}, {
             x: offset.left,
             y: offset.top
@@ -1291,13 +1298,13 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           updateId = _this$state6.updateId;
 
         // TODO: update brush when children update
-        return /*#__PURE__*/cloneElement(element, {
+        return /*#__PURE__*/(0, _react.cloneElement)(element, {
           key: element.key || '_recharts-brush',
-          onChange: combineEventHandlers(_this.handleBrushChange, element.props.onChange),
+          onChange: (0, _ChartUtils.combineEventHandlers)(_this.handleBrushChange, element.props.onChange),
           data: data,
-          x: isNumber(element.props.x) ? element.props.x : offset.left,
-          y: isNumber(element.props.y) ? element.props.y : offset.top + offset.height + offset.brushBottom - (margin.bottom || 0),
-          width: isNumber(element.props.width) ? element.props.width : offset.width,
+          x: (0, _DataUtils.isNumber)(element.props.x) ? element.props.x : offset.left,
+          y: (0, _DataUtils.isNumber)(element.props.y) ? element.props.y : offset.top + offset.height + offset.brushBottom - (margin.bottom || 0),
+          width: (0, _DataUtils.isNumber)(element.props.width) ? element.props.width : offset.width,
           startIndex: dataStartIndex,
           endIndex: dataEndIndex,
           updateId: "brush-".concat(updateId)
@@ -1319,7 +1326,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           xAxisId = _element$props2$xAxis === void 0 ? elementDefaultProps.xAxisId : _element$props2$xAxis,
           _element$props2$yAxis = _element$props2.yAxisId,
           yAxisId = _element$props2$yAxis === void 0 ? elementDefaultProps.yAxisId : _element$props2$yAxis;
-        return /*#__PURE__*/cloneElement(element, {
+        return /*#__PURE__*/(0, _react.cloneElement)(element, {
           key: element.key || "".concat(displayName, "-").concat(index),
           xAxis: xAxisMap[xAxisId],
           yAxis: yAxisMap[yAxisId],
@@ -1350,12 +1357,12 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           cx: activePoint.x,
           cy: activePoint.y,
           r: 4,
-          fill: getMainColorOfGraphicItem(item.item),
+          fill: (0, _ChartUtils.getMainColorOfGraphicItem)(item.item),
           strokeWidth: 2,
           stroke: '#fff',
           payload: activePoint.payload,
           value: activePoint.value
-        }, filterProps(activeDot, false)), adaptEventHandlers(activeDot));
+        }, (0, _ReactUtils.filterProps)(activeDot, false)), (0, _types.adaptEventHandlers)(activeDot));
         result.push(CategoricalChartWrapper.renderActiveDot(activeDot, dotProps, "".concat(key, "-activePoint-").concat(childIndex)));
         if (basePoint) {
           result.push(CategoricalChartWrapper.renderActiveDot(activeDot, _objectSpread(_objectSpread({}, dotProps), {}, {
@@ -1379,7 +1386,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           activeTooltipIndex = _this$state8.activeTooltipIndex,
           activeLabel = _this$state8.activeLabel;
         var children = _this.props.children;
-        var tooltipItem = findChildByType(children, Tooltip);
+        var tooltipItem = (0, _ReactUtils.findChildByType)(children, _Tooltip.Tooltip);
         // item is not a React Element so we don't need to resolve defaultProps
         var _item$props = item.props,
           points = _item$props.points,
@@ -1394,15 +1401,15 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         var itemEvents = {};
         if (tooltipEventType !== 'axis' && tooltipItem && tooltipItem.props.trigger === 'click') {
           itemEvents = {
-            onClick: combineEventHandlers(_this.handleItemMouseEnter, element.props.onClick)
+            onClick: (0, _ChartUtils.combineEventHandlers)(_this.handleItemMouseEnter, element.props.onClick)
           };
         } else if (tooltipEventType !== 'axis') {
           itemEvents = {
-            onMouseLeave: combineEventHandlers(_this.handleItemMouseLeave, element.props.onMouseLeave),
-            onMouseEnter: combineEventHandlers(_this.handleItemMouseEnter, element.props.onMouseEnter)
+            onMouseLeave: (0, _ChartUtils.combineEventHandlers)(_this.handleItemMouseLeave, element.props.onMouseLeave),
+            onMouseEnter: (0, _ChartUtils.combineEventHandlers)(_this.handleItemMouseEnter, element.props.onMouseEnter)
           };
         }
-        var graphicalItem = /*#__PURE__*/cloneElement(element, _objectSpread(_objectSpread({}, item.props), itemEvents));
+        var graphicalItem = /*#__PURE__*/(0, _react.cloneElement)(element, _objectSpread(_objectSpread({}, item.props), itemEvents));
         function findWithPayload(entry) {
           // TODO needs to verify dataKey is Function
           return typeof tooltipAxis.dataKey === 'function' ? tooltipAxis.dataKey(entry.payload) : null;
@@ -1413,19 +1420,19 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
             if (tooltipAxis.dataKey && !tooltipAxis.allowDuplicatedCategory) {
               // number transform to string
               var specifiedKey = typeof tooltipAxis.dataKey === 'function' ? findWithPayload : 'payload.'.concat(tooltipAxis.dataKey.toString());
-              activePoint = findEntryInArray(points, specifiedKey, activeLabel);
-              basePoint = isRange && baseLine && findEntryInArray(baseLine, specifiedKey, activeLabel);
+              activePoint = (0, _DataUtils.findEntryInArray)(points, specifiedKey, activeLabel);
+              basePoint = isRange && baseLine && (0, _DataUtils.findEntryInArray)(baseLine, specifiedKey, activeLabel);
             } else {
               activePoint = points === null || points === void 0 ? void 0 : points[activeTooltipIndex];
               basePoint = isRange && baseLine && baseLine[activeTooltipIndex];
             }
             if (activeShape || activeBar) {
               var activeIndex = element.props.activeIndex !== undefined ? element.props.activeIndex : activeTooltipIndex;
-              return [/*#__PURE__*/cloneElement(element, _objectSpread(_objectSpread(_objectSpread({}, item.props), itemEvents), {}, {
+              return [/*#__PURE__*/(0, _react.cloneElement)(element, _objectSpread(_objectSpread(_objectSpread({}, item.props), itemEvents), {}, {
                 activeIndex: activeIndex
               })), null, null];
             }
-            if (!isNil(activePoint)) {
+            if (!(0, _isNil["default"])(activePoint)) {
               return [graphicalItem].concat(_toConsumableArray(_this.renderActivePoints({
                 item: item,
                 activePoint: activePoint,
@@ -1453,7 +1460,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
             var elementProps = _objectSpread(_objectSpread(_objectSpread({}, item.props), itemEvents), {}, {
               activeIndex: childIndex
             });
-            return [/*#__PURE__*/cloneElement(xyItem, elementProps), null, null];
+            return [/*#__PURE__*/(0, _react.cloneElement)(xyItem, elementProps), null, null];
           }
         }
         if (isRange) {
@@ -1462,7 +1469,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         return [graphicalItem, null];
       });
       _defineProperty(_this, "renderCustomized", function (element, displayName, index) {
-        return /*#__PURE__*/cloneElement(element, _objectSpread(_objectSpread({
+        return /*#__PURE__*/(0, _react.cloneElement)(element, _objectSpread(_objectSpread({
           key: "recharts-customized-".concat(index)
         }, _this.props), _this.state));
       });
@@ -1532,10 +1539,10 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           handler: _this.renderCustomized
         }
       });
-      _this.clipPathId = "".concat((_props$id = _props.id) !== null && _props$id !== void 0 ? _props$id : uniqueId('recharts'), "-clip");
+      _this.clipPathId = "".concat((_props$id = _props.id) !== null && _props$id !== void 0 ? _props$id : (0, _DataUtils.uniqueId)('recharts'), "-clip");
 
       // trigger 60fps
-      _this.throttleTriggeredAfterMouseMove = throttle(_this.triggeredAfterMouseMove, (_props$throttleDelay = _props.throttleDelay) !== null && _props$throttleDelay !== void 0 ? _props$throttleDelay : 1000 / 60);
+      _this.throttleTriggeredAfterMouseMove = (0, _throttle["default"])(_this.triggeredAfterMouseMove, (_props$throttleDelay = _props.throttleDelay) !== null && _props$throttleDelay !== void 0 ? _props$throttleDelay : 1000 / 60);
       _this.state = {};
       return _this;
     }
@@ -1565,7 +1572,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           data = _this$props5.data,
           height = _this$props5.height,
           layout = _this$props5.layout;
-        var tooltipElem = findChildByType(children, Tooltip);
+        var tooltipElem = (0, _ReactUtils.findChildByType)(children, _Tooltip.Tooltip);
         // If the chart doesn't include a <Tooltip /> element, there's no tooltip to display
         if (!tooltipElem) {
           return;
@@ -1647,7 +1654,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
       key: "componentDidUpdate",
       value: function componentDidUpdate(prevProps) {
         // Check to see if the Tooltip updated. If so, re-check default tooltip position
-        if (!isChildrenEqual([findChildByType(prevProps.children, Tooltip)], [findChildByType(this.props.children, Tooltip)])) {
+        if (!(0, _ReactUtils.isChildrenEqual)([(0, _ReactUtils.findChildByType)(prevProps.children, _Tooltip.Tooltip)], [(0, _ReactUtils.findChildByType)(this.props.children, _Tooltip.Tooltip)])) {
           this.displayDefaultTooltip();
         }
       }
@@ -1660,7 +1667,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
     }, {
       key: "getTooltipEventType",
       value: function getTooltipEventType() {
-        var tooltipItem = findChildByType(this.props.children, Tooltip);
+        var tooltipItem = (0, _ReactUtils.findChildByType)(this.props.children, _Tooltip.Tooltip);
         if (tooltipItem && typeof tooltipItem.props.shared === 'boolean') {
           var eventType = tooltipItem.props.shared ? 'axis' : 'item';
           return validateTooltipEventTypes.indexOf(eventType) >= 0 ? eventType : defaultTooltipEventType;
@@ -1681,7 +1688,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         }
         var element = this.container;
         var boundingRect = element.getBoundingClientRect();
-        var containerOffset = getOffset(boundingRect);
+        var containerOffset = (0, _DOMUtils.getOffset)(boundingRect);
         var e = {
           chartX: Math.round(event.pageX - containerOffset.left),
           chartY: Math.round(event.pageY - containerOffset.top)
@@ -1697,8 +1704,8 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         var tooltipEventType = this.getTooltipEventType();
         var toolTipData = getTooltipData(this.state, this.props.data, this.props.layout, rangeObj);
         if (tooltipEventType !== 'axis' && xAxisMap && yAxisMap) {
-          var xScale = getAnyElementOfObject(xAxisMap).scale;
-          var yScale = getAnyElementOfObject(yAxisMap).scale;
+          var xScale = (0, _DataUtils.getAnyElementOfObject)(xAxisMap).scale;
+          var yScale = (0, _DataUtils.getAnyElementOfObject)(yAxisMap).scale;
           var xValue = xScale && xScale.invert ? xScale.invert(e.chartX) : null;
           var yValue = yScale && yScale.invert ? yScale.invert(e.chartY) : null;
           return _objectSpread(_objectSpread({}, e), {}, {
@@ -1730,8 +1737,8 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           angleAxisMap = _this$state10.angleAxisMap,
           radiusAxisMap = _this$state10.radiusAxisMap;
         if (angleAxisMap && radiusAxisMap) {
-          var angleAxis = getAnyElementOfObject(angleAxisMap);
-          return inRangeOfSector({
+          var angleAxis = (0, _DataUtils.getAnyElementOfObject)(angleAxisMap);
+          return (0, _PolarUtils.inRangeOfSector)({
             x: scaledX,
             y: scaledY
           }, angleAxis);
@@ -1743,7 +1750,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
       value: function parseEventsOfWrapper() {
         var children = this.props.children;
         var tooltipEventType = this.getTooltipEventType();
-        var tooltipItem = findChildByType(children, Tooltip);
+        var tooltipItem = (0, _ReactUtils.findChildByType)(children, _Tooltip.Tooltip);
         var tooltipEvents = {};
         if (tooltipItem && tooltipEventType === 'axis') {
           if (tooltipItem.props.trigger === 'click') {
@@ -1765,18 +1772,18 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         }
 
         // @ts-expect-error adaptEventHandlers expects DOM Event but generateCategoricalChart works with React UIEvents
-        var outerEvents = adaptEventHandlers(this.props, this.handleOuterEvent);
+        var outerEvents = (0, _types.adaptEventHandlers)(this.props, this.handleOuterEvent);
         return _objectSpread(_objectSpread({}, outerEvents), tooltipEvents);
       }
     }, {
       key: "addListener",
       value: function addListener() {
-        eventCenter.on(SYNC_EVENT, this.handleReceiveSyncEvent);
+        _Events.eventCenter.on(_Events.SYNC_EVENT, this.handleReceiveSyncEvent);
       }
     }, {
       key: "removeListener",
       value: function removeListener() {
-        eventCenter.removeListener(SYNC_EVENT, this.handleReceiveSyncEvent);
+        _Events.eventCenter.removeListener(_Events.SYNC_EVENT, this.handleReceiveSyncEvent);
       }
     }, {
       key: "filterFormatItem",
@@ -1784,7 +1791,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         var formattedGraphicalItems = this.state.formattedGraphicalItems;
         for (var i = 0, len = formattedGraphicalItems.length; i < len; i++) {
           var entry = formattedGraphicalItems[i];
-          if (entry.item === item || entry.props.key === item.key || displayName === getDisplayName(entry.item.type) && childIndex === entry.childIndex) {
+          if (entry.item === item || entry.props.key === item.key || displayName === (0, _ReactUtils.getDisplayName)(entry.item.type) && childIndex === entry.childIndex) {
             return entry;
           }
         }
@@ -1799,9 +1806,9 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           top = _this$state$offset.top,
           height = _this$state$offset.height,
           width = _this$state$offset.width;
-        return /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("clipPath", {
+        return /*#__PURE__*/_react["default"].createElement("defs", null, /*#__PURE__*/_react["default"].createElement("clipPath", {
           id: clipPathId
-        }, /*#__PURE__*/React.createElement("rect", {
+        }, /*#__PURE__*/_react["default"].createElement("rect", {
           x: left,
           y: top,
           height: height,
@@ -1855,10 +1862,10 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
             var props = graphicalItem.props,
               item = graphicalItem.item;
             var itemProps = item.type.defaultProps !== undefined ? _objectSpread(_objectSpread({}, item.type.defaultProps), item.props) : item.props;
-            var itemDisplayName = getDisplayName(item.type);
+            var itemDisplayName = (0, _ReactUtils.getDisplayName)(item.type);
             if (itemDisplayName === 'Bar') {
               var activeBarItem = (props.data || []).find(function (entry) {
-                return isInRectangle(chartXY, entry);
+                return (0, _Rectangle.isInRectangle)(chartXY, entry);
               });
               if (activeBarItem) {
                 return {
@@ -1868,7 +1875,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
               }
             } else if (itemDisplayName === 'RadialBar') {
               var _activeBarItem = (props.data || []).find(function (entry) {
-                return inRangeOfSector(chartXY, entry);
+                return (0, _PolarUtils.inRangeOfSector)(chartXY, entry);
               });
               if (_activeBarItem) {
                 return {
@@ -1876,8 +1883,8 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
                   payload: _activeBarItem
                 };
               }
-            } else if (isFunnel(graphicalItem, activeItem) || isPie(graphicalItem, activeItem) || isScatter(graphicalItem, activeItem)) {
-              var activeIndex = getActiveShapeIndexForTooltip({
+            } else if ((0, _ActiveShapeUtils.isFunnel)(graphicalItem, activeItem) || (0, _ActiveShapeUtils.isPie)(graphicalItem, activeItem) || (0, _ActiveShapeUtils.isScatter)(graphicalItem, activeItem)) {
+              var activeIndex = (0, _ActiveShapeUtils.getActiveShapeIndexForTooltip)({
                 graphicalItem: graphicalItem,
                 activeTooltipItem: activeItem,
                 itemData: itemProps.data
@@ -1887,7 +1894,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
                 graphicalItem: _objectSpread(_objectSpread({}, graphicalItem), {}, {
                   childIndex: childIndex
                 }),
-                payload: isScatter(graphicalItem, activeItem) ? itemProps.data[activeIndex] : graphicalItem.props.data[activeIndex]
+                payload: (0, _ActiveShapeUtils.isScatter)(graphicalItem, activeItem) ? itemProps.data[activeIndex] : graphicalItem.props.data[activeIndex]
               };
             }
           }
@@ -1898,7 +1905,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
       key: "render",
       value: function render() {
         var _this3 = this;
-        if (!validateWidthHeight(this)) {
+        if (!(0, _ReactUtils.validateWidthHeight)(this)) {
           return null;
         }
         var _this$props6 = this.props,
@@ -1911,21 +1918,21 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           title = _this$props6.title,
           desc = _this$props6.desc,
           others = _objectWithoutProperties(_this$props6, _excluded2);
-        var attrs = filterProps(others, false);
+        var attrs = (0, _ReactUtils.filterProps)(others, false);
 
         // The "compact" mode is mainly used as the panorama within Brush
         if (compact) {
-          return /*#__PURE__*/React.createElement(ChartLayoutContextProvider, {
+          return /*#__PURE__*/_react["default"].createElement(_chartLayoutContext.ChartLayoutContextProvider, {
             state: this.state,
             width: this.props.width,
             height: this.props.height,
             clipPathId: this.clipPathId
-          }, /*#__PURE__*/React.createElement(Surface, _extends({}, attrs, {
+          }, /*#__PURE__*/_react["default"].createElement(_Surface.Surface, _extends({}, attrs, {
             width: width,
             height: height,
             title: title,
             desc: desc
-          }), this.renderClipPath(), renderByOrder(children, this.renderMap)));
+          }), this.renderClipPath(), (0, _ReactUtils.renderByOrder)(children, this.renderMap)));
         }
         if (this.props.accessibilityLayer) {
           var _this$props$tabIndex, _this$props$role;
@@ -1945,13 +1952,13 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           };
         }
         var events = this.parseEventsOfWrapper();
-        return /*#__PURE__*/React.createElement(ChartLayoutContextProvider, {
+        return /*#__PURE__*/_react["default"].createElement(_chartLayoutContext.ChartLayoutContextProvider, {
           state: this.state,
           width: this.props.width,
           height: this.props.height,
           clipPathId: this.clipPathId
-        }, /*#__PURE__*/React.createElement("div", _extends({
-          className: clsx('recharts-wrapper', className),
+        }, /*#__PURE__*/_react["default"].createElement("div", _extends({
+          className: (0, _clsx["default"])('recharts-wrapper', className),
           style: _objectSpread({
             position: 'relative',
             cursor: 'default',
@@ -1962,16 +1969,16 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
           ref: function ref(node) {
             _this3.container = node;
           }
-        }), /*#__PURE__*/React.createElement(Surface, _extends({}, attrs, {
+        }), /*#__PURE__*/_react["default"].createElement(_Surface.Surface, _extends({}, attrs, {
           width: width,
           height: height,
           title: title,
           desc: desc,
           style: FULL_WIDTH_AND_HEIGHT
-        }), this.renderClipPath(), renderByOrder(children, this.renderMap)), this.renderLegend(), this.renderTooltip()));
+        }), this.renderClipPath(), (0, _ReactUtils.renderByOrder)(children, this.renderMap)), this.renderLegend(), this.renderTooltip()));
       }
     }]);
-  }(Component);
+  }(_react.Component);
   _defineProperty(CategoricalChartWrapper, "displayName", chartName);
   // todo join specific chart propTypes
   _defineProperty(CategoricalChartWrapper, "defaultProps", _objectSpread({
@@ -2018,7 +2025,7 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         prevChildren: children
       });
     }
-    if (dataKey !== prevState.prevDataKey || data !== prevState.prevData || width !== prevState.prevWidth || height !== prevState.prevHeight || layout !== prevState.prevLayout || stackOffset !== prevState.prevStackOffset || !shallowEqual(margin, prevState.prevMargin)) {
+    if (dataKey !== prevState.prevDataKey || data !== prevState.prevData || width !== prevState.prevWidth || height !== prevState.prevHeight || layout !== prevState.prevLayout || stackOffset !== prevState.prevStackOffset || !(0, _ShallowEqual.shallowEqual)(margin, prevState.prevMargin)) {
       var _defaultState = createDefaultState(nextProps);
 
       // Fixes https://github.com/recharts/recharts/issues/2143
@@ -2048,16 +2055,16 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
         prevChildren: children
       });
     }
-    if (!isChildrenEqual(children, prevState.prevChildren)) {
+    if (!(0, _ReactUtils.isChildrenEqual)(children, prevState.prevChildren)) {
       var _brush$props$startInd, _brush$props, _brush$props$endIndex, _brush$props2;
       // specifically check for Brush - if it exists and the start and end indexes are different, re-render with the new ones
-      var brush = findChildByType(children, Brush);
+      var brush = (0, _ReactUtils.findChildByType)(children, _Brush.Brush);
       var startIndex = brush ? (_brush$props$startInd = (_brush$props = brush.props) === null || _brush$props === void 0 ? void 0 : _brush$props.startIndex) !== null && _brush$props$startInd !== void 0 ? _brush$props$startInd : dataStartIndex : dataStartIndex;
       var endIndex = brush ? (_brush$props$endIndex = (_brush$props2 = brush.props) === null || _brush$props2 === void 0 ? void 0 : _brush$props2.endIndex) !== null && _brush$props$endIndex !== void 0 ? _brush$props$endIndex : dataEndIndex : dataEndIndex;
       var hasDifferentStartOrEndIndex = startIndex !== dataStartIndex || endIndex !== dataEndIndex;
 
       // update configuration in children
-      var hasGlobalData = !isNil(data);
+      var hasGlobalData = !(0, _isNil["default"])(data);
       var newUpdateId = hasGlobalData && !hasDifferentStartOrEndIndex ? prevState.updateId : prevState.updateId + 1;
       return _objectSpread(_objectSpread({
         updateId: newUpdateId
@@ -2077,20 +2084,20 @@ export var generateCategoricalChart = function generateCategoricalChart(_ref6) {
   });
   _defineProperty(CategoricalChartWrapper, "renderActiveDot", function (option, props, key) {
     var dot;
-    if ( /*#__PURE__*/isValidElement(option)) {
-      dot = /*#__PURE__*/cloneElement(option, props);
-    } else if (isFunction(option)) {
+    if ( /*#__PURE__*/(0, _react.isValidElement)(option)) {
+      dot = /*#__PURE__*/(0, _react.cloneElement)(option, props);
+    } else if ((0, _isFunction["default"])(option)) {
       dot = option(props);
     } else {
-      dot = /*#__PURE__*/React.createElement(Dot, props);
+      dot = /*#__PURE__*/_react["default"].createElement(_Dot.Dot, props);
     }
-    return /*#__PURE__*/React.createElement(Layer, {
+    return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
       className: "recharts-active-dot",
       key: key
     }, dot);
   });
-  var CategoricalChart = /*#__PURE__*/forwardRef(function CategoricalChart(props, ref) {
-    return /*#__PURE__*/React.createElement(CategoricalChartWrapper, _extends({}, props, {
+  var CategoricalChart = /*#__PURE__*/(0, _react.forwardRef)(function CategoricalChart(props, ref) {
+    return /*#__PURE__*/_react["default"].createElement(CategoricalChartWrapper, _extends({}, props, {
       ref: ref
     }));
   });

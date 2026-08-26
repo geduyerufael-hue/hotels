@@ -1,4 +1,15 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ErrorBar = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _tinyInvariant = _interopRequireDefault(require("tiny-invariant"));
+var _Layer = require("../container/Layer");
+var _ReactUtils = require("../util/ReactUtils");
 var _excluded = ["offset", "layout", "width", "dataKey", "data", "dataPointFormatter", "xAxis", "yAxis"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -21,16 +32,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Render a group of error bar
  */
-import React from 'react';
-import invariant from 'tiny-invariant';
-import { Layer } from '../container/Layer';
-import { filterProps } from '../util/ReactUtils';
 // eslint-disable-next-line react/prefer-stateless-function -- requires static defaultProps
-export var ErrorBar = /*#__PURE__*/function (_React$Component) {
+var ErrorBar = exports.ErrorBar = /*#__PURE__*/function (_React$Component) {
   function ErrorBar() {
     _classCallCheck(this, ErrorBar);
     return _callSuper(this, ErrorBar, arguments);
@@ -49,8 +55,8 @@ export var ErrorBar = /*#__PURE__*/function (_React$Component) {
         xAxis = _this$props.xAxis,
         yAxis = _this$props.yAxis,
         others = _objectWithoutProperties(_this$props, _excluded);
-      var svgProps = filterProps(others, false);
-      !!(this.props.direction === 'x' && xAxis.type !== 'number') ? process.env.NODE_ENV !== "production" ? invariant(false, 'ErrorBar requires Axis type property to be "number".') : invariant(false) : void 0;
+      var svgProps = (0, _ReactUtils.filterProps)(others, false);
+      !!(this.props.direction === 'x' && xAxis.type !== 'number') ? process.env.NODE_ENV !== "production" ? (0, _tinyInvariant["default"])(false, 'ErrorBar requires Axis type property to be "number".') : (0, _tinyInvariant["default"])(false) : void 0;
       var errorBars = data.map(function (entry) {
         var _dataPointFormatter = dataPointFormatter(entry, dataKey),
           x = _dataPointFormatter.x,
@@ -130,23 +136,23 @@ export var ErrorBar = /*#__PURE__*/function (_React$Component) {
             y2: _yMin
           });
         }
-        return /*#__PURE__*/React.createElement(Layer, _extends({
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, _extends({
           className: "recharts-errorBar",
           key: "bar-".concat(lineCoordinates.map(function (c) {
             return "".concat(c.x1, "-").concat(c.x2, "-").concat(c.y1, "-").concat(c.y2);
           }))
         }, svgProps), lineCoordinates.map(function (coordinates) {
-          return /*#__PURE__*/React.createElement("line", _extends({}, coordinates, {
+          return /*#__PURE__*/_react["default"].createElement("line", _extends({}, coordinates, {
             key: "line-".concat(coordinates.x1, "-").concat(coordinates.x2, "-").concat(coordinates.y1, "-").concat(coordinates.y2)
           }));
         }));
       });
-      return /*#__PURE__*/React.createElement(Layer, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-errorBars"
       }, errorBars);
     }
   }]);
-}(React.Component);
+}(_react["default"].Component);
 _defineProperty(ErrorBar, "defaultProps", {
   stroke: 'black',
   strokeWidth: 1.5,

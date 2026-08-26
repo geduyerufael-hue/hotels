@@ -1,3 +1,19 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DefaultLegendContent = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _clsx2 = _interopRequireDefault(require("clsx"));
+var _LogUtils = require("../util/LogUtils");
+var _Surface = require("../container/Surface");
+var _Symbols = require("../shape/Symbols");
+var _types = require("../util/types");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -14,19 +30,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Default Legend Content
  */
-import React, { PureComponent } from 'react';
-import isFunction from 'lodash/isFunction';
-import clsx from 'clsx';
-import { warn } from '../util/LogUtils';
-import { Surface } from '../container/Surface';
-import { Symbols } from '../shape/Symbols';
-import { adaptEventsOfChild } from '../util/types';
 var SIZE = 32;
-export var DefaultLegendContent = /*#__PURE__*/function (_PureComponent) {
+var DefaultLegendContent = exports.DefaultLegendContent = /*#__PURE__*/function (_PureComponent) {
   function DefaultLegendContent() {
     _classCallCheck(this, DefaultLegendContent);
     return _callSuper(this, DefaultLegendContent, arguments);
@@ -47,7 +55,7 @@ export var DefaultLegendContent = /*#__PURE__*/function (_PureComponent) {
       var thirdSize = SIZE / 3;
       var color = data.inactive ? inactiveColor : data.color;
       if (data.type === 'plainline') {
-        return /*#__PURE__*/React.createElement("line", {
+        return /*#__PURE__*/_react["default"].createElement("line", {
           strokeWidth: 4,
           fill: "none",
           stroke: color,
@@ -60,7 +68,7 @@ export var DefaultLegendContent = /*#__PURE__*/function (_PureComponent) {
         });
       }
       if (data.type === 'line') {
-        return /*#__PURE__*/React.createElement("path", {
+        return /*#__PURE__*/_react["default"].createElement("path", {
           strokeWidth: 4,
           fill: "none",
           stroke: color,
@@ -69,19 +77,19 @@ export var DefaultLegendContent = /*#__PURE__*/function (_PureComponent) {
         });
       }
       if (data.type === 'rect') {
-        return /*#__PURE__*/React.createElement("path", {
+        return /*#__PURE__*/_react["default"].createElement("path", {
           stroke: "none",
           fill: color,
           d: "M0,".concat(SIZE / 8, "h").concat(SIZE, "v").concat(SIZE * 3 / 4, "h").concat(-SIZE, "z"),
           className: "recharts-legend-icon"
         });
       }
-      if ( /*#__PURE__*/React.isValidElement(data.legendIcon)) {
+      if ( /*#__PURE__*/_react["default"].isValidElement(data.legendIcon)) {
         var iconProps = _objectSpread({}, data);
         delete iconProps.legendIcon;
-        return /*#__PURE__*/React.cloneElement(data.legendIcon, iconProps);
+        return /*#__PURE__*/_react["default"].cloneElement(data.legendIcon, iconProps);
       }
-      return /*#__PURE__*/React.createElement(Symbols, {
+      return /*#__PURE__*/_react["default"].createElement(_Symbols.Symbols, {
         fill: color,
         cx: halfSize,
         cy: halfSize,
@@ -122,7 +130,7 @@ export var DefaultLegendContent = /*#__PURE__*/function (_PureComponent) {
       };
       return payload.map(function (entry, i) {
         var finalFormatter = entry.formatter || formatter;
-        var className = clsx(_defineProperty(_defineProperty({
+        var className = (0, _clsx2["default"])(_defineProperty(_defineProperty({
           'recharts-legend-item': true
         }, "legend-item-".concat(i), true), "inactive", entry.inactive));
         if (entry.type === 'none') {
@@ -130,22 +138,22 @@ export var DefaultLegendContent = /*#__PURE__*/function (_PureComponent) {
         }
 
         // Do not render entry.value as functions. Always require static string properties.
-        var entryValue = !isFunction(entry.value) ? entry.value : null;
-        warn(!isFunction(entry.value), "The name property is also required when using a function for the dataKey of a chart's cartesian components. Ex: <Bar name=\"Name of my Data\"/>" // eslint-disable-line max-len
+        var entryValue = !(0, _isFunction["default"])(entry.value) ? entry.value : null;
+        (0, _LogUtils.warn)(!(0, _isFunction["default"])(entry.value), "The name property is also required when using a function for the dataKey of a chart's cartesian components. Ex: <Bar name=\"Name of my Data\"/>" // eslint-disable-line max-len
         );
         var color = entry.inactive ? inactiveColor : entry.color;
-        return /*#__PURE__*/React.createElement("li", _extends({
+        return /*#__PURE__*/_react["default"].createElement("li", _extends({
           className: className,
           style: itemStyle
           // eslint-disable-next-line react/no-array-index-key
           ,
           key: "legend-item-".concat(i)
-        }, adaptEventsOfChild(_this.props, entry, i)), /*#__PURE__*/React.createElement(Surface, {
+        }, (0, _types.adaptEventsOfChild)(_this.props, entry, i)), /*#__PURE__*/_react["default"].createElement(_Surface.Surface, {
           width: iconSize,
           height: iconSize,
           viewBox: viewBox,
           style: svgStyle
-        }, _this.renderIcon(entry)), /*#__PURE__*/React.createElement("span", {
+        }, _this.renderIcon(entry)), /*#__PURE__*/_react["default"].createElement("span", {
           className: "recharts-legend-item-text",
           style: {
             color: color
@@ -168,13 +176,13 @@ export var DefaultLegendContent = /*#__PURE__*/function (_PureComponent) {
         margin: 0,
         textAlign: layout === 'horizontal' ? align : 'left'
       };
-      return /*#__PURE__*/React.createElement("ul", {
+      return /*#__PURE__*/_react["default"].createElement("ul", {
         className: "recharts-default-legend",
         style: finalStyle
       }, this.renderItems());
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _defineProperty(DefaultLegendContent, "displayName", 'Legend');
 _defineProperty(DefaultLegendContent, "defaultProps", {
   iconSize: 14,

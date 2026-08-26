@@ -1,17 +1,26 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useYAxisWithFiniteDomainOrRandom = exports.useYAxisOrThrow = exports.useXAxisOrThrow = exports.useViewBox = exports.useOffset = exports.useClipPathId = exports.useChartWidth = exports.useChartHeight = exports.useArbitraryYAxis = exports.useArbitraryXAxis = exports.YAxisContext = exports.XAxisContext = exports.ViewBoxContext = exports.OffsetContext = exports.ClipPathIdContext = exports.ChartWidthContext = exports.ChartLayoutContextProvider = exports.ChartHeightContext = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _tinyInvariant = _interopRequireDefault(require("tiny-invariant"));
+var _find = _interopRequireDefault(require("lodash/find"));
+var _every = _interopRequireDefault(require("lodash/every"));
+var _calculateViewBox = require("../util/calculateViewBox");
+var _DataUtils = require("../util/DataUtils");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-import React, { createContext, useContext } from 'react';
-import invariant from 'tiny-invariant';
-import find from 'lodash/find';
-import every from 'lodash/every';
-import { calculateViewBox } from '../util/calculateViewBox';
-import { getAnyElementOfObject } from '../util/DataUtils';
-export var XAxisContext = /*#__PURE__*/createContext(undefined);
-export var YAxisContext = /*#__PURE__*/createContext(undefined);
-export var ViewBoxContext = /*#__PURE__*/createContext(undefined);
-export var OffsetContext = /*#__PURE__*/createContext({});
-export var ClipPathIdContext = /*#__PURE__*/createContext(undefined);
-export var ChartHeightContext = /*#__PURE__*/createContext(0);
-export var ChartWidthContext = /*#__PURE__*/createContext(0);
+var XAxisContext = exports.XAxisContext = /*#__PURE__*/(0, _react.createContext)(undefined);
+var YAxisContext = exports.YAxisContext = /*#__PURE__*/(0, _react.createContext)(undefined);
+var ViewBoxContext = exports.ViewBoxContext = /*#__PURE__*/(0, _react.createContext)(undefined);
+var OffsetContext = exports.OffsetContext = /*#__PURE__*/(0, _react.createContext)({});
+var ClipPathIdContext = exports.ClipPathIdContext = /*#__PURE__*/(0, _react.createContext)(undefined);
+var ChartHeightContext = exports.ChartHeightContext = /*#__PURE__*/(0, _react.createContext)(0);
+var ChartWidthContext = exports.ChartWidthContext = /*#__PURE__*/(0, _react.createContext)(0);
 
 /**
  * Will add all the properties required to render all individual Recharts components into a React Context.
@@ -21,7 +30,7 @@ export var ChartWidthContext = /*#__PURE__*/createContext(0);
  * @param {object} props CategoricalChartState, plus children
  * @returns {ReactElement} React Context Provider
  */
-export var ChartLayoutContextProvider = function ChartLayoutContextProvider(props) {
+var ChartLayoutContextProvider = exports.ChartLayoutContextProvider = function ChartLayoutContextProvider(props) {
   var _props$state = props.state,
     xAxisMap = _props$state.xAxisMap,
     yAxisMap = _props$state.yAxisMap,
@@ -34,7 +43,7 @@ export var ChartLayoutContextProvider = function ChartLayoutContextProvider(prop
   /**
    * Perhaps we should compute this property when reading? Let's see what is more often used
    */
-  var viewBox = calculateViewBox(offset);
+  var viewBox = (0, _calculateViewBox.calculateViewBox)(offset);
 
   /*
    * This pretends to be a single context but actually is split into multiple smaller ones.
@@ -49,24 +58,24 @@ export var ChartLayoutContextProvider = function ChartLayoutContextProvider(prop
    * To actually achieve the optimal re-render, it is necessary to use React.memo().
    * See the test file for details.
    */
-  return /*#__PURE__*/React.createElement(XAxisContext.Provider, {
+  return /*#__PURE__*/_react["default"].createElement(XAxisContext.Provider, {
     value: xAxisMap
-  }, /*#__PURE__*/React.createElement(YAxisContext.Provider, {
+  }, /*#__PURE__*/_react["default"].createElement(YAxisContext.Provider, {
     value: yAxisMap
-  }, /*#__PURE__*/React.createElement(OffsetContext.Provider, {
+  }, /*#__PURE__*/_react["default"].createElement(OffsetContext.Provider, {
     value: offset
-  }, /*#__PURE__*/React.createElement(ViewBoxContext.Provider, {
+  }, /*#__PURE__*/_react["default"].createElement(ViewBoxContext.Provider, {
     value: viewBox
-  }, /*#__PURE__*/React.createElement(ClipPathIdContext.Provider, {
+  }, /*#__PURE__*/_react["default"].createElement(ClipPathIdContext.Provider, {
     value: clipPathId
-  }, /*#__PURE__*/React.createElement(ChartHeightContext.Provider, {
+  }, /*#__PURE__*/_react["default"].createElement(ChartHeightContext.Provider, {
     value: height
-  }, /*#__PURE__*/React.createElement(ChartWidthContext.Provider, {
+  }, /*#__PURE__*/_react["default"].createElement(ChartWidthContext.Provider, {
     value: width
   }, children)))))));
 };
-export var useClipPathId = function useClipPathId() {
-  return useContext(ClipPathIdContext);
+var useClipPathId = exports.useClipPathId = function useClipPathId() {
+  return (0, _react.useContext)(ClipPathIdContext);
 };
 function getKeysForDebug(object) {
   var keys = Object.keys(object);
@@ -83,11 +92,11 @@ function getKeysForDebug(object) {
  * @returns axis configuration object
  * @throws Error if no axis with this ID exists
  */
-export var useXAxisOrThrow = function useXAxisOrThrow(xAxisId) {
-  var xAxisMap = useContext(XAxisContext);
-  !(xAxisMap != null) ? process.env.NODE_ENV !== "production" ? invariant(false, 'Could not find Recharts context; are you sure this is rendered inside a Recharts wrapper component?') : invariant(false) : void 0;
+var useXAxisOrThrow = exports.useXAxisOrThrow = function useXAxisOrThrow(xAxisId) {
+  var xAxisMap = (0, _react.useContext)(XAxisContext);
+  !(xAxisMap != null) ? process.env.NODE_ENV !== "production" ? (0, _tinyInvariant["default"])(false, 'Could not find Recharts context; are you sure this is rendered inside a Recharts wrapper component?') : (0, _tinyInvariant["default"])(false) : void 0;
   var xAxis = xAxisMap[xAxisId];
-  !(xAxis != null) ? process.env.NODE_ENV !== "production" ? invariant(false, "Could not find xAxis by id \"".concat(xAxisId, "\" [").concat(_typeof(xAxisId), "]. ").concat(getKeysForDebug(xAxisMap))) : invariant(false) : void 0;
+  !(xAxis != null) ? process.env.NODE_ENV !== "production" ? (0, _tinyInvariant["default"])(false, "Could not find xAxis by id \"".concat(xAxisId, "\" [").concat(_typeof(xAxisId), "]. ").concat(getKeysForDebug(xAxisMap))) : (0, _tinyInvariant["default"])(false) : void 0;
   return xAxis;
 };
 
@@ -99,9 +108,9 @@ export var useXAxisOrThrow = function useXAxisOrThrow(xAxisId) {
  *
  * @returns X axisOptions, or undefined - if there are no X axes
  */
-export var useArbitraryXAxis = function useArbitraryXAxis() {
-  var xAxisMap = useContext(XAxisContext);
-  return getAnyElementOfObject(xAxisMap);
+var useArbitraryXAxis = exports.useArbitraryXAxis = function useArbitraryXAxis() {
+  var xAxisMap = (0, _react.useContext)(XAxisContext);
+  return (0, _DataUtils.getAnyElementOfObject)(xAxisMap);
 };
 
 /**
@@ -112,9 +121,9 @@ export var useArbitraryXAxis = function useArbitraryXAxis() {
  *
  * @returns Y axisOptions, or undefined - if there are no Y axes
  */
-export var useArbitraryYAxis = function useArbitraryYAxis() {
-  var yAxisMap = useContext(YAxisContext);
-  return getAnyElementOfObject(yAxisMap);
+var useArbitraryYAxis = exports.useArbitraryYAxis = function useArbitraryYAxis() {
+  var yAxisMap = (0, _react.useContext)(YAxisContext);
+  return (0, _DataUtils.getAnyElementOfObject)(yAxisMap);
 };
 
 /**
@@ -125,12 +134,12 @@ export var useArbitraryYAxis = function useArbitraryYAxis() {
  *
  * @returns Either Y axisOptions, or undefined if there are no Y axes
  */
-export var useYAxisWithFiniteDomainOrRandom = function useYAxisWithFiniteDomainOrRandom() {
-  var yAxisMap = useContext(YAxisContext);
-  var yAxisWithFiniteDomain = find(yAxisMap, function (axis) {
-    return every(axis.domain, Number.isFinite);
+var useYAxisWithFiniteDomainOrRandom = exports.useYAxisWithFiniteDomainOrRandom = function useYAxisWithFiniteDomainOrRandom() {
+  var yAxisMap = (0, _react.useContext)(YAxisContext);
+  var yAxisWithFiniteDomain = (0, _find["default"])(yAxisMap, function (axis) {
+    return (0, _every["default"])(axis.domain, Number.isFinite);
   });
-  return yAxisWithFiniteDomain || getAnyElementOfObject(yAxisMap);
+  return yAxisWithFiniteDomain || (0, _DataUtils.getAnyElementOfObject)(yAxisMap);
 };
 
 /**
@@ -140,23 +149,23 @@ export var useYAxisWithFiniteDomainOrRandom = function useYAxisWithFiniteDomainO
  * @returns axis configuration object
  * @throws Error if no axis with this ID exists
  */
-export var useYAxisOrThrow = function useYAxisOrThrow(yAxisId) {
-  var yAxisMap = useContext(YAxisContext);
-  !(yAxisMap != null) ? process.env.NODE_ENV !== "production" ? invariant(false, 'Could not find Recharts context; are you sure this is rendered inside a Recharts wrapper component?') : invariant(false) : void 0;
+var useYAxisOrThrow = exports.useYAxisOrThrow = function useYAxisOrThrow(yAxisId) {
+  var yAxisMap = (0, _react.useContext)(YAxisContext);
+  !(yAxisMap != null) ? process.env.NODE_ENV !== "production" ? (0, _tinyInvariant["default"])(false, 'Could not find Recharts context; are you sure this is rendered inside a Recharts wrapper component?') : (0, _tinyInvariant["default"])(false) : void 0;
   var yAxis = yAxisMap[yAxisId];
-  !(yAxis != null) ? process.env.NODE_ENV !== "production" ? invariant(false, "Could not find yAxis by id \"".concat(yAxisId, "\" [").concat(_typeof(yAxisId), "]. ").concat(getKeysForDebug(yAxisMap))) : invariant(false) : void 0;
+  !(yAxis != null) ? process.env.NODE_ENV !== "production" ? (0, _tinyInvariant["default"])(false, "Could not find yAxis by id \"".concat(yAxisId, "\" [").concat(_typeof(yAxisId), "]. ").concat(getKeysForDebug(yAxisMap))) : (0, _tinyInvariant["default"])(false) : void 0;
   return yAxis;
 };
-export var useViewBox = function useViewBox() {
-  var viewBox = useContext(ViewBoxContext);
+var useViewBox = exports.useViewBox = function useViewBox() {
+  var viewBox = (0, _react.useContext)(ViewBoxContext);
   return viewBox;
 };
-export var useOffset = function useOffset() {
-  return useContext(OffsetContext);
+var useOffset = exports.useOffset = function useOffset() {
+  return (0, _react.useContext)(OffsetContext);
 };
-export var useChartWidth = function useChartWidth() {
-  return useContext(ChartWidthContext);
+var useChartWidth = exports.useChartWidth = function useChartWidth() {
+  return (0, _react.useContext)(ChartWidthContext);
 };
-export var useChartHeight = function useChartHeight() {
-  return useContext(ChartHeightContext);
+var useChartHeight = exports.useChartHeight = function useChartHeight() {
+  return (0, _react.useContext)(ChartHeightContext);
 };

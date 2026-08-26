@@ -1,3 +1,23 @@
+"use strict";
+
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SunburstChart = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _d3Scale = require("victory-vendor/d3-scale");
+var _clsx = _interopRequireDefault(require("clsx"));
+var _ReactUtils = require("../util/ReactUtils");
+var _Surface = require("../container/Surface");
+var _Layer = require("../container/Layer");
+var _Sector = require("../shape/Sector");
+var _Text = require("../component/Text");
+var _PolarUtils = require("../util/PolarUtils");
+var _Tooltip = require("../component/Tooltip");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -9,16 +29,6 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-import React, { useState } from 'react';
-import { scaleLinear } from 'victory-vendor/d3-scale';
-import clsx from 'clsx';
-import { findChildByType } from '../util/ReactUtils';
-import { Surface } from '../container/Surface';
-import { Layer } from '../container/Layer';
-import { Sector } from '../shape/Sector';
-import { Text } from '../component/Text';
-import { polarToCartesian } from '../util/PolarUtils';
-import { Tooltip } from '../component/Tooltip';
 var defaultTextProps = {
   fontWeight: 'bold',
   paintOrder: 'stroke fill',
@@ -36,7 +46,7 @@ function getMaxDepthOf(node) {
   });
   return 1 + Math.max.apply(Math, _toConsumableArray(childDepths));
 }
-export var SunburstChart = function SunburstChart(_ref) {
+var SunburstChart = exports.SunburstChart = function SunburstChart(_ref) {
   var className = _ref.className,
     data = _ref.data,
     children = _ref.children,
@@ -69,15 +79,15 @@ export var SunburstChart = function SunburstChart(_ref) {
     onClick = _ref.onClick,
     onMouseEnter = _ref.onMouseEnter,
     onMouseLeave = _ref.onMouseLeave;
-  var _useState = useState(false),
+  var _useState = (0, _react.useState)(false),
     _useState2 = _slicedToArray(_useState, 2),
     isTooltipActive = _useState2[0],
     setIsTooltipActive = _useState2[1];
-  var _useState3 = useState(null),
+  var _useState3 = (0, _react.useState)(null),
     _useState4 = _slicedToArray(_useState3, 2),
     activeNode = _useState4[0],
     setActiveNode = _useState4[1];
-  var rScale = scaleLinear([0, data[dataKey]], [0, endAngle]);
+  var rScale = (0, _d3Scale.scaleLinear)([0, data[dataKey]], [0, endAngle]);
   var treeDepth = getMaxDepthOf(data);
   var thickness = (outerRadius - innerRadius) / treeDepth;
   var sectors = [];
@@ -113,17 +123,17 @@ export var SunburstChart = function SunburstChart(_ref) {
       var start = currentAngle;
       // color priority - if there's a color on the individual point use that, otherwise use parent color or default
       var fillColor = (_ref2 = (_d$fill = d === null || d === void 0 ? void 0 : d.fill) !== null && _d$fill !== void 0 ? _d$fill : childColor) !== null && _ref2 !== void 0 ? _ref2 : fill;
-      var _polarToCartesian = polarToCartesian(0, 0, innerR + radius / 2, -(start + arcLength - arcLength / 2)),
+      var _polarToCartesian = (0, _PolarUtils.polarToCartesian)(0, 0, innerR + radius / 2, -(start + arcLength - arcLength / 2)),
         textX = _polarToCartesian.x,
         textY = _polarToCartesian.y;
       currentAngle += arcLength;
       sectors.push(
       /*#__PURE__*/
       // TODO: Missing key warning. Can we use `key={d.name}`?
-      React.createElement("g", {
+      _react["default"].createElement("g", {
         "aria-label": d.name,
         tabIndex: 0
-      }, /*#__PURE__*/React.createElement(Sector, {
+      }, /*#__PURE__*/_react["default"].createElement(_Sector.Sector, {
         onClick: function onClick() {
           return handleClick(d);
         },
@@ -142,13 +152,13 @@ export var SunburstChart = function SunburstChart(_ref) {
         outerRadius: innerR + radius,
         cx: cx,
         cy: cy
-      }), /*#__PURE__*/React.createElement(Text, _extends({}, textOptions, {
+      }), /*#__PURE__*/_react["default"].createElement(_Text.Text, _extends({}, textOptions, {
         alignmentBaseline: "middle",
         textAnchor: "middle",
         x: textX + cx,
         y: cy - textY
       }), d[dataKey])));
-      var _polarToCartesian2 = polarToCartesian(cx, cy, innerR + radius / 2, start),
+      var _polarToCartesian2 = (0, _PolarUtils.polarToCartesian)(cx, cy, innerR + radius / 2, start),
         tooltipX = _polarToCartesian2.x,
         tooltipY = _polarToCartesian2.y;
       positions.set(d.name, {
@@ -168,9 +178,9 @@ export var SunburstChart = function SunburstChart(_ref) {
     innerR: innerRadius,
     initialAngle: startAngle
   });
-  var layerClass = clsx('recharts-sunburst', className);
+  var layerClass = (0, _clsx["default"])('recharts-sunburst', className);
   function renderTooltip() {
-    var tooltipComponent = findChildByType([children], Tooltip);
+    var tooltipComponent = (0, _ReactUtils.findChildByType)([children], _Tooltip.Tooltip);
     if (!tooltipComponent || !activeNode) return null;
     var viewBox = {
       x: 0,
@@ -178,25 +188,25 @@ export var SunburstChart = function SunburstChart(_ref) {
       width: width,
       height: height
     };
-    return /*#__PURE__*/React.cloneElement(tooltipComponent, {
+    return /*#__PURE__*/_react["default"].cloneElement(tooltipComponent, {
       viewBox: viewBox,
       coordinate: positions.get(activeNode.name),
       payload: [activeNode],
       active: isTooltipActive
     });
   }
-  return /*#__PURE__*/React.createElement("div", {
-    className: clsx('recharts-wrapper', className),
+  return /*#__PURE__*/_react["default"].createElement("div", {
+    className: (0, _clsx["default"])('recharts-wrapper', className),
     style: {
       position: 'relative',
       width: width,
       height: height
     },
     role: "region"
-  }, /*#__PURE__*/React.createElement(Surface, {
+  }, /*#__PURE__*/_react["default"].createElement(_Surface.Surface, {
     width: width,
     height: height
-  }, children, /*#__PURE__*/React.createElement(Layer, {
+  }, children, /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
     className: layerClass
   }, sectors)), renderTooltip());
 };

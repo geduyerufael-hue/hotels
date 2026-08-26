@@ -1,3 +1,21 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ReferenceDot = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _Layer = require("../container/Layer");
+var _Dot = require("../shape/Dot");
+var _Label = require("../component/Label");
+var _DataUtils = require("../util/DataUtils");
+var _IfOverflowMatches = require("../util/IfOverflowMatches");
+var _CartesianUtils = require("../util/CartesianUtils");
+var _LogUtils = require("../util/LogUtils");
+var _ReactUtils = require("../util/ReactUtils");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -14,27 +32,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Reference Dot
  */
-import React from 'react';
-import isFunction from 'lodash/isFunction';
-import clsx from 'clsx';
-import { Layer } from '../container/Layer';
-import { Dot } from '../shape/Dot';
-import { Label } from '../component/Label';
-import { isNumOrStr } from '../util/DataUtils';
-import { ifOverflowMatches } from '../util/IfOverflowMatches';
-import { createLabeledScales } from '../util/CartesianUtils';
-import { warn } from '../util/LogUtils';
-import { filterProps } from '../util/ReactUtils';
 var getCoordinate = function getCoordinate(props) {
   var x = props.x,
     y = props.y,
     xAxis = props.xAxis,
     yAxis = props.yAxis;
-  var scales = createLabeledScales({
+  var scales = (0, _CartesianUtils.createLabeledScales)({
     x: xAxis.scale,
     y: yAxis.scale
   });
@@ -44,14 +50,14 @@ var getCoordinate = function getCoordinate(props) {
   }, {
     bandAware: true
   });
-  if (ifOverflowMatches(props, 'discard') && !scales.isInRange(result)) {
+  if ((0, _IfOverflowMatches.ifOverflowMatches)(props, 'discard') && !scales.isInRange(result)) {
     return null;
   }
   return result;
 };
 
 // eslint-disable-next-line react/prefer-stateless-function -- requires static defaultProps
-export var ReferenceDot = /*#__PURE__*/function (_React$Component) {
+var ReferenceDot = exports.ReferenceDot = /*#__PURE__*/function (_React$Component) {
   function ReferenceDot() {
     _classCallCheck(this, ReferenceDot);
     return _callSuper(this, ReferenceDot, arguments);
@@ -66,9 +72,9 @@ export var ReferenceDot = /*#__PURE__*/function (_React$Component) {
         r = _this$props.r,
         alwaysShow = _this$props.alwaysShow,
         clipPathId = _this$props.clipPathId;
-      var isX = isNumOrStr(x);
-      var isY = isNumOrStr(y);
-      warn(alwaysShow === undefined, 'The alwaysShow prop is deprecated. Please use ifOverflow="extendDomain" instead.');
+      var isX = (0, _DataUtils.isNumOrStr)(x);
+      var isY = (0, _DataUtils.isNumOrStr)(y);
+      (0, _LogUtils.warn)(alwaysShow === undefined, 'The alwaysShow prop is deprecated. Please use ifOverflow="extendDomain" instead.');
       if (!isX || !isY) {
         return null;
       }
@@ -81,16 +87,16 @@ export var ReferenceDot = /*#__PURE__*/function (_React$Component) {
       var _this$props2 = this.props,
         shape = _this$props2.shape,
         className = _this$props2.className;
-      var clipPath = ifOverflowMatches(this.props, 'hidden') ? "url(#".concat(clipPathId, ")") : undefined;
+      var clipPath = (0, _IfOverflowMatches.ifOverflowMatches)(this.props, 'hidden') ? "url(#".concat(clipPathId, ")") : undefined;
       var dotProps = _objectSpread(_objectSpread({
         clipPath: clipPath
-      }, filterProps(this.props, true)), {}, {
+      }, (0, _ReactUtils.filterProps)(this.props, true)), {}, {
         cx: cx,
         cy: cy
       });
-      return /*#__PURE__*/React.createElement(Layer, {
-        className: clsx('recharts-reference-dot', className)
-      }, ReferenceDot.renderDot(shape, dotProps), Label.renderCallByParent(this.props, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
+        className: (0, _clsx["default"])('recharts-reference-dot', className)
+      }, ReferenceDot.renderDot(shape, dotProps), _Label.Label.renderCallByParent(this.props, {
         x: cx - r,
         y: cy - r,
         width: 2 * r,
@@ -98,7 +104,7 @@ export var ReferenceDot = /*#__PURE__*/function (_React$Component) {
       }));
     }
   }]);
-}(React.Component);
+}(_react["default"].Component);
 _defineProperty(ReferenceDot, "displayName", 'ReferenceDot');
 _defineProperty(ReferenceDot, "defaultProps", {
   isFront: false,
@@ -113,12 +119,12 @@ _defineProperty(ReferenceDot, "defaultProps", {
 });
 _defineProperty(ReferenceDot, "renderDot", function (option, props) {
   var dot;
-  if ( /*#__PURE__*/React.isValidElement(option)) {
-    dot = /*#__PURE__*/React.cloneElement(option, props);
-  } else if (isFunction(option)) {
+  if ( /*#__PURE__*/_react["default"].isValidElement(option)) {
+    dot = /*#__PURE__*/_react["default"].cloneElement(option, props);
+  } else if ((0, _isFunction["default"])(option)) {
     dot = option(props);
   } else {
-    dot = /*#__PURE__*/React.createElement(Dot, _extends({}, props, {
+    dot = /*#__PURE__*/_react["default"].createElement(_Dot.Dot, _extends({}, props, {
       cx: props.cx,
       cy: props.cy,
       className: "recharts-reference-dot-dot"

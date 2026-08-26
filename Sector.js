@@ -1,20 +1,26 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Sector = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _ReactUtils = require("../util/ReactUtils");
+var _PolarUtils = require("../util/PolarUtils");
+var _DataUtils = require("../util/DataUtils");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Sector
  */
-import React from 'react';
-import clsx from 'clsx';
-import { filterProps } from '../util/ReactUtils';
-import { polarToCartesian, RADIAN } from '../util/PolarUtils';
-import { getPercentValue, mathSign } from '../util/DataUtils';
 var getDeltaAngle = function getDeltaAngle(startAngle, endAngle) {
-  var sign = mathSign(endAngle - startAngle);
+  var sign = (0, _DataUtils.mathSign)(endAngle - startAngle);
   var deltaAngle = Math.min(Math.abs(endAngle - startAngle), 359.999);
   return sign * deltaAngle;
 };
@@ -28,14 +34,14 @@ var getTangentCircle = function getTangentCircle(_ref) {
     cornerRadius = _ref.cornerRadius,
     cornerIsExternal = _ref.cornerIsExternal;
   var centerRadius = cornerRadius * (isExternal ? 1 : -1) + radius;
-  var theta = Math.asin(cornerRadius / centerRadius) / RADIAN;
+  var theta = Math.asin(cornerRadius / centerRadius) / _PolarUtils.RADIAN;
   var centerAngle = cornerIsExternal ? angle : angle + sign * theta;
-  var center = polarToCartesian(cx, cy, centerRadius, centerAngle);
+  var center = (0, _PolarUtils.polarToCartesian)(cx, cy, centerRadius, centerAngle);
   // The coordinate of point which is tangent to the circle
-  var circleTangency = polarToCartesian(cx, cy, radius, centerAngle);
+  var circleTangency = (0, _PolarUtils.polarToCartesian)(cx, cy, radius, centerAngle);
   // The coordinate of point which is tangent to the radius line
   var lineTangencyAngle = cornerIsExternal ? angle - sign * theta : angle;
-  var lineTangency = polarToCartesian(cx, cy, centerRadius * Math.cos(theta * RADIAN), lineTangencyAngle);
+  var lineTangency = (0, _PolarUtils.polarToCartesian)(cx, cy, centerRadius * Math.cos(theta * _PolarUtils.RADIAN), lineTangencyAngle);
   return {
     center: center,
     circleTangency: circleTangency,
@@ -54,12 +60,12 @@ var getSectorPath = function getSectorPath(_ref2) {
 
   // When the angle of sector equals to 360, star point and end point coincide
   var tempEndAngle = startAngle + angle;
-  var outerStartPoint = polarToCartesian(cx, cy, outerRadius, startAngle);
-  var outerEndPoint = polarToCartesian(cx, cy, outerRadius, tempEndAngle);
+  var outerStartPoint = (0, _PolarUtils.polarToCartesian)(cx, cy, outerRadius, startAngle);
+  var outerEndPoint = (0, _PolarUtils.polarToCartesian)(cx, cy, outerRadius, tempEndAngle);
   var path = "M ".concat(outerStartPoint.x, ",").concat(outerStartPoint.y, "\n    A ").concat(outerRadius, ",").concat(outerRadius, ",0,\n    ").concat(+(Math.abs(angle) > 180), ",").concat(+(startAngle > tempEndAngle), ",\n    ").concat(outerEndPoint.x, ",").concat(outerEndPoint.y, "\n  ");
   if (innerRadius > 0) {
-    var innerStartPoint = polarToCartesian(cx, cy, innerRadius, startAngle);
-    var innerEndPoint = polarToCartesian(cx, cy, innerRadius, tempEndAngle);
+    var innerStartPoint = (0, _PolarUtils.polarToCartesian)(cx, cy, innerRadius, startAngle);
+    var innerEndPoint = (0, _PolarUtils.polarToCartesian)(cx, cy, innerRadius, tempEndAngle);
     path += "L ".concat(innerEndPoint.x, ",").concat(innerEndPoint.y, "\n            A ").concat(innerRadius, ",").concat(innerRadius, ",0,\n            ").concat(+(Math.abs(angle) > 180), ",").concat(+(startAngle <= tempEndAngle), ",\n            ").concat(innerStartPoint.x, ",").concat(innerStartPoint.y, " Z");
   } else {
     path += "L ".concat(cx, ",").concat(cy, " Z");
@@ -76,7 +82,7 @@ var getSectorWithCorner = function getSectorWithCorner(_ref3) {
     cornerIsExternal = _ref3.cornerIsExternal,
     startAngle = _ref3.startAngle,
     endAngle = _ref3.endAngle;
-  var sign = mathSign(endAngle - startAngle);
+  var sign = (0, _DataUtils.mathSign)(endAngle - startAngle);
   var _getTangentCircle = getTangentCircle({
       cx: cx,
       cy: cy,
@@ -164,7 +170,7 @@ var defaultProps = {
   forceCornerRadius: false,
   cornerIsExternal: false
 };
-export var Sector = function Sector(sectorProps) {
+var Sector = exports.Sector = function Sector(sectorProps) {
   var props = _objectSpread(_objectSpread({}, defaultProps), sectorProps);
   var cx = props.cx,
     cy = props.cy,
@@ -179,9 +185,9 @@ export var Sector = function Sector(sectorProps) {
   if (outerRadius < innerRadius || startAngle === endAngle) {
     return null;
   }
-  var layerClass = clsx('recharts-sector', className);
+  var layerClass = (0, _clsx["default"])('recharts-sector', className);
   var deltaRadius = outerRadius - innerRadius;
-  var cr = getPercentValue(cornerRadius, deltaRadius, 0, true);
+  var cr = (0, _DataUtils.getPercentValue)(cornerRadius, deltaRadius, 0, true);
   var path;
   if (cr > 0 && Math.abs(startAngle - endAngle) < 360) {
     path = getSectorWithCorner({
@@ -205,7 +211,7 @@ export var Sector = function Sector(sectorProps) {
       endAngle: endAngle
     });
   }
-  return /*#__PURE__*/React.createElement("path", _extends({}, filterProps(props, true), {
+  return /*#__PURE__*/_react["default"].createElement("path", _extends({}, (0, _ReactUtils.filterProps)(props, true), {
     className: layerClass,
     d: path,
     role: "img"

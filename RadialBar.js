@@ -1,5 +1,29 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RadialBar = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _reactSmooth = _interopRequireDefault(require("react-smooth"));
+var _isEqual = _interopRequireDefault(require("lodash/isEqual"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _RadialBarUtils = require("../util/RadialBarUtils");
+var _Layer = require("../container/Layer");
+var _ReactUtils = require("../util/ReactUtils");
+var _Global = require("../util/Global");
+var _LabelList = require("../component/LabelList");
+var _Cell = require("../component/Cell");
+var _DataUtils = require("../util/DataUtils");
+var _ChartUtils = require("../util/ChartUtils");
+var _types = require("../util/types");
+var _PolarUtils = require("../util/PolarUtils");
 var _excluded = ["shape", "activeShape", "activeIndex", "cornerRadius"],
   _excluded2 = ["value", "background"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -18,29 +42,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Render a group of radial bar
  */
-import React, { PureComponent } from 'react';
-import clsx from 'clsx';
-import Animate from 'react-smooth';
-import isEqual from 'lodash/isEqual';
-import isFunction from 'lodash/isFunction';
-import { parseCornerRadius, RadialBarSector } from '../util/RadialBarUtils';
-import { Layer } from '../container/Layer';
-import { findAllByType, filterProps } from '../util/ReactUtils';
-import { Global } from '../util/Global';
-import { LabelList } from '../component/LabelList';
-import { Cell } from '../component/Cell';
-import { mathSign, interpolateNumber } from '../util/DataUtils';
-import { getCateCoordinateOfBar, findPositionOfBar, getValueByDataKey, truncateByDomain, getBaseValueOfBar, getTooltipItem } from '../util/ChartUtils';
-import { adaptEventsOfChild } from '../util/types';
-import { polarToCartesian } from '../util/PolarUtils';
 // TODO: Cause of circular dependency. Needs refactoring of functions that need them.
 // import { AngleAxisProps, RadiusAxisProps } from './types';
-
-export var RadialBar = /*#__PURE__*/function (_PureComponent) {
+var RadialBar = exports.RadialBar = /*#__PURE__*/function (_PureComponent) {
   function RadialBar() {
     var _this;
     _classCallCheck(this, RadialBar);
@@ -56,7 +63,7 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
       _this.setState({
         isAnimationFinished: true
       });
-      if (isFunction(onAnimationEnd)) {
+      if ((0, _isFunction["default"])(onAnimationEnd)) {
         onAnimationEnd();
       }
     });
@@ -65,7 +72,7 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
       _this.setState({
         isAnimationFinished: false
       });
-      if (isFunction(onAnimationStart)) {
+      if ((0, _isFunction["default"])(onAnimationStart)) {
         onAnimationStart();
       }
     });
@@ -78,7 +85,7 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
       var _this$props = this.props,
         startAngle = _this$props.startAngle,
         endAngle = _this$props.endAngle;
-      var sign = mathSign(endAngle - startAngle);
+      var sign = (0, _DataUtils.mathSign)(endAngle - startAngle);
       var deltaAngle = Math.min(Math.abs(endAngle - startAngle), 360);
       return sign * deltaAngle;
     }
@@ -92,19 +99,19 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
         activeIndex = _this$props2.activeIndex,
         cornerRadius = _this$props2.cornerRadius,
         others = _objectWithoutProperties(_this$props2, _excluded);
-      var baseProps = filterProps(others, false);
+      var baseProps = (0, _ReactUtils.filterProps)(others, false);
       return sectors.map(function (entry, i) {
         var isActive = i === activeIndex;
         var props = _objectSpread(_objectSpread(_objectSpread(_objectSpread({}, baseProps), {}, {
-          cornerRadius: parseCornerRadius(cornerRadius)
-        }, entry), adaptEventsOfChild(_this2.props, entry, i)), {}, {
+          cornerRadius: (0, _RadialBarUtils.parseCornerRadius)(cornerRadius)
+        }, entry), (0, _types.adaptEventsOfChild)(_this2.props, entry, i)), {}, {
           className: "recharts-radial-bar-sector ".concat(entry.className),
           forceCornerRadius: others.forceCornerRadius,
           cornerIsExternal: others.cornerIsExternal,
           isActive: isActive,
           option: isActive ? activeShape : shape
         });
-        return /*#__PURE__*/React.createElement(RadialBarSector, _extends({}, props, {
+        return /*#__PURE__*/_react["default"].createElement(_RadialBarUtils.RadialBarSector, _extends({}, props, {
           key: "sector-".concat(i)
         }));
       });
@@ -121,7 +128,7 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
         animationEasing = _this$props3.animationEasing,
         animationId = _this$props3.animationId;
       var prevData = this.state.prevData;
-      return /*#__PURE__*/React.createElement(Animate, {
+      return /*#__PURE__*/_react["default"].createElement(_reactSmooth["default"], {
         begin: animationBegin,
         duration: animationDuration,
         isActive: isAnimationActive,
@@ -140,8 +147,8 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
         var stepData = data.map(function (entry, index) {
           var prev = prevData && prevData[index];
           if (prev) {
-            var interpolatorStartAngle = interpolateNumber(prev.startAngle, entry.startAngle);
-            var interpolatorEndAngle = interpolateNumber(prev.endAngle, entry.endAngle);
+            var interpolatorStartAngle = (0, _DataUtils.interpolateNumber)(prev.startAngle, entry.startAngle);
+            var interpolatorEndAngle = (0, _DataUtils.interpolateNumber)(prev.endAngle, entry.endAngle);
             return _objectSpread(_objectSpread({}, entry), {}, {
               startAngle: interpolatorStartAngle(t),
               endAngle: interpolatorEndAngle(t)
@@ -149,12 +156,12 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
           }
           var endAngle = entry.endAngle,
             startAngle = entry.startAngle;
-          var interpolator = interpolateNumber(startAngle, endAngle);
+          var interpolator = (0, _DataUtils.interpolateNumber)(startAngle, endAngle);
           return _objectSpread(_objectSpread({}, entry), {}, {
             endAngle: interpolator(t)
           });
         });
-        return /*#__PURE__*/React.createElement(Layer, null, _this3.renderSectorsStatically(stepData));
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, null, _this3.renderSectorsStatically(stepData));
       });
     }
   }, {
@@ -164,7 +171,7 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
         data = _this$props4.data,
         isAnimationActive = _this$props4.isAnimationActive;
       var prevData = this.state.prevData;
-      if (isAnimationActive && data && data.length && (!prevData || !isEqual(prevData, data))) {
+      if (isAnimationActive && data && data.length && (!prevData || !(0, _isEqual["default"])(prevData, data))) {
         return this.renderSectorsWithAnimation();
       }
       return this.renderSectorsStatically(data);
@@ -174,7 +181,7 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
     value: function renderBackground(sectors) {
       var _this4 = this;
       var cornerRadius = this.props.cornerRadius;
-      var backgroundProps = filterProps(this.props.background, false);
+      var backgroundProps = (0, _ReactUtils.filterProps)(this.props.background, false);
       return sectors.map(function (entry, i) {
         var value = entry.value,
           background = entry.background,
@@ -183,16 +190,16 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
           return null;
         }
         var props = _objectSpread(_objectSpread(_objectSpread(_objectSpread(_objectSpread({
-          cornerRadius: parseCornerRadius(cornerRadius)
+          cornerRadius: (0, _RadialBarUtils.parseCornerRadius)(cornerRadius)
         }, rest), {}, {
           fill: '#eee'
-        }, background), backgroundProps), adaptEventsOfChild(_this4.props, entry, i)), {}, {
+        }, background), backgroundProps), (0, _types.adaptEventsOfChild)(_this4.props, entry, i)), {}, {
           index: i,
-          className: clsx('recharts-radial-bar-background-sector', backgroundProps === null || backgroundProps === void 0 ? void 0 : backgroundProps.className),
+          className: (0, _clsx["default"])('recharts-radial-bar-background-sector', backgroundProps === null || backgroundProps === void 0 ? void 0 : backgroundProps.className),
           option: background,
           isActive: false
         });
-        return /*#__PURE__*/React.createElement(RadialBarSector, _extends({}, props, {
+        return /*#__PURE__*/_react["default"].createElement(_RadialBarUtils.RadialBarSector, _extends({}, props, {
           key: "sector-".concat(i)
         }));
       });
@@ -210,14 +217,14 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
         return null;
       }
       var isAnimationFinished = this.state.isAnimationFinished;
-      var layerClass = clsx('recharts-area', className);
-      return /*#__PURE__*/React.createElement(Layer, {
+      var layerClass = (0, _clsx["default"])('recharts-area', className);
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: layerClass
-      }, background && /*#__PURE__*/React.createElement(Layer, {
+      }, background && /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-radial-bar-background"
-      }, this.renderBackground(data)), /*#__PURE__*/React.createElement(Layer, {
+      }, this.renderBackground(data)), /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-radial-bar-sectors"
-      }, this.renderSectors()), (!isAnimationActive || isAnimationFinished) && LabelList.renderCallByParent(_objectSpread({}, this.props), data));
+      }, this.renderSectors()), (!isAnimationActive || isAnimationFinished) && _LabelList.LabelList.renderCallByParent(_objectSpread({}, this.props), data));
     }
   }], [{
     key: "getDerivedStateFromProps",
@@ -237,7 +244,7 @@ export var RadialBar = /*#__PURE__*/function (_PureComponent) {
       return null;
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _defineProperty(RadialBar, "displayName", 'RadialBar');
 _defineProperty(RadialBar, "defaultProps", {
   angleAxisId: 0,
@@ -246,7 +253,7 @@ _defineProperty(RadialBar, "defaultProps", {
   hide: false,
   legendType: 'rect',
   data: [],
-  isAnimationActive: !Global.isSsr,
+  isAnimationActive: !_Global.Global.isSsr,
   animationBegin: 0,
   animationDuration: 1500,
   animationEasing: 'ease',
@@ -266,7 +273,7 @@ _defineProperty(RadialBar, "getComposedData", function (_ref2) {
     barPosition = _ref2.barPosition,
     bandSize = _ref2.bandSize,
     dataStartIndex = _ref2.dataStartIndex;
-  var pos = findPositionOfBar(barPosition, item);
+  var pos = (0, _ChartUtils.findPositionOfBar)(barPosition, item);
   if (!pos) {
     return null;
   }
@@ -278,22 +285,22 @@ _defineProperty(RadialBar, "getComposedData", function (_ref2) {
     minPointSize = _item$props.minPointSize;
   var numericAxis = layout === 'radial' ? angleAxis : radiusAxis;
   var stackedDomain = stackedData ? numericAxis.scale.domain() : null;
-  var baseValue = getBaseValueOfBar({
+  var baseValue = (0, _ChartUtils.getBaseValueOfBar)({
     numericAxis: numericAxis
   });
-  var cells = findAllByType(children, Cell);
+  var cells = (0, _ReactUtils.findAllByType)(children, _Cell.Cell);
   var sectors = displayedData.map(function (entry, index) {
     var value, innerRadius, outerRadius, startAngle, endAngle, backgroundSector;
     if (stackedData) {
-      value = truncateByDomain(stackedData[dataStartIndex + index], stackedDomain);
+      value = (0, _ChartUtils.truncateByDomain)(stackedData[dataStartIndex + index], stackedDomain);
     } else {
-      value = getValueByDataKey(entry, dataKey);
+      value = (0, _ChartUtils.getValueByDataKey)(entry, dataKey);
       if (!Array.isArray(value)) {
         value = [baseValue, value];
       }
     }
     if (layout === 'radial') {
-      innerRadius = getCateCoordinateOfBar({
+      innerRadius = (0, _ChartUtils.getCateCoordinateOfBar)({
         axis: radiusAxis,
         ticks: radiusAxisTicks,
         bandSize: bandSize,
@@ -306,7 +313,7 @@ _defineProperty(RadialBar, "getComposedData", function (_ref2) {
       outerRadius = innerRadius + pos.size;
       var deltaAngle = endAngle - startAngle;
       if (Math.abs(minPointSize) > 0 && Math.abs(deltaAngle) < Math.abs(minPointSize)) {
-        var delta = mathSign(deltaAngle || minPointSize) * (Math.abs(minPointSize) - Math.abs(deltaAngle));
+        var delta = (0, _DataUtils.mathSign)(deltaAngle || minPointSize) * (Math.abs(minPointSize) - Math.abs(deltaAngle));
         endAngle += delta;
       }
       backgroundSector = {
@@ -322,7 +329,7 @@ _defineProperty(RadialBar, "getComposedData", function (_ref2) {
     } else {
       innerRadius = radiusAxis.scale(value[0]);
       outerRadius = radiusAxis.scale(value[1]);
-      startAngle = getCateCoordinateOfBar({
+      startAngle = (0, _ChartUtils.getCateCoordinateOfBar)({
         axis: angleAxis,
         ticks: angleAxisTicks,
         bandSize: bandSize,
@@ -333,7 +340,7 @@ _defineProperty(RadialBar, "getComposedData", function (_ref2) {
       endAngle = startAngle + pos.size;
       var deltaRadius = outerRadius - innerRadius;
       if (Math.abs(minPointSize) > 0 && Math.abs(deltaRadius) < Math.abs(minPointSize)) {
-        var _delta = mathSign(deltaRadius || minPointSize) * (Math.abs(minPointSize) - Math.abs(deltaRadius));
+        var _delta = (0, _DataUtils.mathSign)(deltaRadius || minPointSize) * (Math.abs(minPointSize) - Math.abs(deltaRadius));
         outerRadius += _delta;
       }
     }
@@ -347,8 +354,8 @@ _defineProperty(RadialBar, "getComposedData", function (_ref2) {
       startAngle: startAngle,
       endAngle: endAngle
     }, cells && cells[index] && cells[index].props), {}, {
-      tooltipPayload: [getTooltipItem(item, entry)],
-      tooltipPosition: polarToCartesian(cx, cy, (innerRadius + outerRadius) / 2, (startAngle + endAngle) / 2)
+      tooltipPayload: [(0, _ChartUtils.getTooltipItem)(item, entry)],
+      tooltipPosition: (0, _PolarUtils.polarToCartesian)(cx, cy, (innerRadius + outerRadius) / 2, (startAngle + endAngle) / 2)
     });
   });
   return {

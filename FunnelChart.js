@@ -1,11 +1,18 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FunnelChart = void 0;
+var _generateCategoricalChart = require("./generateCategoricalChart");
+var _Funnel = require("../numberAxis/Funnel");
 /**
  * @fileOverview Funnel Chart
  */
-import { generateCategoricalChart } from './generateCategoricalChart';
-import { Funnel } from '../numberAxis/Funnel';
-export var FunnelChart = generateCategoricalChart({
+
+var FunnelChart = exports.FunnelChart = (0, _generateCategoricalChart.generateCategoricalChart)({
   chartName: 'FunnelChart',
-  GraphicalChild: Funnel,
+  GraphicalChild: _Funnel.Funnel,
   validateTooltipEventTypes: ['item'],
   defaultTooltipEventType: 'item',
   axisComponents: [],

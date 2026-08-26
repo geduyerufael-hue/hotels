@@ -1,6 +1,31 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Area = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _reactSmooth = _interopRequireDefault(require("react-smooth"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _max = _interopRequireDefault(require("lodash/max"));
+var _isNil = _interopRequireDefault(require("lodash/isNil"));
+var _isNaN = _interopRequireDefault(require("lodash/isNaN"));
+var _isEqual = _interopRequireDefault(require("lodash/isEqual"));
+var _Curve = require("../shape/Curve");
+var _Dot = require("../shape/Dot");
+var _Layer = require("../container/Layer");
+var _LabelList = require("../component/LabelList");
+var _Global = require("../util/Global");
+var _DataUtils = require("../util/DataUtils");
+var _ChartUtils = require("../util/ChartUtils");
+var _ReactUtils = require("../util/ReactUtils");
 var _excluded = ["layout", "type", "stroke", "connectNulls", "isRange", "ref"],
   _excluded2 = ["key"];
 var _Area;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } } return target; }
@@ -19,27 +44,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Area
  */
-import React, { PureComponent } from 'react';
-import clsx from 'clsx';
-import Animate from 'react-smooth';
-import isFunction from 'lodash/isFunction';
-import max from 'lodash/max';
-import isNil from 'lodash/isNil';
-import isNan from 'lodash/isNaN';
-import isEqual from 'lodash/isEqual';
-import { Curve } from '../shape/Curve';
-import { Dot } from '../shape/Dot';
-import { Layer } from '../container/Layer';
-import { LabelList } from '../component/LabelList';
-import { Global } from '../util/Global';
-import { isNumber, uniqueId, interpolateNumber } from '../util/DataUtils';
-import { getCateCoordinateOfLine, getValueByDataKey } from '../util/ChartUtils';
-import { filterProps, hasClipDot } from '../util/ReactUtils';
-export var Area = /*#__PURE__*/function (_PureComponent) {
+var Area = exports.Area = /*#__PURE__*/function (_PureComponent) {
   function Area() {
     var _this;
     _classCallCheck(this, Area);
@@ -50,13 +58,13 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
     _defineProperty(_this, "state", {
       isAnimationFinished: true
     });
-    _defineProperty(_this, "id", uniqueId('recharts-area-'));
+    _defineProperty(_this, "id", (0, _DataUtils.uniqueId)('recharts-area-'));
     _defineProperty(_this, "handleAnimationEnd", function () {
       var onAnimationEnd = _this.props.onAnimationEnd;
       _this.setState({
         isAnimationFinished: true
       });
-      if (isFunction(onAnimationEnd)) {
+      if ((0, _isFunction["default"])(onAnimationEnd)) {
         onAnimationEnd();
       }
     });
@@ -65,7 +73,7 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
       _this.setState({
         isAnimationFinished: false
       });
-      if (isFunction(onAnimationStart)) {
+      if ((0, _isFunction["default"])(onAnimationStart)) {
         onAnimationStart();
       }
     });
@@ -84,8 +92,8 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
         dot = _this$props.dot,
         points = _this$props.points,
         dataKey = _this$props.dataKey;
-      var areaProps = filterProps(this.props, false);
-      var customDotProps = filterProps(dot, true);
+      var areaProps = (0, _ReactUtils.filterProps)(this.props, false);
+      var customDotProps = (0, _ReactUtils.filterProps)(dot, true);
       var dots = points.map(function (entry, i) {
         var dotProps = _objectSpread(_objectSpread(_objectSpread({
           key: "dot-".concat(i),
@@ -104,7 +112,7 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
       var dotsProps = {
         clipPath: needClip ? "url(#clipPath-".concat(clipDot ? '' : 'dots-').concat(clipPathId, ")") : null
       };
-      return /*#__PURE__*/React.createElement(Layer, _extends({
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, _extends({
         className: "recharts-area-dots"
       }, dotsProps), dots);
     }
@@ -118,18 +126,18 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
       var startX = points[0].x;
       var endX = points[points.length - 1].x;
       var width = alpha * Math.abs(startX - endX);
-      var maxY = max(points.map(function (entry) {
+      var maxY = (0, _max["default"])(points.map(function (entry) {
         return entry.y || 0;
       }));
-      if (isNumber(baseLine) && typeof baseLine === 'number') {
+      if ((0, _DataUtils.isNumber)(baseLine) && typeof baseLine === 'number') {
         maxY = Math.max(baseLine, maxY);
       } else if (baseLine && Array.isArray(baseLine) && baseLine.length) {
-        maxY = Math.max(max(baseLine.map(function (entry) {
+        maxY = Math.max((0, _max["default"])(baseLine.map(function (entry) {
           return entry.y || 0;
         })), maxY);
       }
-      if (isNumber(maxY)) {
-        return /*#__PURE__*/React.createElement("rect", {
+      if ((0, _DataUtils.isNumber)(maxY)) {
+        return /*#__PURE__*/_react["default"].createElement("rect", {
           x: startX < endX ? startX : startX - width,
           y: 0,
           width: width,
@@ -148,18 +156,18 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
       var startY = points[0].y;
       var endY = points[points.length - 1].y;
       var height = alpha * Math.abs(startY - endY);
-      var maxX = max(points.map(function (entry) {
+      var maxX = (0, _max["default"])(points.map(function (entry) {
         return entry.x || 0;
       }));
-      if (isNumber(baseLine) && typeof baseLine === 'number') {
+      if ((0, _DataUtils.isNumber)(baseLine) && typeof baseLine === 'number') {
         maxX = Math.max(baseLine, maxX);
       } else if (baseLine && Array.isArray(baseLine) && baseLine.length) {
-        maxX = Math.max(max(baseLine.map(function (entry) {
+        maxX = Math.max((0, _max["default"])(baseLine.map(function (entry) {
           return entry.x || 0;
         })), maxX);
       }
-      if (isNumber(maxX)) {
-        return /*#__PURE__*/React.createElement("rect", {
+      if ((0, _DataUtils.isNumber)(maxX)) {
+        return /*#__PURE__*/_react["default"].createElement("rect", {
           x: 0,
           y: startY < endY ? startY : startY - height,
           width: maxX + (strokeWidth ? parseInt("".concat(strokeWidth), 10) : 1),
@@ -188,9 +196,9 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
         isRange = _this$props4.isRange,
         ref = _this$props4.ref,
         others = _objectWithoutProperties(_this$props4, _excluded);
-      return /*#__PURE__*/React.createElement(Layer, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         clipPath: needClip ? "url(#clipPath-".concat(clipPathId, ")") : null
-      }, /*#__PURE__*/React.createElement(Curve, _extends({}, filterProps(others, true), {
+      }, /*#__PURE__*/_react["default"].createElement(_Curve.Curve, _extends({}, (0, _ReactUtils.filterProps)(others, true), {
         points: points,
         connectNulls: connectNulls,
         type: type,
@@ -198,14 +206,14 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
         layout: layout,
         stroke: "none",
         className: "recharts-area-area"
-      })), stroke !== 'none' && /*#__PURE__*/React.createElement(Curve, _extends({}, filterProps(this.props, false), {
+      })), stroke !== 'none' && /*#__PURE__*/_react["default"].createElement(_Curve.Curve, _extends({}, (0, _ReactUtils.filterProps)(this.props, false), {
         className: "recharts-area-curve",
         layout: layout,
         type: type,
         connectNulls: connectNulls,
         fill: "none",
         points: points
-      })), stroke !== 'none' && isRange && /*#__PURE__*/React.createElement(Curve, _extends({}, filterProps(this.props, false), {
+      })), stroke !== 'none' && isRange && /*#__PURE__*/_react["default"].createElement(_Curve.Curve, _extends({}, (0, _ReactUtils.filterProps)(this.props, false), {
         className: "recharts-area-curve",
         layout: layout,
         type: type,
@@ -231,7 +239,7 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
         prevBaseLine = _this$state.prevBaseLine;
       // const clipPathId = isNil(id) ? this.id : id;
 
-      return /*#__PURE__*/React.createElement(Animate, {
+      return /*#__PURE__*/_react["default"].createElement(_reactSmooth["default"], {
         begin: animationBegin,
         duration: animationDuration,
         isActive: isAnimationActive,
@@ -254,8 +262,8 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
             var prevPointIndex = Math.floor(index * prevPointsDiffFactor);
             if (prevPoints[prevPointIndex]) {
               var prev = prevPoints[prevPointIndex];
-              var interpolatorX = interpolateNumber(prev.x, entry.x);
-              var interpolatorY = interpolateNumber(prev.y, entry.y);
+              var interpolatorX = (0, _DataUtils.interpolateNumber)(prev.x, entry.x);
+              var interpolatorY = (0, _DataUtils.interpolateNumber)(prev.y, entry.y);
               return _objectSpread(_objectSpread({}, entry), {}, {
                 x: interpolatorX(t),
                 y: interpolatorY(t)
@@ -264,19 +272,19 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
             return entry;
           });
           var stepBaseLine;
-          if (isNumber(baseLine) && typeof baseLine === 'number') {
-            var interpolator = interpolateNumber(prevBaseLine, baseLine);
+          if ((0, _DataUtils.isNumber)(baseLine) && typeof baseLine === 'number') {
+            var interpolator = (0, _DataUtils.interpolateNumber)(prevBaseLine, baseLine);
             stepBaseLine = interpolator(t);
-          } else if (isNil(baseLine) || isNan(baseLine)) {
-            var _interpolator = interpolateNumber(prevBaseLine, 0);
+          } else if ((0, _isNil["default"])(baseLine) || (0, _isNaN["default"])(baseLine)) {
+            var _interpolator = (0, _DataUtils.interpolateNumber)(prevBaseLine, 0);
             stepBaseLine = _interpolator(t);
           } else {
             stepBaseLine = baseLine.map(function (entry, index) {
               var prevPointIndex = Math.floor(index * prevPointsDiffFactor);
               if (prevBaseLine[prevPointIndex]) {
                 var prev = prevBaseLine[prevPointIndex];
-                var interpolatorX = interpolateNumber(prev.x, entry.x);
-                var interpolatorY = interpolateNumber(prev.y, entry.y);
+                var interpolatorX = (0, _DataUtils.interpolateNumber)(prev.x, entry.x);
+                var interpolatorY = (0, _DataUtils.interpolateNumber)(prev.y, entry.y);
                 return _objectSpread(_objectSpread({}, entry), {}, {
                   x: interpolatorX(t),
                   y: interpolatorY(t)
@@ -287,9 +295,9 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
           }
           return _this2.renderAreaStatically(stepPoints, stepBaseLine, needClip, clipPathId);
         }
-        return /*#__PURE__*/React.createElement(Layer, null, /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("clipPath", {
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, null, /*#__PURE__*/_react["default"].createElement("defs", null, /*#__PURE__*/_react["default"].createElement("clipPath", {
           id: "animationClipPath-".concat(clipPathId)
-        }, _this2.renderClipRect(t))), /*#__PURE__*/React.createElement(Layer, {
+        }, _this2.renderClipRect(t))), /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
           clipPath: "url(#animationClipPath-".concat(clipPathId, ")")
         }, _this2.renderAreaStatically(points, baseLine, needClip, clipPathId)));
       });
@@ -305,7 +313,7 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
         prevPoints = _this$state2.prevPoints,
         prevBaseLine = _this$state2.prevBaseLine,
         totalLength = _this$state2.totalLength;
-      if (isAnimationActive && points && points.length && (!prevPoints && totalLength > 0 || !isEqual(prevPoints, points) || !isEqual(prevBaseLine, baseLine))) {
+      if (isAnimationActive && points && points.length && (!prevPoints && totalLength > 0 || !(0, _isEqual["default"])(prevPoints, points) || !(0, _isEqual["default"])(prevBaseLine, baseLine))) {
         return this.renderAreaWithAnimation(needClip, clipPathId);
       }
       return this.renderAreaStatically(points, baseLine, needClip, clipPathId);
@@ -332,12 +340,12 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
       }
       var isAnimationFinished = this.state.isAnimationFinished;
       var hasSinglePoint = points.length === 1;
-      var layerClass = clsx('recharts-area', className);
+      var layerClass = (0, _clsx["default"])('recharts-area', className);
       var needClipX = xAxis && xAxis.allowDataOverflow;
       var needClipY = yAxis && yAxis.allowDataOverflow;
       var needClip = needClipX || needClipY;
-      var clipPathId = isNil(id) ? this.id : id;
-      var _ref2 = (_filterProps = filterProps(dot, false)) !== null && _filterProps !== void 0 ? _filterProps : {
+      var clipPathId = (0, _isNil["default"])(id) ? this.id : id;
+      var _ref2 = (_filterProps = (0, _ReactUtils.filterProps)(dot, false)) !== null && _filterProps !== void 0 ? _filterProps : {
           r: 3,
           strokeWidth: 2
         },
@@ -345,27 +353,27 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
         r = _ref2$r === void 0 ? 3 : _ref2$r,
         _ref2$strokeWidth = _ref2.strokeWidth,
         strokeWidth = _ref2$strokeWidth === void 0 ? 2 : _ref2$strokeWidth;
-      var _ref3 = hasClipDot(dot) ? dot : {},
+      var _ref3 = (0, _ReactUtils.hasClipDot)(dot) ? dot : {},
         _ref3$clipDot = _ref3.clipDot,
         clipDot = _ref3$clipDot === void 0 ? true : _ref3$clipDot;
       var dotSize = r * 2 + strokeWidth;
-      return /*#__PURE__*/React.createElement(Layer, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: layerClass
-      }, needClipX || needClipY ? /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("clipPath", {
+      }, needClipX || needClipY ? /*#__PURE__*/_react["default"].createElement("defs", null, /*#__PURE__*/_react["default"].createElement("clipPath", {
         id: "clipPath-".concat(clipPathId)
-      }, /*#__PURE__*/React.createElement("rect", {
+      }, /*#__PURE__*/_react["default"].createElement("rect", {
         x: needClipX ? left : left - width / 2,
         y: needClipY ? top : top - height / 2,
         width: needClipX ? width : width * 2,
         height: needClipY ? height : height * 2
-      })), !clipDot && /*#__PURE__*/React.createElement("clipPath", {
+      })), !clipDot && /*#__PURE__*/_react["default"].createElement("clipPath", {
         id: "clipPath-dots-".concat(clipPathId)
-      }, /*#__PURE__*/React.createElement("rect", {
+      }, /*#__PURE__*/_react["default"].createElement("rect", {
         x: left - dotSize / 2,
         y: top - dotSize / 2,
         width: width + dotSize,
         height: height + dotSize
-      }))) : null, !hasSinglePoint ? this.renderArea(needClip, clipPathId) : null, (dot || hasSinglePoint) && this.renderDots(needClip, clipDot, clipPathId), (!isAnimationActive || isAnimationFinished) && LabelList.renderCallByParent(this.props, points));
+      }))) : null, !hasSinglePoint ? this.renderArea(needClip, clipPathId) : null, (dot || hasSinglePoint) && this.renderDots(needClip, clipDot, clipPathId), (!isAnimationActive || isAnimationFinished) && _LabelList.LabelList.renderCallByParent(this.props, points));
     }
   }], [{
     key: "getDerivedStateFromProps",
@@ -388,7 +396,7 @@ export var Area = /*#__PURE__*/function (_PureComponent) {
       return null;
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _Area = Area;
 _defineProperty(Area, "displayName", 'Area');
 _defineProperty(Area, "defaultProps", {
@@ -404,7 +412,7 @@ _defineProperty(Area, "defaultProps", {
   dot: false,
   activeDot: true,
   hide: false,
-  isAnimationActive: !Global.isSsr,
+  isAnimationActive: !_Global.Global.isSsr,
   animationBegin: 0,
   animationDuration: 1500,
   animationEasing: 'ease'
@@ -417,7 +425,7 @@ _defineProperty(Area, "getBaseValue", function (props, item, xAxis, yAxis) {
   // The baseValue can be defined both on the AreaChart as well as on the Area.
   // The value for the item takes precedence.
   var baseValue = itemBaseValue !== null && itemBaseValue !== void 0 ? itemBaseValue : chartBaseValue;
-  if (isNumber(baseValue) && typeof baseValue === 'number') {
+  if ((0, _DataUtils.isNumber)(baseValue) && typeof baseValue === 'number') {
     return baseValue;
   }
   var numericAxis = layout === 'horizontal' ? yAxis : xAxis;
@@ -464,17 +472,17 @@ _defineProperty(Area, "getComposedData", function (_ref4) {
     if (hasStack) {
       value = stackedData[dataStartIndex + index];
     } else {
-      value = getValueByDataKey(entry, dataKey);
+      value = (0, _ChartUtils.getValueByDataKey)(entry, dataKey);
       if (!Array.isArray(value)) {
         value = [baseValue, value];
       } else {
         isRange = true;
       }
     }
-    var isBreakPoint = value[1] == null || hasStack && getValueByDataKey(entry, dataKey) == null;
+    var isBreakPoint = value[1] == null || hasStack && (0, _ChartUtils.getValueByDataKey)(entry, dataKey) == null;
     if (isHorizontalLayout) {
       return {
-        x: getCateCoordinateOfLine({
+        x: (0, _ChartUtils.getCateCoordinateOfLine)({
           axis: xAxis,
           ticks: xAxisTicks,
           bandSize: bandSize,
@@ -488,7 +496,7 @@ _defineProperty(Area, "getComposedData", function (_ref4) {
     }
     return {
       x: isBreakPoint ? null : xAxis.scale(value[1]),
-      y: getCateCoordinateOfLine({
+      y: (0, _ChartUtils.getCateCoordinateOfLine)({
         axis: yAxis,
         ticks: yAxisTicks,
         bandSize: bandSize,
@@ -526,15 +534,15 @@ _defineProperty(Area, "getComposedData", function (_ref4) {
 });
 _defineProperty(Area, "renderDotItem", function (option, props) {
   var dotItem;
-  if ( /*#__PURE__*/React.isValidElement(option)) {
-    dotItem = /*#__PURE__*/React.cloneElement(option, props);
-  } else if (isFunction(option)) {
+  if ( /*#__PURE__*/_react["default"].isValidElement(option)) {
+    dotItem = /*#__PURE__*/_react["default"].cloneElement(option, props);
+  } else if ((0, _isFunction["default"])(option)) {
     dotItem = option(props);
   } else {
-    var className = clsx('recharts-area-dot', typeof option !== 'boolean' ? option.className : '');
+    var className = (0, _clsx["default"])('recharts-area-dot', typeof option !== 'boolean' ? option.className : '');
     var key = props.key,
       rest = _objectWithoutProperties(props, _excluded2);
-    dotItem = /*#__PURE__*/React.createElement(Dot, _extends({}, rest, {
+    dotItem = /*#__PURE__*/_react["default"].createElement(_Dot.Dot, _extends({}, rest, {
       key: key,
       className: className
     }));

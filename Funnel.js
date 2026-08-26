@@ -1,4 +1,30 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Funnel = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _reactSmooth = _interopRequireDefault(require("react-smooth"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _isNumber = _interopRequireDefault(require("lodash/isNumber"));
+var _isString = _interopRequireDefault(require("lodash/isString"));
+var _omit = _interopRequireDefault(require("lodash/omit"));
+var _isEqual = _interopRequireDefault(require("lodash/isEqual"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _Layer = require("../container/Layer");
+var _LabelList = require("../component/LabelList");
+var _Cell = require("../component/Cell");
+var _ReactUtils = require("../util/ReactUtils");
+var _Global = require("../util/Global");
+var _DataUtils = require("../util/DataUtils");
+var _ChartUtils = require("../util/ChartUtils");
+var _types = require("../util/types");
+var _FunnelUtils = require("../util/FunnelUtils");
 var _Funnel;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -21,28 +47,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Render sectors of a funnel
  */
-import React, { PureComponent } from 'react';
-import Animate from 'react-smooth';
-import isFunction from 'lodash/isFunction';
-import isNumber from 'lodash/isNumber';
-import isString from 'lodash/isString';
-import omit from 'lodash/omit';
-import isEqual from 'lodash/isEqual';
-import clsx from 'clsx';
-import { Layer } from '../container/Layer';
-import { LabelList } from '../component/LabelList';
-import { Cell } from '../component/Cell';
-import { findAllByType, filterProps } from '../util/ReactUtils';
-import { Global } from '../util/Global';
-import { interpolateNumber } from '../util/DataUtils';
-import { getValueByDataKey } from '../util/ChartUtils';
-import { adaptEventsOfChild } from '../util/types';
-import { FunnelTrapezoid } from '../util/FunnelUtils';
-export var Funnel = /*#__PURE__*/function (_PureComponent) {
+var Funnel = exports.Funnel = /*#__PURE__*/function (_PureComponent) {
   function Funnel() {
     var _this;
     _classCallCheck(this, Funnel);
@@ -58,7 +66,7 @@ export var Funnel = /*#__PURE__*/function (_PureComponent) {
       _this.setState({
         isAnimationFinished: true
       });
-      if (isFunction(onAnimationEnd)) {
+      if ((0, _isFunction["default"])(onAnimationEnd)) {
         onAnimationEnd();
       }
     });
@@ -67,7 +75,7 @@ export var Funnel = /*#__PURE__*/function (_PureComponent) {
       _this.setState({
         isAnimationFinished: false
       });
-      if (isFunction(onAnimationStart)) {
+      if ((0, _isFunction["default"])(onAnimationStart)) {
         onAnimationStart();
       }
     });
@@ -96,12 +104,12 @@ export var Funnel = /*#__PURE__*/function (_PureComponent) {
           isActive: _this2.isActiveIndex(i),
           stroke: entry.stroke
         });
-        return /*#__PURE__*/React.createElement(Layer, _extends({
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, _extends({
           className: "recharts-funnel-trapezoid"
-        }, adaptEventsOfChild(_this2.props, entry, i), {
+        }, (0, _types.adaptEventsOfChild)(_this2.props, entry, i), {
           key: "trapezoid-".concat(entry === null || entry === void 0 ? void 0 : entry.x, "-").concat(entry === null || entry === void 0 ? void 0 : entry.y, "-").concat(entry === null || entry === void 0 ? void 0 : entry.name, "-").concat(entry === null || entry === void 0 ? void 0 : entry.value),
           role: "img"
-        }), /*#__PURE__*/React.createElement(FunnelTrapezoid, _extends({
+        }), /*#__PURE__*/_react["default"].createElement(_FunnelUtils.FunnelTrapezoid, _extends({
           option: trapezoidOptions
         }, trapezoidProps)));
       });
@@ -118,7 +126,7 @@ export var Funnel = /*#__PURE__*/function (_PureComponent) {
         animationEasing = _this$props2.animationEasing,
         animationId = _this$props2.animationId;
       var prevTrapezoids = this.state.prevTrapezoids;
-      return /*#__PURE__*/React.createElement(Animate, {
+      return /*#__PURE__*/_react["default"].createElement(_reactSmooth["default"], {
         begin: animationBegin,
         duration: animationDuration,
         isActive: isAnimationActive,
@@ -137,11 +145,11 @@ export var Funnel = /*#__PURE__*/function (_PureComponent) {
         var stepData = trapezoids.map(function (entry, index) {
           var prev = prevTrapezoids && prevTrapezoids[index];
           if (prev) {
-            var _interpolatorX = interpolateNumber(prev.x, entry.x);
-            var _interpolatorY = interpolateNumber(prev.y, entry.y);
-            var _interpolatorUpperWidth = interpolateNumber(prev.upperWidth, entry.upperWidth);
-            var _interpolatorLowerWidth = interpolateNumber(prev.lowerWidth, entry.lowerWidth);
-            var _interpolatorHeight = interpolateNumber(prev.height, entry.height);
+            var _interpolatorX = (0, _DataUtils.interpolateNumber)(prev.x, entry.x);
+            var _interpolatorY = (0, _DataUtils.interpolateNumber)(prev.y, entry.y);
+            var _interpolatorUpperWidth = (0, _DataUtils.interpolateNumber)(prev.upperWidth, entry.upperWidth);
+            var _interpolatorLowerWidth = (0, _DataUtils.interpolateNumber)(prev.lowerWidth, entry.lowerWidth);
+            var _interpolatorHeight = (0, _DataUtils.interpolateNumber)(prev.height, entry.height);
             return _objectSpread(_objectSpread({}, entry), {}, {
               x: _interpolatorX(t),
               y: _interpolatorY(t),
@@ -150,11 +158,11 @@ export var Funnel = /*#__PURE__*/function (_PureComponent) {
               height: _interpolatorHeight(t)
             });
           }
-          var interpolatorX = interpolateNumber(entry.x + entry.upperWidth / 2, entry.x);
-          var interpolatorY = interpolateNumber(entry.y + entry.height / 2, entry.y);
-          var interpolatorUpperWidth = interpolateNumber(0, entry.upperWidth);
-          var interpolatorLowerWidth = interpolateNumber(0, entry.lowerWidth);
-          var interpolatorHeight = interpolateNumber(0, entry.height);
+          var interpolatorX = (0, _DataUtils.interpolateNumber)(entry.x + entry.upperWidth / 2, entry.x);
+          var interpolatorY = (0, _DataUtils.interpolateNumber)(entry.y + entry.height / 2, entry.y);
+          var interpolatorUpperWidth = (0, _DataUtils.interpolateNumber)(0, entry.upperWidth);
+          var interpolatorLowerWidth = (0, _DataUtils.interpolateNumber)(0, entry.lowerWidth);
+          var interpolatorHeight = (0, _DataUtils.interpolateNumber)(0, entry.height);
           return _objectSpread(_objectSpread({}, entry), {}, {
             x: interpolatorX(t),
             y: interpolatorY(t),
@@ -163,7 +171,7 @@ export var Funnel = /*#__PURE__*/function (_PureComponent) {
             height: interpolatorHeight(t)
           });
         });
-        return /*#__PURE__*/React.createElement(Layer, null, _this3.renderTrapezoidsStatically(stepData));
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, null, _this3.renderTrapezoidsStatically(stepData));
       });
     }
   }, {
@@ -173,7 +181,7 @@ export var Funnel = /*#__PURE__*/function (_PureComponent) {
         trapezoids = _this$props3.trapezoids,
         isAnimationActive = _this$props3.isAnimationActive;
       var prevTrapezoids = this.state.prevTrapezoids;
-      if (isAnimationActive && trapezoids && trapezoids.length && (!prevTrapezoids || !isEqual(prevTrapezoids, trapezoids))) {
+      if (isAnimationActive && trapezoids && trapezoids.length && (!prevTrapezoids || !(0, _isEqual["default"])(prevTrapezoids, trapezoids))) {
         return this.renderTrapezoidsWithAnimation();
       }
       return this.renderTrapezoidsStatically(trapezoids);
@@ -190,10 +198,10 @@ export var Funnel = /*#__PURE__*/function (_PureComponent) {
       if (hide || !trapezoids || !trapezoids.length) {
         return null;
       }
-      var layerClass = clsx('recharts-trapezoids', className);
-      return /*#__PURE__*/React.createElement(Layer, {
+      var layerClass = (0, _clsx["default"])('recharts-trapezoids', className);
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: layerClass
-      }, this.renderTrapezoids(), (!isAnimationActive || isAnimationFinished) && LabelList.renderCallByParent(this.props, trapezoids));
+      }, this.renderTrapezoids(), (!isAnimationActive || isAnimationFinished) && _LabelList.LabelList.renderCallByParent(this.props, trapezoids));
     }
   }], [{
     key: "getDerivedStateFromProps",
@@ -213,7 +221,7 @@ export var Funnel = /*#__PURE__*/function (_PureComponent) {
       return null;
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _Funnel = Funnel;
 _defineProperty(Funnel, "displayName", 'Funnel');
 _defineProperty(Funnel, "defaultProps", {
@@ -222,7 +230,7 @@ _defineProperty(Funnel, "defaultProps", {
   legendType: 'rect',
   labelLine: true,
   hide: false,
-  isAnimationActive: !Global.isSsr,
+  isAnimationActive: !_Global.Global.isSsr,
   animationBegin: 400,
   animationDuration: 1500,
   animationEasing: 'ease',
@@ -233,8 +241,8 @@ _defineProperty(Funnel, "getRealFunnelData", function (item) {
   var _item$props = item.props,
     data = _item$props.data,
     children = _item$props.children;
-  var presentationProps = filterProps(item.props, false);
-  var cells = findAllByType(children, Cell);
+  var presentationProps = (0, _ReactUtils.filterProps)(item.props, false);
+  var cells = (0, _ReactUtils.findAllByType)(children, _Cell.Cell);
   if (data && data.length) {
     return data.map(function (entry, index) {
       return _objectSpread(_objectSpread(_objectSpread({
@@ -259,9 +267,9 @@ _defineProperty(Funnel, "getRealWidthHeight", function (item, offset) {
     bottom = offset.bottom;
   var realHeight = height;
   var realWidth = width;
-  if (isNumber(customWidth)) {
+  if ((0, _isNumber["default"])(customWidth)) {
     realWidth = customWidth;
-  } else if (isString(customWidth)) {
+  } else if ((0, _isString["default"])(customWidth)) {
     realWidth = realWidth * parseFloat(customWidth) / 100;
   }
   return {
@@ -289,7 +297,7 @@ _defineProperty(Funnel, "getComposedData", function (_ref2) {
     offsetX = _Funnel$getRealWidthH.offsetX,
     offsetY = _Funnel$getRealWidthH.offsetY;
   var maxValue = Math.max.apply(null, funnelData.map(function (entry) {
-    return getValueByDataKey(entry, dataKey, 0);
+    return (0, _ChartUtils.getValueByDataKey)(entry, dataKey, 0);
   }));
   var len = funnelData.length;
   var rowHeight = realHeight / len;
@@ -300,12 +308,12 @@ _defineProperty(Funnel, "getComposedData", function (_ref2) {
     height: offset.height
   };
   var trapezoids = funnelData.map(function (entry, i) {
-    var rawVal = getValueByDataKey(entry, dataKey, 0);
-    var name = getValueByDataKey(entry, nameKey, i);
+    var rawVal = (0, _ChartUtils.getValueByDataKey)(entry, dataKey, 0);
+    var name = (0, _ChartUtils.getValueByDataKey)(entry, nameKey, i);
     var val = rawVal;
     var nextVal;
     if (i !== len - 1) {
-      nextVal = getValueByDataKey(funnelData[i + 1], dataKey, 0);
+      nextVal = (0, _ChartUtils.getValueByDataKey)(funnelData[i + 1], dataKey, 0);
       if (nextVal instanceof Array) {
         var _nextVal = nextVal;
         var _nextVal2 = _slicedToArray(_nextVal, 1);
@@ -346,7 +354,7 @@ _defineProperty(Funnel, "getComposedData", function (_ref2) {
       val: val,
       tooltipPayload: tooltipPayload,
       tooltipPosition: tooltipPosition
-    }, omit(entry, 'width')), {}, {
+    }, (0, _omit["default"])(entry, 'width')), {}, {
       payload: entry,
       parentViewBox: parentViewBox,
       labelViewBox: {

@@ -1,5 +1,29 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Bar = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _reactSmooth = _interopRequireDefault(require("react-smooth"));
+var _isEqual = _interopRequireDefault(require("lodash/isEqual"));
+var _isNil = _interopRequireDefault(require("lodash/isNil"));
+var _Layer = require("../container/Layer");
+var _ErrorBar = require("./ErrorBar");
+var _Cell = require("../component/Cell");
+var _LabelList = require("../component/LabelList");
+var _DataUtils = require("../util/DataUtils");
+var _ReactUtils = require("../util/ReactUtils");
+var _Global = require("../util/Global");
+var _ChartUtils = require("../util/ChartUtils");
+var _types = require("../util/types");
+var _BarUtils = require("../util/BarUtils");
 var _excluded = ["value", "background"];
 var _Bar;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } } return target; }
@@ -18,26 +42,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Render a group of bar
  */
-import React, { PureComponent } from 'react';
-import clsx from 'clsx';
-import Animate from 'react-smooth';
-import isEqual from 'lodash/isEqual';
-import isNil from 'lodash/isNil';
-import { Layer } from '../container/Layer';
-import { ErrorBar } from './ErrorBar';
-import { Cell } from '../component/Cell';
-import { LabelList } from '../component/LabelList';
-import { uniqueId, mathSign, interpolateNumber } from '../util/DataUtils';
-import { filterProps, findAllByType } from '../util/ReactUtils';
-import { Global } from '../util/Global';
-import { getCateCoordinateOfBar, getValueByDataKey, truncateByDomain, getBaseValueOfBar, findPositionOfBar, getTooltipItem } from '../util/ChartUtils';
-import { adaptEventsOfChild } from '../util/types';
-import { BarRectangle, minPointSizeCallback } from '../util/BarUtils';
-export var Bar = /*#__PURE__*/function (_PureComponent) {
+var Bar = exports.Bar = /*#__PURE__*/function (_PureComponent) {
   function Bar() {
     var _this;
     _classCallCheck(this, Bar);
@@ -48,7 +56,7 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
     _defineProperty(_this, "state", {
       isAnimationFinished: false
     });
-    _defineProperty(_this, "id", uniqueId('recharts-bar-'));
+    _defineProperty(_this, "id", (0, _DataUtils.uniqueId)('recharts-bar-'));
     _defineProperty(_this, "handleAnimationEnd", function () {
       var onAnimationEnd = _this.props.onAnimationEnd;
       _this.setState({
@@ -79,7 +87,7 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
         dataKey = _this$props.dataKey,
         activeIndex = _this$props.activeIndex,
         activeBar = _this$props.activeBar;
-      var baseProps = filterProps(this.props, false);
+      var baseProps = (0, _ReactUtils.filterProps)(this.props, false);
       return data && data.map(function (entry, i) {
         var isActive = i === activeIndex;
         var option = isActive ? activeBar : shape;
@@ -91,13 +99,13 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
           onAnimationStart: _this2.handleAnimationStart,
           onAnimationEnd: _this2.handleAnimationEnd
         });
-        return /*#__PURE__*/React.createElement(Layer, _extends({
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, _extends({
           className: "recharts-bar-rectangle"
-        }, adaptEventsOfChild(_this2.props, entry, i), {
+        }, (0, _types.adaptEventsOfChild)(_this2.props, entry, i), {
           // https://github.com/recharts/recharts/issues/5415
           // eslint-disable-next-line react/no-array-index-key
           key: "rectangle-".concat(entry === null || entry === void 0 ? void 0 : entry.x, "-").concat(entry === null || entry === void 0 ? void 0 : entry.y, "-").concat(entry === null || entry === void 0 ? void 0 : entry.value, "-").concat(i)
-        }), /*#__PURE__*/React.createElement(BarRectangle, props));
+        }), /*#__PURE__*/_react["default"].createElement(_BarUtils.BarRectangle, props));
       });
     }
   }, {
@@ -113,7 +121,7 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
         animationEasing = _this$props2.animationEasing,
         animationId = _this$props2.animationId;
       var prevData = this.state.prevData;
-      return /*#__PURE__*/React.createElement(Animate, {
+      return /*#__PURE__*/_react["default"].createElement(_reactSmooth["default"], {
         begin: animationBegin,
         duration: animationDuration,
         isActive: isAnimationActive,
@@ -132,10 +140,10 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
         var stepData = data.map(function (entry, index) {
           var prev = prevData && prevData[index];
           if (prev) {
-            var interpolatorX = interpolateNumber(prev.x, entry.x);
-            var interpolatorY = interpolateNumber(prev.y, entry.y);
-            var interpolatorWidth = interpolateNumber(prev.width, entry.width);
-            var interpolatorHeight = interpolateNumber(prev.height, entry.height);
+            var interpolatorX = (0, _DataUtils.interpolateNumber)(prev.x, entry.x);
+            var interpolatorY = (0, _DataUtils.interpolateNumber)(prev.y, entry.y);
+            var interpolatorWidth = (0, _DataUtils.interpolateNumber)(prev.width, entry.width);
+            var interpolatorHeight = (0, _DataUtils.interpolateNumber)(prev.height, entry.height);
             return _objectSpread(_objectSpread({}, entry), {}, {
               x: interpolatorX(t),
               y: interpolatorY(t),
@@ -144,20 +152,20 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
             });
           }
           if (layout === 'horizontal') {
-            var _interpolatorHeight = interpolateNumber(0, entry.height);
+            var _interpolatorHeight = (0, _DataUtils.interpolateNumber)(0, entry.height);
             var h = _interpolatorHeight(t);
             return _objectSpread(_objectSpread({}, entry), {}, {
               y: entry.y + entry.height - h,
               height: h
             });
           }
-          var interpolator = interpolateNumber(0, entry.width);
+          var interpolator = (0, _DataUtils.interpolateNumber)(0, entry.width);
           var w = interpolator(t);
           return _objectSpread(_objectSpread({}, entry), {}, {
             width: w
           });
         });
-        return /*#__PURE__*/React.createElement(Layer, null, _this3.renderRectanglesStatically(stepData));
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, null, _this3.renderRectanglesStatically(stepData));
       });
     }
   }, {
@@ -167,7 +175,7 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
         data = _this$props3.data,
         isAnimationActive = _this$props3.isAnimationActive;
       var prevData = this.state.prevData;
-      if (isAnimationActive && data && data.length && (!prevData || !isEqual(prevData, data))) {
+      if (isAnimationActive && data && data.length && (!prevData || !(0, _isEqual["default"])(prevData, data))) {
         return this.renderRectanglesWithAnimation();
       }
       return this.renderRectanglesStatically(data);
@@ -180,7 +188,7 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
         data = _this$props4.data,
         dataKey = _this$props4.dataKey,
         activeIndex = _this$props4.activeIndex;
-      var backgroundProps = filterProps(this.props.background, false);
+      var backgroundProps = (0, _ReactUtils.filterProps)(this.props.background, false);
       return data.map(function (entry, i) {
         var value = entry.value,
           background = entry.background,
@@ -190,14 +198,14 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
         }
         var props = _objectSpread(_objectSpread(_objectSpread(_objectSpread(_objectSpread({}, rest), {}, {
           fill: '#eee'
-        }, background), backgroundProps), adaptEventsOfChild(_this4.props, entry, i)), {}, {
+        }, background), backgroundProps), (0, _types.adaptEventsOfChild)(_this4.props, entry, i)), {}, {
           onAnimationStart: _this4.handleAnimationStart,
           onAnimationEnd: _this4.handleAnimationEnd,
           dataKey: dataKey,
           index: i,
           className: 'recharts-bar-background-rectangle'
         });
-        return /*#__PURE__*/React.createElement(BarRectangle, _extends({
+        return /*#__PURE__*/_react["default"].createElement(_BarUtils.BarRectangle, _extends({
           key: "background-bar-".concat(i),
           option: _this4.props.background,
           isActive: i === activeIndex
@@ -216,7 +224,7 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
         yAxis = _this$props5.yAxis,
         layout = _this$props5.layout,
         children = _this$props5.children;
-      var errorBarItems = findAllByType(children, ErrorBar);
+      var errorBarItems = (0, _ReactUtils.findAllByType)(children, _ErrorBar.ErrorBar);
       if (!errorBarItems) {
         return null;
       }
@@ -231,14 +239,14 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
           x: dataPoint.x,
           y: dataPoint.y,
           value: value,
-          errorVal: getValueByDataKey(dataPoint, dataKey)
+          errorVal: (0, _ChartUtils.getValueByDataKey)(dataPoint, dataKey)
         };
       };
       var errorBarProps = {
         clipPath: needClip ? "url(#clipPath-".concat(clipPathId, ")") : null
       };
-      return /*#__PURE__*/React.createElement(Layer, errorBarProps, errorBarItems.map(function (item) {
-        return /*#__PURE__*/React.cloneElement(item, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, errorBarProps, errorBarItems.map(function (item) {
+        return /*#__PURE__*/_react["default"].cloneElement(item, {
           key: "error-bar-".concat(clipPathId, "-").concat(item.props.dataKey),
           data: data,
           xAxis: xAxis,
@@ -269,24 +277,24 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
         return null;
       }
       var isAnimationFinished = this.state.isAnimationFinished;
-      var layerClass = clsx('recharts-bar', className);
+      var layerClass = (0, _clsx["default"])('recharts-bar', className);
       var needClipX = xAxis && xAxis.allowDataOverflow;
       var needClipY = yAxis && yAxis.allowDataOverflow;
       var needClip = needClipX || needClipY;
-      var clipPathId = isNil(id) ? this.id : id;
-      return /*#__PURE__*/React.createElement(Layer, {
+      var clipPathId = (0, _isNil["default"])(id) ? this.id : id;
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: layerClass
-      }, needClipX || needClipY ? /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("clipPath", {
+      }, needClipX || needClipY ? /*#__PURE__*/_react["default"].createElement("defs", null, /*#__PURE__*/_react["default"].createElement("clipPath", {
         id: "clipPath-".concat(clipPathId)
-      }, /*#__PURE__*/React.createElement("rect", {
+      }, /*#__PURE__*/_react["default"].createElement("rect", {
         x: needClipX ? left : left - width / 2,
         y: needClipY ? top : top - height / 2,
         width: needClipX ? width : width * 2,
         height: needClipY ? height : height * 2
-      }))) : null, /*#__PURE__*/React.createElement(Layer, {
+      }))) : null, /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-bar-rectangles",
         clipPath: needClip ? "url(#clipPath-".concat(clipPathId, ")") : null
-      }, background ? this.renderBackground() : null, this.renderRectangles()), this.renderErrorBar(needClip, clipPathId), (!isAnimationActive || isAnimationFinished) && LabelList.renderCallByParent(this.props, data));
+      }, background ? this.renderBackground() : null, this.renderRectangles()), this.renderErrorBar(needClip, clipPathId), (!isAnimationActive || isAnimationFinished) && _LabelList.LabelList.renderCallByParent(this.props, data));
     }
   }], [{
     key: "getDerivedStateFromProps",
@@ -306,7 +314,7 @@ export var Bar = /*#__PURE__*/function (_PureComponent) {
       return null;
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _Bar = Bar;
 _defineProperty(Bar, "displayName", 'Bar');
 _defineProperty(Bar, "defaultProps", {
@@ -318,7 +326,7 @@ _defineProperty(Bar, "defaultProps", {
   data: [],
   layout: 'vertical',
   activeBar: false,
-  isAnimationActive: !Global.isSsr,
+  isAnimationActive: !_Global.Global.isSsr,
   animationBegin: 0,
   animationDuration: 400,
   animationEasing: 'ease'
@@ -346,7 +354,7 @@ _defineProperty(Bar, "getComposedData", function (_ref2) {
     dataStartIndex = _ref2.dataStartIndex,
     displayedData = _ref2.displayedData,
     offset = _ref2.offset;
-  var pos = findPositionOfBar(barPosition, item);
+  var pos = (0, _ChartUtils.findPositionOfBar)(barPosition, item);
   if (!pos) {
     return null;
   }
@@ -358,27 +366,27 @@ _defineProperty(Bar, "getComposedData", function (_ref2) {
     minPointSizeProp = itemProps.minPointSize;
   var numericAxis = layout === 'horizontal' ? yAxis : xAxis;
   var stackedDomain = stackedData ? numericAxis.scale.domain() : null;
-  var baseValue = getBaseValueOfBar({
+  var baseValue = (0, _ChartUtils.getBaseValueOfBar)({
     numericAxis: numericAxis
   });
-  var cells = findAllByType(children, Cell);
+  var cells = (0, _ReactUtils.findAllByType)(children, _Cell.Cell);
   var rects = displayedData.map(function (entry, index) {
     var value, x, y, width, height, background;
     if (stackedData) {
-      value = truncateByDomain(stackedData[dataStartIndex + index], stackedDomain);
+      value = (0, _ChartUtils.truncateByDomain)(stackedData[dataStartIndex + index], stackedDomain);
     } else {
-      value = getValueByDataKey(entry, dataKey);
+      value = (0, _ChartUtils.getValueByDataKey)(entry, dataKey);
       if (!Array.isArray(value)) {
         value = [baseValue, value];
       }
     }
-    var minPointSize = minPointSizeCallback(minPointSizeProp, _Bar.defaultProps.minPointSize)(value[1], index);
+    var minPointSize = (0, _BarUtils.minPointSizeCallback)(minPointSizeProp, _Bar.defaultProps.minPointSize)(value[1], index);
     if (layout === 'horizontal') {
       var _ref4;
       var _ref3 = [yAxis.scale(value[0]), yAxis.scale(value[1])],
         baseValueScale = _ref3[0],
         currentValueScale = _ref3[1];
-      x = getCateCoordinateOfBar({
+      x = (0, _ChartUtils.getCateCoordinateOfBar)({
         axis: xAxis,
         ticks: xAxisTicks,
         bandSize: bandSize,
@@ -397,7 +405,7 @@ _defineProperty(Bar, "getComposedData", function (_ref2) {
         height: yAxis.height
       };
       if (Math.abs(minPointSize) > 0 && Math.abs(height) < Math.abs(minPointSize)) {
-        var delta = mathSign(height || minPointSize) * (Math.abs(minPointSize) - Math.abs(height));
+        var delta = (0, _DataUtils.mathSign)(height || minPointSize) * (Math.abs(minPointSize) - Math.abs(height));
         y -= delta;
         height += delta;
       }
@@ -406,7 +414,7 @@ _defineProperty(Bar, "getComposedData", function (_ref2) {
         _baseValueScale = _ref5[0],
         _currentValueScale = _ref5[1];
       x = _baseValueScale;
-      y = getCateCoordinateOfBar({
+      y = (0, _ChartUtils.getCateCoordinateOfBar)({
         axis: yAxis,
         ticks: yAxisTicks,
         bandSize: bandSize,
@@ -423,7 +431,7 @@ _defineProperty(Bar, "getComposedData", function (_ref2) {
         height: height
       };
       if (Math.abs(minPointSize) > 0 && Math.abs(width) < Math.abs(minPointSize)) {
-        var _delta = mathSign(width || minPointSize) * (Math.abs(minPointSize) - Math.abs(width));
+        var _delta = (0, _DataUtils.mathSign)(width || minPointSize) * (Math.abs(minPointSize) - Math.abs(width));
         width += _delta;
       }
     }
@@ -436,7 +444,7 @@ _defineProperty(Bar, "getComposedData", function (_ref2) {
       payload: entry,
       background: background
     }, cells && cells[index] && cells[index].props), {}, {
-      tooltipPayload: [getTooltipItem(item, entry)],
+      tooltipPayload: [(0, _ChartUtils.getTooltipItem)(item, entry)],
       tooltipPosition: {
         x: x + width / 2,
         y: y + height / 2

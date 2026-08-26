@@ -1,3 +1,22 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PolarAngleAxis = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _Layer = require("../container/Layer");
+var _Dot = require("../shape/Dot");
+var _Polygon = require("../shape/Polygon");
+var _Text = require("../component/Text");
+var _types = require("../util/types");
+var _ReactUtils = require("../util/ReactUtils");
+var _PolarUtils = require("../util/PolarUtils");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -14,23 +33,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Axis of radial direction
  */
-import React, { PureComponent } from 'react';
-import isFunction from 'lodash/isFunction';
-import clsx from 'clsx';
-import { Layer } from '../container/Layer';
-import { Dot } from '../shape/Dot';
-import { Polygon } from '../shape/Polygon';
-import { Text } from '../component/Text';
-import { adaptEventsOfChild } from '../util/types';
-import { filterProps } from '../util/ReactUtils';
-import { getTickClassName, polarToCartesian } from '../util/PolarUtils';
 var RADIAN = Math.PI / 180;
 var eps = 1e-5;
-export var PolarAngleAxis = /*#__PURE__*/function (_PureComponent) {
+var PolarAngleAxis = exports.PolarAngleAxis = /*#__PURE__*/function (_PureComponent) {
   function PolarAngleAxis() {
     _classCallCheck(this, PolarAngleAxis);
     return _callSuper(this, PolarAngleAxis, arguments);
@@ -54,8 +62,8 @@ export var PolarAngleAxis = /*#__PURE__*/function (_PureComponent) {
         orientation = _this$props.orientation,
         tickSize = _this$props.tickSize;
       var tickLineSize = tickSize || 8;
-      var p1 = polarToCartesian(cx, cy, radius, data.coordinate);
-      var p2 = polarToCartesian(cx, cy, radius + (orientation === 'inner' ? -1 : 1) * tickLineSize, data.coordinate);
+      var p1 = (0, _PolarUtils.polarToCartesian)(cx, cy, radius, data.coordinate);
+      var p2 = (0, _PolarUtils.polarToCartesian)(cx, cy, radius + (orientation === 'inner' ? -1 : 1) * tickLineSize, data.coordinate);
       return {
         x1: p1.x,
         y1: p1.y,
@@ -93,11 +101,11 @@ export var PolarAngleAxis = /*#__PURE__*/function (_PureComponent) {
         radius = _this$props2.radius,
         axisLine = _this$props2.axisLine,
         axisLineType = _this$props2.axisLineType;
-      var props = _objectSpread(_objectSpread({}, filterProps(this.props, false)), {}, {
+      var props = _objectSpread(_objectSpread({}, (0, _ReactUtils.filterProps)(this.props, false)), {}, {
         fill: 'none'
-      }, filterProps(axisLine, false));
+      }, (0, _ReactUtils.filterProps)(axisLine, false));
       if (axisLineType === 'circle') {
-        return /*#__PURE__*/React.createElement(Dot, _extends({
+        return /*#__PURE__*/_react["default"].createElement(_Dot.Dot, _extends({
           className: "recharts-polar-angle-axis-line"
         }, props, {
           cx: cx,
@@ -107,9 +115,9 @@ export var PolarAngleAxis = /*#__PURE__*/function (_PureComponent) {
       }
       var ticks = this.props.ticks;
       var points = ticks.map(function (entry) {
-        return polarToCartesian(cx, cy, radius, entry.coordinate);
+        return (0, _PolarUtils.polarToCartesian)(cx, cy, radius, entry.coordinate);
       });
-      return /*#__PURE__*/React.createElement(Polygon, _extends({
+      return /*#__PURE__*/_react["default"].createElement(_Polygon.Polygon, _extends({
         className: "recharts-polar-angle-axis-line"
       }, props, {
         points: points
@@ -125,11 +133,11 @@ export var PolarAngleAxis = /*#__PURE__*/function (_PureComponent) {
         tickLine = _this$props3.tickLine,
         tickFormatter = _this$props3.tickFormatter,
         stroke = _this$props3.stroke;
-      var axisProps = filterProps(this.props, false);
-      var customTickProps = filterProps(tick, false);
+      var axisProps = (0, _ReactUtils.filterProps)(this.props, false);
+      var customTickProps = (0, _ReactUtils.filterProps)(tick, false);
       var tickLineProps = _objectSpread(_objectSpread({}, axisProps), {}, {
         fill: 'none'
-      }, filterProps(tickLine, false));
+      }, (0, _ReactUtils.filterProps)(tickLine, false));
       var items = ticks.map(function (entry, i) {
         var lineCoord = _this.getTickLineCoord(entry);
         var textAnchor = _this.getTickTextAnchor(entry);
@@ -144,14 +152,14 @@ export var PolarAngleAxis = /*#__PURE__*/function (_PureComponent) {
           x: lineCoord.x2,
           y: lineCoord.y2
         });
-        return /*#__PURE__*/React.createElement(Layer, _extends({
-          className: clsx('recharts-polar-angle-axis-tick', getTickClassName(tick)),
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, _extends({
+          className: (0, _clsx["default"])('recharts-polar-angle-axis-tick', (0, _PolarUtils.getTickClassName)(tick)),
           key: "tick-".concat(entry.coordinate)
-        }, adaptEventsOfChild(_this.props, entry, i)), tickLine && /*#__PURE__*/React.createElement("line", _extends({
+        }, (0, _types.adaptEventsOfChild)(_this.props, entry, i)), tickLine && /*#__PURE__*/_react["default"].createElement("line", _extends({
           className: "recharts-polar-angle-axis-tick-line"
         }, tickLineProps, lineCoord)), tick && PolarAngleAxis.renderTickItem(tick, tickProps, tickFormatter ? tickFormatter(entry.value, i) : entry.value));
       });
-      return /*#__PURE__*/React.createElement(Layer, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-polar-angle-axis-ticks"
       }, items);
     }
@@ -165,27 +173,27 @@ export var PolarAngleAxis = /*#__PURE__*/function (_PureComponent) {
       if (radius <= 0 || !ticks || !ticks.length) {
         return null;
       }
-      return /*#__PURE__*/React.createElement(Layer, {
-        className: clsx('recharts-polar-angle-axis', this.props.className)
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
+        className: (0, _clsx["default"])('recharts-polar-angle-axis', this.props.className)
       }, axisLine && this.renderAxisLine(), this.renderTicks());
     }
   }], [{
     key: "renderTickItem",
     value: function renderTickItem(option, props, value) {
       var tickItem;
-      if ( /*#__PURE__*/React.isValidElement(option)) {
-        tickItem = /*#__PURE__*/React.cloneElement(option, props);
-      } else if (isFunction(option)) {
+      if ( /*#__PURE__*/_react["default"].isValidElement(option)) {
+        tickItem = /*#__PURE__*/_react["default"].cloneElement(option, props);
+      } else if ((0, _isFunction["default"])(option)) {
         tickItem = option(props);
       } else {
-        tickItem = /*#__PURE__*/React.createElement(Text, _extends({}, props, {
+        tickItem = /*#__PURE__*/_react["default"].createElement(_Text.Text, _extends({}, props, {
           className: "recharts-polar-angle-axis-tick-value"
         }), value);
       }
       return tickItem;
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _defineProperty(PolarAngleAxis, "displayName", 'PolarAngleAxis');
 _defineProperty(PolarAngleAxis, "axisType", 'angleAxis');
 _defineProperty(PolarAngleAxis, "defaultProps", {

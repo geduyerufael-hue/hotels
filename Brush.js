@@ -1,3 +1,23 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Brush = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _d3Scale = require("victory-vendor/d3-scale");
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _range = _interopRequireDefault(require("lodash/range"));
+var _Layer = require("../container/Layer");
+var _Text = require("../component/Text");
+var _ChartUtils = require("../util/ChartUtils");
+var _DataUtils = require("../util/DataUtils");
+var _CssPrefixUtils = require("../util/CssPrefixUtils");
+var _ReactUtils = require("../util/ReactUtils");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -14,21 +34,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Brush
  */
-import React, { PureComponent, Children } from 'react';
-import clsx from 'clsx';
-import { scalePoint } from 'victory-vendor/d3-scale';
-import isFunction from 'lodash/isFunction';
-import range from 'lodash/range';
-import { Layer } from '../container/Layer';
-import { Text } from '../component/Text';
-import { getValueByDataKey } from '../util/ChartUtils';
-import { isNumber } from '../util/DataUtils';
-import { generatePrefixStyle } from '../util/CssPrefixUtils';
-import { filterProps } from '../util/ReactUtils';
 var createScale = function createScale(_ref) {
   var data = _ref.data,
     startIndex = _ref.startIndex,
@@ -40,7 +48,7 @@ var createScale = function createScale(_ref) {
     return {};
   }
   var len = data.length;
-  var scale = scalePoint().domain(range(0, len)).range([x, x + width - travellerWidth]);
+  var scale = (0, _d3Scale.scalePoint)().domain((0, _range["default"])(0, len)).range([x, x + width - travellerWidth]);
   var scaleValues = scale.domain().map(function (entry) {
     return scale(entry);
   });
@@ -58,7 +66,7 @@ var createScale = function createScale(_ref) {
 var isTouch = function isTouch(e) {
   return e.changedTouches && !!e.changedTouches.length;
 };
-export var Brush = /*#__PURE__*/function (_PureComponent) {
+var Brush = exports.Brush = /*#__PURE__*/function (_PureComponent) {
   function Brush(props) {
     var _this;
     _classCallCheck(this, Brush);
@@ -162,8 +170,8 @@ export var Brush = /*#__PURE__*/function (_PureComponent) {
         data = _this$props3.data,
         tickFormatter = _this$props3.tickFormatter,
         dataKey = _this$props3.dataKey;
-      var text = getValueByDataKey(data[index], dataKey, index);
-      return isFunction(tickFormatter) ? tickFormatter(text, index) : text;
+      var text = (0, _ChartUtils.getValueByDataKey)(data[index], dataKey, index);
+      return (0, _isFunction["default"])(tickFormatter) ? tickFormatter(text, index) : text;
     }
   }, {
     key: "attachDragEndListener",
@@ -311,7 +319,7 @@ export var Brush = /*#__PURE__*/function (_PureComponent) {
         height = _this$props6.height,
         fill = _this$props6.fill,
         stroke = _this$props6.stroke;
-      return /*#__PURE__*/React.createElement("rect", {
+      return /*#__PURE__*/_react["default"].createElement("rect", {
         stroke: stroke,
         fill: fill,
         x: x,
@@ -331,11 +339,11 @@ export var Brush = /*#__PURE__*/function (_PureComponent) {
         data = _this$props7.data,
         children = _this$props7.children,
         padding = _this$props7.padding;
-      var chartElement = Children.only(children);
+      var chartElement = _react.Children.only(children);
       if (!chartElement) {
         return null;
       }
-      return /*#__PURE__*/React.cloneElement(chartElement, {
+      return /*#__PURE__*/_react["default"].cloneElement(chartElement, {
         x: x,
         y: y,
         width: width,
@@ -361,14 +369,14 @@ export var Brush = /*#__PURE__*/function (_PureComponent) {
         startIndex = _this$props8.startIndex,
         endIndex = _this$props8.endIndex;
       var x = Math.max(travellerX, this.props.x);
-      var travellerProps = _objectSpread(_objectSpread({}, filterProps(this.props, false)), {}, {
+      var travellerProps = _objectSpread(_objectSpread({}, (0, _ReactUtils.filterProps)(this.props, false)), {}, {
         x: x,
         y: y,
         width: travellerWidth,
         height: height
       });
       var ariaLabelBrush = ariaLabel || "Min value: ".concat((_data$startIndex = data[startIndex]) === null || _data$startIndex === void 0 ? void 0 : _data$startIndex.name, ", Max value: ").concat((_data$endIndex = data[endIndex]) === null || _data$endIndex === void 0 ? void 0 : _data$endIndex.name);
-      return /*#__PURE__*/React.createElement(Layer, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         tabIndex: 0,
         role: "slider",
         "aria-label": ariaLabelBrush,
@@ -411,7 +419,7 @@ export var Brush = /*#__PURE__*/function (_PureComponent) {
         travellerWidth = _this$props9.travellerWidth;
       var x = Math.min(startX, endX) + travellerWidth;
       var width = Math.max(Math.abs(endX - startX) - travellerWidth, 0);
-      return /*#__PURE__*/React.createElement("rect", {
+      return /*#__PURE__*/_react["default"].createElement("rect", {
         className: "recharts-brush-slide",
         onMouseEnter: this.handleEnterSlideOrTraveller,
         onMouseLeave: this.handleLeaveSlideOrTraveller,
@@ -447,14 +455,14 @@ export var Brush = /*#__PURE__*/function (_PureComponent) {
         pointerEvents: 'none',
         fill: stroke
       };
-      return /*#__PURE__*/React.createElement(Layer, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-brush-texts"
-      }, /*#__PURE__*/React.createElement(Text, _extends({
+      }, /*#__PURE__*/_react["default"].createElement(_Text.Text, _extends({
         textAnchor: "end",
         verticalAnchor: "middle",
         x: Math.min(startX, endX) - offset,
         y: y + height / 2
-      }, attrs), this.getTextOfTick(startIndex)), /*#__PURE__*/React.createElement(Text, _extends({
+      }, attrs), this.getTextOfTick(startIndex)), /*#__PURE__*/_react["default"].createElement(_Text.Text, _extends({
         textAnchor: "start",
         verticalAnchor: "middle",
         x: Math.max(startX, endX) + travellerWidth + offset,
@@ -480,13 +488,13 @@ export var Brush = /*#__PURE__*/function (_PureComponent) {
         isSlideMoving = _this$state5.isSlideMoving,
         isTravellerMoving = _this$state5.isTravellerMoving,
         isTravellerFocused = _this$state5.isTravellerFocused;
-      if (!data || !data.length || !isNumber(x) || !isNumber(y) || !isNumber(width) || !isNumber(height) || width <= 0 || height <= 0) {
+      if (!data || !data.length || !(0, _DataUtils.isNumber)(x) || !(0, _DataUtils.isNumber)(y) || !(0, _DataUtils.isNumber)(width) || !(0, _DataUtils.isNumber)(height) || width <= 0 || height <= 0) {
         return null;
       }
-      var layerClass = clsx('recharts-brush', className);
-      var isPanoramic = React.Children.count(children) === 1;
-      var style = generatePrefixStyle('userSelect', 'none');
-      return /*#__PURE__*/React.createElement(Layer, {
+      var layerClass = (0, _clsx["default"])('recharts-brush', className);
+      var isPanoramic = _react["default"].Children.count(children) === 1;
+      var style = (0, _CssPrefixUtils.generatePrefixStyle)('userSelect', 'none');
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: layerClass,
         onMouseLeave: this.handleLeaveWrapper,
         onTouchMove: this.handleTouchMove,
@@ -502,21 +510,21 @@ export var Brush = /*#__PURE__*/function (_PureComponent) {
         height = props.height,
         stroke = props.stroke;
       var lineY = Math.floor(y + height / 2) - 1;
-      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("rect", {
+      return /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, null, /*#__PURE__*/_react["default"].createElement("rect", {
         x: x,
         y: y,
         width: width,
         height: height,
         fill: stroke,
         stroke: "none"
-      }), /*#__PURE__*/React.createElement("line", {
+      }), /*#__PURE__*/_react["default"].createElement("line", {
         x1: x + 1,
         y1: lineY,
         x2: x + width - 1,
         y2: lineY,
         fill: "none",
         stroke: "#fff"
-      }), /*#__PURE__*/React.createElement("line", {
+      }), /*#__PURE__*/_react["default"].createElement("line", {
         x1: x + 1,
         y1: lineY + 2,
         x2: x + width - 1,
@@ -529,9 +537,9 @@ export var Brush = /*#__PURE__*/function (_PureComponent) {
     key: "renderTraveller",
     value: function renderTraveller(option, props) {
       var rectangle;
-      if ( /*#__PURE__*/React.isValidElement(option)) {
-        rectangle = /*#__PURE__*/React.cloneElement(option, props);
-      } else if (isFunction(option)) {
+      if ( /*#__PURE__*/_react["default"].isValidElement(option)) {
+        rectangle = /*#__PURE__*/_react["default"].cloneElement(option, props);
+      } else if ((0, _isFunction["default"])(option)) {
         rectangle = option(props);
       } else {
         rectangle = Brush.renderDefaultTraveller(props);
@@ -602,7 +610,7 @@ export var Brush = /*#__PURE__*/function (_PureComponent) {
       return x >= valueRange[end] ? end : start;
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _defineProperty(Brush, "displayName", 'Brush');
 _defineProperty(Brush, "defaultProps", {
   height: 40,

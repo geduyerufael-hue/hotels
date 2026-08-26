@@ -1,22 +1,29 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BarChart = void 0;
+var _generateCategoricalChart = require("./generateCategoricalChart");
+var _Bar = require("../cartesian/Bar");
+var _XAxis = require("../cartesian/XAxis");
+var _YAxis = require("../cartesian/YAxis");
+var _CartesianUtils = require("../util/CartesianUtils");
 /**
  * @fileOverview Bar Chart
  */
-import { generateCategoricalChart } from './generateCategoricalChart';
-import { Bar } from '../cartesian/Bar';
-import { XAxis } from '../cartesian/XAxis';
-import { YAxis } from '../cartesian/YAxis';
-import { formatAxisMap } from '../util/CartesianUtils';
-export var BarChart = generateCategoricalChart({
+
+var BarChart = exports.BarChart = (0, _generateCategoricalChart.generateCategoricalChart)({
   chartName: 'BarChart',
-  GraphicalChild: Bar,
+  GraphicalChild: _Bar.Bar,
   defaultTooltipEventType: 'axis',
   validateTooltipEventTypes: ['axis', 'item'],
   axisComponents: [{
     axisType: 'xAxis',
-    AxisComp: XAxis
+    AxisComp: _XAxis.XAxis
   }, {
     axisType: 'yAxis',
-    AxisComp: YAxis
+    AxisComp: _YAxis.YAxis
   }],
-  formatAxisMap: formatAxisMap
+  formatAxisMap: _CartesianUtils.formatAxisMap
 });

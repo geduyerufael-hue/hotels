@@ -1,3 +1,16 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Tooltip = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _DefaultTooltipContent = require("./DefaultTooltipContent");
+var _TooltipBoundingBox = require("./TooltipBoundingBox");
+var _Global = require("../util/Global");
+var _getUniqPayload = require("../util/payload/getUniqPayload");
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -13,28 +26,22 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Tooltip
  */
-import React, { PureComponent } from 'react';
-import { DefaultTooltipContent } from './DefaultTooltipContent';
-import { TooltipBoundingBox } from './TooltipBoundingBox';
-import { Global } from '../util/Global';
-import { getUniqPayload } from '../util/payload/getUniqPayload';
 function defaultUniqBy(entry) {
   return entry.dataKey;
 }
 function renderContent(content, props) {
-  if ( /*#__PURE__*/React.isValidElement(content)) {
-    return /*#__PURE__*/React.cloneElement(content, props);
+  if ( /*#__PURE__*/_react["default"].isValidElement(content)) {
+    return /*#__PURE__*/_react["default"].cloneElement(content, props);
   }
   if (typeof content === 'function') {
-    return /*#__PURE__*/React.createElement(content, props);
+    return /*#__PURE__*/_react["default"].createElement(content, props);
   }
-  return /*#__PURE__*/React.createElement(DefaultTooltipContent, props);
+  return /*#__PURE__*/_react["default"].createElement(_DefaultTooltipContent.DefaultTooltipContent, props);
 }
-export var Tooltip = /*#__PURE__*/function (_PureComponent) {
+var Tooltip = exports.Tooltip = /*#__PURE__*/function (_PureComponent) {
   function Tooltip() {
     _classCallCheck(this, Tooltip);
     return _callSuper(this, Tooltip, arguments);
@@ -63,12 +70,12 @@ export var Tooltip = /*#__PURE__*/function (_PureComponent) {
         wrapperStyle = _this$props.wrapperStyle;
       var finalPayload = payload !== null && payload !== void 0 ? payload : [];
       if (filterNull && finalPayload.length) {
-        finalPayload = getUniqPayload(payload.filter(function (entry) {
+        finalPayload = (0, _getUniqPayload.getUniqPayload)(payload.filter(function (entry) {
           return entry.value != null && (entry.hide !== true || _this.props.includeHidden);
         }), payloadUniqBy, defaultUniqBy);
       }
       var hasPayload = finalPayload.length > 0;
-      return /*#__PURE__*/React.createElement(TooltipBoundingBox, {
+      return /*#__PURE__*/_react["default"].createElement(_TooltipBoundingBox.TooltipBoundingBox, {
         allowEscapeViewBox: allowEscapeViewBox,
         animationDuration: animationDuration,
         animationEasing: animationEasing,
@@ -87,7 +94,7 @@ export var Tooltip = /*#__PURE__*/function (_PureComponent) {
       })));
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _defineProperty(Tooltip, "displayName", 'Tooltip');
 _defineProperty(Tooltip, "defaultProps", {
   accessibilityLayer: false,
@@ -105,7 +112,7 @@ _defineProperty(Tooltip, "defaultProps", {
   cursor: true,
   cursorStyle: {},
   filterNull: true,
-  isAnimationActive: !Global.isSsr,
+  isAnimationActive: !_Global.Global.isSsr,
   itemStyle: {},
   labelStyle: {},
   offset: 10,

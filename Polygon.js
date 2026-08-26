@@ -1,4 +1,14 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Polygon = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _ReactUtils = require("../util/ReactUtils");
 var _excluded = ["points", "className", "baseLinePoints", "connectNulls"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } } return target; }
@@ -7,13 +17,9 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-/**
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; } /**
  * @fileOverview Polygon
  */
-import React from 'react';
-import clsx from 'clsx';
-import { filterProps } from '../util/ReactUtils';
 var isValidatePoint = function isValidatePoint(point) {
   return point && point.x === +point.x && point.y === +point.y;
 };
@@ -54,7 +60,7 @@ var getRanglePath = function getRanglePath(points, baseLinePoints, connectNulls)
   var outerPath = getSinglePolygonPath(points, connectNulls);
   return "".concat(outerPath.slice(-1) === 'Z' ? outerPath.slice(0, -1) : outerPath, "L").concat(getSinglePolygonPath(baseLinePoints.reverse(), connectNulls).slice(1));
 };
-export var Polygon = function Polygon(props) {
+var Polygon = exports.Polygon = function Polygon(props) {
   var points = props.points,
     className = props.className,
     baseLinePoints = props.baseLinePoints,
@@ -63,26 +69,26 @@ export var Polygon = function Polygon(props) {
   if (!points || !points.length) {
     return null;
   }
-  var layerClass = clsx('recharts-polygon', className);
+  var layerClass = (0, _clsx["default"])('recharts-polygon', className);
   if (baseLinePoints && baseLinePoints.length) {
     var hasStroke = others.stroke && others.stroke !== 'none';
     var rangePath = getRanglePath(points, baseLinePoints, connectNulls);
-    return /*#__PURE__*/React.createElement("g", {
+    return /*#__PURE__*/_react["default"].createElement("g", {
       className: layerClass
-    }, /*#__PURE__*/React.createElement("path", _extends({}, filterProps(others, true), {
+    }, /*#__PURE__*/_react["default"].createElement("path", _extends({}, (0, _ReactUtils.filterProps)(others, true), {
       fill: rangePath.slice(-1) === 'Z' ? others.fill : 'none',
       stroke: "none",
       d: rangePath
-    })), hasStroke ? /*#__PURE__*/React.createElement("path", _extends({}, filterProps(others, true), {
+    })), hasStroke ? /*#__PURE__*/_react["default"].createElement("path", _extends({}, (0, _ReactUtils.filterProps)(others, true), {
       fill: "none",
       d: getSinglePolygonPath(points, connectNulls)
-    })) : null, hasStroke ? /*#__PURE__*/React.createElement("path", _extends({}, filterProps(others, true), {
+    })) : null, hasStroke ? /*#__PURE__*/_react["default"].createElement("path", _extends({}, (0, _ReactUtils.filterProps)(others, true), {
       fill: "none",
       d: getSinglePolygonPath(baseLinePoints, connectNulls)
     })) : null);
   }
   var singlePath = getSinglePolygonPath(points, connectNulls);
-  return /*#__PURE__*/React.createElement("path", _extends({}, filterProps(others, true), {
+  return /*#__PURE__*/_react["default"].createElement("path", _extends({}, (0, _ReactUtils.filterProps)(others, true), {
     fill: singlePath.slice(-1) === 'Z' ? others.fill : 'none',
     className: layerClass,
     d: singlePath

@@ -1,4 +1,30 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Radar = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _reactSmooth = _interopRequireDefault(require("react-smooth"));
+var _isNil = _interopRequireDefault(require("lodash/isNil"));
+var _last = _interopRequireDefault(require("lodash/last"));
+var _first = _interopRequireDefault(require("lodash/first"));
+var _isEqual = _interopRequireDefault(require("lodash/isEqual"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _DataUtils = require("../util/DataUtils");
+var _Global = require("../util/Global");
+var _PolarUtils = require("../util/PolarUtils");
+var _ChartUtils = require("../util/ChartUtils");
+var _Polygon = require("../shape/Polygon");
+var _Dot = require("../shape/Dot");
+var _Layer = require("../container/Layer");
+var _LabelList = require("../component/LabelList");
+var _ReactUtils = require("../util/ReactUtils");
 var _excluded = ["key"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } } return target; }
@@ -17,28 +43,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Radar
  */
-import React, { PureComponent } from 'react';
-import Animate from 'react-smooth';
-import isNil from 'lodash/isNil';
-import last from 'lodash/last';
-import first from 'lodash/first';
-import isEqual from 'lodash/isEqual';
-import isFunction from 'lodash/isFunction';
-import clsx from 'clsx';
-import { interpolateNumber } from '../util/DataUtils';
-import { Global } from '../util/Global';
-import { polarToCartesian } from '../util/PolarUtils';
-import { getValueByDataKey } from '../util/ChartUtils';
-import { Polygon } from '../shape/Polygon';
-import { Dot } from '../shape/Dot';
-import { Layer } from '../container/Layer';
-import { LabelList } from '../component/LabelList';
-import { filterProps } from '../util/ReactUtils';
-export var Radar = /*#__PURE__*/function (_PureComponent) {
+var Radar = exports.Radar = /*#__PURE__*/function (_PureComponent) {
   function Radar() {
     var _this;
     _classCallCheck(this, Radar);
@@ -54,7 +62,7 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
       _this.setState({
         isAnimationFinished: true
       });
-      if (isFunction(onAnimationEnd)) {
+      if ((0, _isFunction["default"])(onAnimationEnd)) {
         onAnimationEnd();
       }
     });
@@ -63,7 +71,7 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
       _this.setState({
         isAnimationFinished: false
       });
-      if (isFunction(onAnimationStart)) {
+      if ((0, _isFunction["default"])(onAnimationStart)) {
         onAnimationStart();
       }
     });
@@ -88,8 +96,8 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
       var _this$props = this.props,
         dot = _this$props.dot,
         dataKey = _this$props.dataKey;
-      var baseProps = filterProps(this.props, false);
-      var customDotProps = filterProps(dot, true);
+      var baseProps = (0, _ReactUtils.filterProps)(this.props, false);
+      var customDotProps = (0, _ReactUtils.filterProps)(dot, true);
       var dots = points.map(function (entry, i) {
         var dotProps = _objectSpread(_objectSpread(_objectSpread({
           key: "dot-".concat(i),
@@ -103,7 +111,7 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
         });
         return Radar.renderDotItem(dot, dotProps);
       });
-      return /*#__PURE__*/React.createElement(Layer, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-radar-dots"
       }, dots);
     }
@@ -117,16 +125,16 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
         baseLinePoints = _this$props2.baseLinePoints,
         connectNulls = _this$props2.connectNulls;
       var radar;
-      if ( /*#__PURE__*/React.isValidElement(shape)) {
-        radar = /*#__PURE__*/React.cloneElement(shape, _objectSpread(_objectSpread({}, this.props), {}, {
+      if ( /*#__PURE__*/_react["default"].isValidElement(shape)) {
+        radar = /*#__PURE__*/_react["default"].cloneElement(shape, _objectSpread(_objectSpread({}, this.props), {}, {
           points: points
         }));
-      } else if (isFunction(shape)) {
+      } else if ((0, _isFunction["default"])(shape)) {
         radar = shape(_objectSpread(_objectSpread({}, this.props), {}, {
           points: points
         }));
       } else {
-        radar = /*#__PURE__*/React.createElement(Polygon, _extends({}, filterProps(this.props, true), {
+        radar = /*#__PURE__*/_react["default"].createElement(_Polygon.Polygon, _extends({}, (0, _ReactUtils.filterProps)(this.props, true), {
           onMouseEnter: this.handleMouseEnter,
           onMouseLeave: this.handleMouseLeave,
           points: points,
@@ -134,7 +142,7 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
           connectNulls: connectNulls
         }));
       }
-      return /*#__PURE__*/React.createElement(Layer, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-radar-polygon"
       }, radar, dot ? this.renderDots(points) : null);
     }
@@ -150,7 +158,7 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
         animationEasing = _this$props3.animationEasing,
         animationId = _this$props3.animationId;
       var prevPoints = this.state.prevPoints;
-      return /*#__PURE__*/React.createElement(Animate, {
+      return /*#__PURE__*/_react["default"].createElement(_reactSmooth["default"], {
         begin: animationBegin,
         duration: animationDuration,
         isActive: isAnimationActive,
@@ -170,15 +178,15 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
         var stepData = points.map(function (entry, index) {
           var prev = prevPoints && prevPoints[Math.floor(index * prevPointsDiffFactor)];
           if (prev) {
-            var _interpolatorX = interpolateNumber(prev.x, entry.x);
-            var _interpolatorY = interpolateNumber(prev.y, entry.y);
+            var _interpolatorX = (0, _DataUtils.interpolateNumber)(prev.x, entry.x);
+            var _interpolatorY = (0, _DataUtils.interpolateNumber)(prev.y, entry.y);
             return _objectSpread(_objectSpread({}, entry), {}, {
               x: _interpolatorX(t),
               y: _interpolatorY(t)
             });
           }
-          var interpolatorX = interpolateNumber(entry.cx, entry.x);
-          var interpolatorY = interpolateNumber(entry.cy, entry.y);
+          var interpolatorX = (0, _DataUtils.interpolateNumber)(entry.cx, entry.x);
+          var interpolatorY = (0, _DataUtils.interpolateNumber)(entry.cy, entry.y);
           return _objectSpread(_objectSpread({}, entry), {}, {
             x: interpolatorX(t),
             y: interpolatorY(t)
@@ -195,7 +203,7 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
         isAnimationActive = _this$props4.isAnimationActive,
         isRange = _this$props4.isRange;
       var prevPoints = this.state.prevPoints;
-      if (isAnimationActive && points && points.length && !isRange && (!prevPoints || !isEqual(prevPoints, points))) {
+      if (isAnimationActive && points && points.length && !isRange && (!prevPoints || !(0, _isEqual["default"])(prevPoints, points))) {
         return this.renderPolygonWithAnimation();
       }
       return this.renderPolygonStatically(points);
@@ -212,10 +220,10 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
         return null;
       }
       var isAnimationFinished = this.state.isAnimationFinished;
-      var layerClass = clsx('recharts-radar', className);
-      return /*#__PURE__*/React.createElement(Layer, {
+      var layerClass = (0, _clsx["default"])('recharts-radar', className);
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: layerClass
-      }, this.renderPolygon(), (!isAnimationActive || isAnimationFinished) && LabelList.renderCallByParent(this.props, points));
+      }, this.renderPolygon(), (!isAnimationActive || isAnimationFinished) && _LabelList.LabelList.renderCallByParent(this.props, points));
     }
   }], [{
     key: "getDerivedStateFromProps",
@@ -238,22 +246,22 @@ export var Radar = /*#__PURE__*/function (_PureComponent) {
     key: "renderDotItem",
     value: function renderDotItem(option, props) {
       var dotItem;
-      if ( /*#__PURE__*/React.isValidElement(option)) {
-        dotItem = /*#__PURE__*/React.cloneElement(option, props);
-      } else if (isFunction(option)) {
+      if ( /*#__PURE__*/_react["default"].isValidElement(option)) {
+        dotItem = /*#__PURE__*/_react["default"].cloneElement(option, props);
+      } else if ((0, _isFunction["default"])(option)) {
         dotItem = option(props);
       } else {
         var key = props.key,
           dotProps = _objectWithoutProperties(props, _excluded);
-        dotItem = /*#__PURE__*/React.createElement(Dot, _extends({}, dotProps, {
+        dotItem = /*#__PURE__*/_react["default"].createElement(_Dot.Dot, _extends({}, dotProps, {
           key: key,
-          className: clsx('recharts-radar-dot', typeof option !== 'boolean' ? option.className : '')
+          className: (0, _clsx["default"])('recharts-radar-dot', typeof option !== 'boolean' ? option.className : '')
         }));
       }
       return dotItem;
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _defineProperty(Radar, "displayName", 'Radar');
 _defineProperty(Radar, "defaultProps", {
   angleAxisId: 0,
@@ -262,7 +270,7 @@ _defineProperty(Radar, "defaultProps", {
   activeDot: true,
   dot: false,
   legendType: 'rect',
-  isAnimationActive: !Global.isSsr,
+  isAnimationActive: !_Global.Global.isSsr,
   animationBegin: 0,
   animationDuration: 1500,
   animationEasing: 'ease'
@@ -279,15 +287,15 @@ _defineProperty(Radar, "getComposedData", function (_ref2) {
   var points = [];
   var angleBandSize = angleAxis.type !== 'number' ? bandSize !== null && bandSize !== void 0 ? bandSize : 0 : 0;
   displayedData.forEach(function (entry, i) {
-    var name = getValueByDataKey(entry, angleAxis.dataKey, i);
-    var value = getValueByDataKey(entry, dataKey);
+    var name = (0, _ChartUtils.getValueByDataKey)(entry, angleAxis.dataKey, i);
+    var value = (0, _ChartUtils.getValueByDataKey)(entry, dataKey);
     var angle = angleAxis.scale(name) + angleBandSize;
-    var pointValue = Array.isArray(value) ? last(value) : value;
-    var radius = isNil(pointValue) ? undefined : radiusAxis.scale(pointValue);
+    var pointValue = Array.isArray(value) ? (0, _last["default"])(value) : value;
+    var radius = (0, _isNil["default"])(pointValue) ? undefined : radiusAxis.scale(pointValue);
     if (Array.isArray(value) && value.length >= 2) {
       isRange = true;
     }
-    points.push(_objectSpread(_objectSpread({}, polarToCartesian(cx, cy, radius, angle)), {}, {
+    points.push(_objectSpread(_objectSpread({}, (0, _PolarUtils.polarToCartesian)(cx, cy, radius, angle)), {}, {
       name: name,
       value: value,
       cx: cx,
@@ -301,11 +309,11 @@ _defineProperty(Radar, "getComposedData", function (_ref2) {
   if (isRange) {
     points.forEach(function (point) {
       if (Array.isArray(point.value)) {
-        var baseValue = first(point.value);
-        var radius = isNil(baseValue) ? undefined : radiusAxis.scale(baseValue);
+        var baseValue = (0, _first["default"])(point.value);
+        var radius = (0, _isNil["default"])(baseValue) ? undefined : radiusAxis.scale(baseValue);
         baseLinePoints.push(_objectSpread(_objectSpread({}, point), {}, {
           radius: radius
-        }, polarToCartesian(cx, cy, radius, point.angle)));
+        }, (0, _PolarUtils.polarToCartesian)(cx, cy, radius, point.angle)));
       } else {
         baseLinePoints.push(point);
       }

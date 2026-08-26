@@ -1,6 +1,27 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CartesianAxis = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _get = _interopRequireDefault(require("lodash/get"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _ShallowEqual = require("../util/ShallowEqual");
+var _Layer = require("../container/Layer");
+var _Text = require("../component/Text");
+var _Label = require("../component/Label");
+var _DataUtils = require("../util/DataUtils");
+var _types = require("../util/types");
+var _ReactUtils = require("../util/ReactUtils");
+var _getTicks = require("./getTicks");
 var _excluded = ["viewBox"],
   _excluded2 = ["viewBox"],
   _excluded3 = ["ticks"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -19,30 +40,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview Cartesian Axis
  */
-import React, { Component } from 'react';
-import isFunction from 'lodash/isFunction';
-import get from 'lodash/get';
-import clsx from 'clsx';
-import { shallowEqual } from '../util/ShallowEqual';
-import { Layer } from '../container/Layer';
-import { Text } from '../component/Text';
-import { Label } from '../component/Label';
-import { isNumber } from '../util/DataUtils';
-import { adaptEventsOfChild } from '../util/types';
-import { filterProps } from '../util/ReactUtils';
-import { getTicks } from './getTicks';
-
 /** The orientation of the axis in correspondence to the chart */
-
 /** A unit to be appended to a value */
-
 /** The formatter function of tick */
-
-export var CartesianAxis = /*#__PURE__*/function (_Component) {
+var CartesianAxis = exports.CartesianAxis = /*#__PURE__*/function (_Component) {
   function CartesianAxis(props) {
     var _this;
     _classCallCheck(this, CartesianAxis);
@@ -64,7 +68,7 @@ export var CartesianAxis = /*#__PURE__*/function (_Component) {
       var _this$props = this.props,
         viewBoxOld = _this$props.viewBox,
         restPropsOld = _objectWithoutProperties(_this$props, _excluded2);
-      return !shallowEqual(viewBox, viewBoxOld) || !shallowEqual(restProps, restPropsOld) || !shallowEqual(nextState, this.state);
+      return !(0, _ShallowEqual.shallowEqual)(viewBox, viewBoxOld) || !(0, _ShallowEqual.shallowEqual)(restProps, restPropsOld) || !(0, _ShallowEqual.shallowEqual)(nextState, this.state);
     }
   }, {
     key: "componentDidMount",
@@ -101,7 +105,7 @@ export var CartesianAxis = /*#__PURE__*/function (_Component) {
       var x1, x2, y1, y2, tx, ty;
       var sign = mirror ? -1 : 1;
       var finalTickSize = data.tickSize || tickSize;
-      var tickCoord = isNumber(data.tickCoord) ? data.tickCoord : data.coordinate;
+      var tickCoord = (0, _DataUtils.isNumber)(data.tickCoord) ? data.tickCoord : data.coordinate;
       switch (orientation) {
         case 'top':
           x1 = x2 = data.coordinate;
@@ -197,7 +201,7 @@ export var CartesianAxis = /*#__PURE__*/function (_Component) {
         orientation = _this$props5.orientation,
         mirror = _this$props5.mirror,
         axisLine = _this$props5.axisLine;
-      var props = _objectSpread(_objectSpread(_objectSpread({}, filterProps(this.props, false)), filterProps(axisLine, false)), {}, {
+      var props = _objectSpread(_objectSpread(_objectSpread({}, (0, _ReactUtils.filterProps)(this.props, false)), (0, _ReactUtils.filterProps)(axisLine, false)), {}, {
         fill: 'none'
       });
       if (orientation === 'top' || orientation === 'bottom') {
@@ -217,8 +221,8 @@ export var CartesianAxis = /*#__PURE__*/function (_Component) {
           y2: y + height
         });
       }
-      return /*#__PURE__*/React.createElement("line", _extends({}, props, {
-        className: clsx('recharts-cartesian-axis-line', get(axisLine, 'className'))
+      return /*#__PURE__*/_react["default"].createElement("line", _extends({}, props, {
+        className: (0, _clsx["default"])('recharts-cartesian-axis-line', (0, _get["default"])(axisLine, 'className'))
       }));
     }
   }, {
@@ -239,16 +243,16 @@ export var CartesianAxis = /*#__PURE__*/function (_Component) {
         tick = _this$props6.tick,
         tickFormatter = _this$props6.tickFormatter,
         unit = _this$props6.unit;
-      var finalTicks = getTicks(_objectSpread(_objectSpread({}, this.props), {}, {
+      var finalTicks = (0, _getTicks.getTicks)(_objectSpread(_objectSpread({}, this.props), {}, {
         ticks: ticks
       }), fontSize, letterSpacing);
       var textAnchor = this.getTickTextAnchor();
       var verticalAnchor = this.getTickVerticalAnchor();
-      var axisProps = filterProps(this.props, false);
-      var customTickProps = filterProps(tick, false);
+      var axisProps = (0, _ReactUtils.filterProps)(this.props, false);
+      var customTickProps = (0, _ReactUtils.filterProps)(tick, false);
       var tickLineProps = _objectSpread(_objectSpread({}, axisProps), {}, {
         fill: 'none'
-      }, filterProps(tickLine, false));
+      }, (0, _ReactUtils.filterProps)(tickLine, false));
       var items = finalTicks.map(function (entry, i) {
         var _this2$getTickLineCoo = _this2.getTickLineCoord(entry),
           lineCoord = _this2$getTickLineCoo.line,
@@ -265,14 +269,14 @@ export var CartesianAxis = /*#__PURE__*/function (_Component) {
           visibleTicksCount: finalTicks.length,
           tickFormatter: tickFormatter
         });
-        return /*#__PURE__*/React.createElement(Layer, _extends({
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, _extends({
           className: "recharts-cartesian-axis-tick",
           key: "tick-".concat(entry.value, "-").concat(entry.coordinate, "-").concat(entry.tickCoord)
-        }, adaptEventsOfChild(_this2.props, entry, i)), tickLine && /*#__PURE__*/React.createElement("line", _extends({}, tickLineProps, lineCoord, {
-          className: clsx('recharts-cartesian-axis-tick-line', get(tickLine, 'className'))
-        })), tick && CartesianAxis.renderTickItem(tick, tickProps, "".concat(isFunction(tickFormatter) ? tickFormatter(entry.value, i) : entry.value).concat(unit || '')));
+        }, (0, _types.adaptEventsOfChild)(_this2.props, entry, i)), tickLine && /*#__PURE__*/_react["default"].createElement("line", _extends({}, tickLineProps, lineCoord, {
+          className: (0, _clsx["default"])('recharts-cartesian-axis-tick-line', (0, _get["default"])(tickLine, 'className'))
+        })), tick && CartesianAxis.renderTickItem(tick, tickProps, "".concat((0, _isFunction["default"])(tickFormatter) ? tickFormatter(entry.value, i) : entry.value).concat(unit || '')));
       });
-      return /*#__PURE__*/React.createElement("g", {
+      return /*#__PURE__*/_react["default"].createElement("g", {
         className: "recharts-cartesian-axis-ticks"
       }, items);
     }
@@ -294,41 +298,41 @@ export var CartesianAxis = /*#__PURE__*/function (_Component) {
         ticks = _this$props8.ticks,
         noTicksProps = _objectWithoutProperties(_this$props8, _excluded3);
       var finalTicks = ticks;
-      if (isFunction(ticksGenerator)) {
+      if ((0, _isFunction["default"])(ticksGenerator)) {
         finalTicks = ticks && ticks.length > 0 ? ticksGenerator(this.props) : ticksGenerator(noTicksProps);
       }
       if (width <= 0 || height <= 0 || !finalTicks || !finalTicks.length) {
         return null;
       }
-      return /*#__PURE__*/React.createElement(Layer, {
-        className: clsx('recharts-cartesian-axis', className),
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
+        className: (0, _clsx["default"])('recharts-cartesian-axis', className),
         ref: function ref(_ref2) {
           _this3.layerReference = _ref2;
         }
-      }, axisLine && this.renderAxisLine(), this.renderTicks(finalTicks, this.state.fontSize, this.state.letterSpacing), Label.renderCallByParent(this.props));
+      }, axisLine && this.renderAxisLine(), this.renderTicks(finalTicks, this.state.fontSize, this.state.letterSpacing), _Label.Label.renderCallByParent(this.props));
     }
   }], [{
     key: "renderTickItem",
     value: function renderTickItem(option, props, value) {
       var tickItem;
-      var combinedClassName = clsx(props.className, 'recharts-cartesian-axis-tick-value');
-      if ( /*#__PURE__*/React.isValidElement(option)) {
-        tickItem = /*#__PURE__*/React.cloneElement(option, _objectSpread(_objectSpread({}, props), {}, {
+      var combinedClassName = (0, _clsx["default"])(props.className, 'recharts-cartesian-axis-tick-value');
+      if ( /*#__PURE__*/_react["default"].isValidElement(option)) {
+        tickItem = /*#__PURE__*/_react["default"].cloneElement(option, _objectSpread(_objectSpread({}, props), {}, {
           className: combinedClassName
         }));
-      } else if (isFunction(option)) {
+      } else if ((0, _isFunction["default"])(option)) {
         tickItem = option(_objectSpread(_objectSpread({}, props), {}, {
           className: combinedClassName
         }));
       } else {
-        tickItem = /*#__PURE__*/React.createElement(Text, _extends({}, props, {
+        tickItem = /*#__PURE__*/_react["default"].createElement(_Text.Text, _extends({}, props, {
           className: "recharts-cartesian-axis-tick-value"
         }), value);
       }
       return tickItem;
     }
   }]);
-}(Component);
+}(_react.Component);
 _defineProperty(CartesianAxis, "displayName", 'CartesianAxis');
 _defineProperty(CartesianAxis, "defaultProps", {
   x: 0,

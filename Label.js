@@ -1,5 +1,23 @@
+"use strict";
+
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Label = Label;
+var _react = _interopRequireWildcard(require("react"));
+var _isNil = _interopRequireDefault(require("lodash/isNil"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _isObject = _interopRequireDefault(require("lodash/isObject"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _Text = require("./Text");
+var _ReactUtils = require("../util/ReactUtils");
+var _DataUtils = require("../util/DataUtils");
+var _PolarUtils = require("../util/PolarUtils");
 var _excluded = ["offset"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -14,26 +32,17 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-import React, { cloneElement, isValidElement, createElement } from 'react';
-import isNil from 'lodash/isNil';
-import isFunction from 'lodash/isFunction';
-import isObject from 'lodash/isObject';
-import clsx from 'clsx';
-import { Text } from './Text';
-import { findAllByType, filterProps } from '../util/ReactUtils';
-import { isNumOrStr, isNumber, isPercent, getPercentValue, uniqueId, mathSign } from '../util/DataUtils';
-import { polarToCartesian } from '../util/PolarUtils';
 var getLabel = function getLabel(props) {
   var value = props.value,
     formatter = props.formatter;
-  var label = isNil(props.children) ? value : props.children;
-  if (isFunction(formatter)) {
+  var label = (0, _isNil["default"])(props.children) ? value : props.children;
+  if ((0, _isFunction["default"])(formatter)) {
     return formatter(label);
   }
   return label;
 };
 var getDeltaAngle = function getDeltaAngle(startAngle, endAngle) {
-  var sign = mathSign(endAngle - startAngle);
+  var sign = (0, _DataUtils.mathSign)(endAngle - startAngle);
   var deltaAngle = Math.min(Math.abs(endAngle - startAngle), 360);
   return sign * deltaAngle;
 };
@@ -65,17 +74,17 @@ var renderRadialLabel = function renderRadialLabel(labelProps, label, attrs) {
     direction = clockWise;
   }
   direction = deltaAngle <= 0 ? direction : !direction;
-  var startPoint = polarToCartesian(cx, cy, radius, labelAngle);
-  var endPoint = polarToCartesian(cx, cy, radius, labelAngle + (direction ? 1 : -1) * 359);
+  var startPoint = (0, _PolarUtils.polarToCartesian)(cx, cy, radius, labelAngle);
+  var endPoint = (0, _PolarUtils.polarToCartesian)(cx, cy, radius, labelAngle + (direction ? 1 : -1) * 359);
   var path = "M".concat(startPoint.x, ",").concat(startPoint.y, "\n    A").concat(radius, ",").concat(radius, ",0,1,").concat(direction ? 0 : 1, ",\n    ").concat(endPoint.x, ",").concat(endPoint.y);
-  var id = isNil(labelProps.id) ? uniqueId('recharts-radial-line-') : labelProps.id;
-  return /*#__PURE__*/React.createElement("text", _extends({}, attrs, {
+  var id = (0, _isNil["default"])(labelProps.id) ? (0, _DataUtils.uniqueId)('recharts-radial-line-') : labelProps.id;
+  return /*#__PURE__*/_react["default"].createElement("text", _extends({}, attrs, {
     dominantBaseline: "central",
-    className: clsx('recharts-radial-bar-label', className)
-  }), /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("path", {
+    className: (0, _clsx["default"])('recharts-radial-bar-label', className)
+  }), /*#__PURE__*/_react["default"].createElement("defs", null, /*#__PURE__*/_react["default"].createElement("path", {
     id: id,
     d: path
-  })), /*#__PURE__*/React.createElement("textPath", {
+  })), /*#__PURE__*/_react["default"].createElement("textPath", {
     xlinkHref: "#".concat(id)
   }, label));
 };
@@ -92,7 +101,7 @@ var getAttrsOfPolarLabel = function getAttrsOfPolarLabel(props) {
     endAngle = _ref2.endAngle;
   var midAngle = (startAngle + endAngle) / 2;
   if (position === 'outside') {
-    var _polarToCartesian = polarToCartesian(cx, cy, outerRadius + offset, midAngle),
+    var _polarToCartesian = (0, _PolarUtils.polarToCartesian)(cx, cy, outerRadius + offset, midAngle),
       _x = _polarToCartesian.x,
       _y = _polarToCartesian.y;
     return {
@@ -127,7 +136,7 @@ var getAttrsOfPolarLabel = function getAttrsOfPolarLabel(props) {
     };
   }
   var r = (innerRadius + outerRadius) / 2;
-  var _polarToCartesian2 = polarToCartesian(cx, cy, r, midAngle),
+  var _polarToCartesian2 = (0, _PolarUtils.polarToCartesian)(cx, cy, r, midAngle),
     x = _polarToCartesian2.x,
     y = _polarToCartesian2.y;
   return {
@@ -275,10 +284,10 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel(props) {
       verticalAnchor: verticalEnd
     }, sizeAttrs);
   }
-  if (isObject(position) && (isNumber(position.x) || isPercent(position.x)) && (isNumber(position.y) || isPercent(position.y))) {
+  if ((0, _isObject["default"])(position) && ((0, _DataUtils.isNumber)(position.x) || (0, _DataUtils.isPercent)(position.x)) && ((0, _DataUtils.isNumber)(position.y) || (0, _DataUtils.isPercent)(position.y))) {
     return _objectSpread({
-      x: x + getPercentValue(position.x, width),
-      y: y + getPercentValue(position.y, height),
+      x: x + (0, _DataUtils.getPercentValue)(position.x, width),
+      y: y + (0, _DataUtils.getPercentValue)(position.y, height),
       textAnchor: 'end',
       verticalAnchor: 'end'
     }, sizeAttrs);
@@ -291,9 +300,9 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel(props) {
   }, sizeAttrs);
 };
 var isPolar = function isPolar(viewBox) {
-  return 'cx' in viewBox && isNumber(viewBox.cx);
+  return 'cx' in viewBox && (0, _DataUtils.isNumber)(viewBox.cx);
 };
-export function Label(_ref4) {
+function Label(_ref4) {
   var _ref4$offset = _ref4.offset,
     offset = _ref4$offset === void 0 ? 5 : _ref4$offset,
     restProps = _objectWithoutProperties(_ref4, _excluded);
@@ -308,29 +317,29 @@ export function Label(_ref4) {
     _props$className = props.className,
     className = _props$className === void 0 ? '' : _props$className,
     textBreakAll = props.textBreakAll;
-  if (!viewBox || isNil(value) && isNil(children) && ! /*#__PURE__*/isValidElement(content) && !isFunction(content)) {
+  if (!viewBox || (0, _isNil["default"])(value) && (0, _isNil["default"])(children) && ! /*#__PURE__*/(0, _react.isValidElement)(content) && !(0, _isFunction["default"])(content)) {
     return null;
   }
-  if ( /*#__PURE__*/isValidElement(content)) {
-    return /*#__PURE__*/cloneElement(content, props);
+  if ( /*#__PURE__*/(0, _react.isValidElement)(content)) {
+    return /*#__PURE__*/(0, _react.cloneElement)(content, props);
   }
   var label;
-  if (isFunction(content)) {
-    label = /*#__PURE__*/createElement(content, props);
-    if ( /*#__PURE__*/isValidElement(label)) {
+  if ((0, _isFunction["default"])(content)) {
+    label = /*#__PURE__*/(0, _react.createElement)(content, props);
+    if ( /*#__PURE__*/(0, _react.isValidElement)(label)) {
       return label;
     }
   } else {
     label = getLabel(props);
   }
   var isPolarLabel = isPolar(viewBox);
-  var attrs = filterProps(props, true);
+  var attrs = (0, _ReactUtils.filterProps)(props, true);
   if (isPolarLabel && (position === 'insideStart' || position === 'insideEnd' || position === 'end')) {
     return renderRadialLabel(props, label, attrs);
   }
   var positionAttrs = isPolarLabel ? getAttrsOfPolarLabel(props) : getAttrsOfCartesianLabel(props);
-  return /*#__PURE__*/React.createElement(Text, _extends({
-    className: clsx('recharts-label', className)
+  return /*#__PURE__*/_react["default"].createElement(_Text.Text, _extends({
+    className: (0, _clsx["default"])('recharts-label', className)
   }, attrs, positionAttrs, {
     breakAll: textBreakAll
   }), label);
@@ -357,8 +366,8 @@ var parseViewBox = function parseViewBox(props) {
   if (labelViewBox) {
     return labelViewBox;
   }
-  if (isNumber(width) && isNumber(height)) {
-    if (isNumber(x) && isNumber(y)) {
+  if ((0, _DataUtils.isNumber)(width) && (0, _DataUtils.isNumber)(height)) {
+    if ((0, _DataUtils.isNumber)(x) && (0, _DataUtils.isNumber)(y)) {
       return {
         x: x,
         y: y,
@@ -366,7 +375,7 @@ var parseViewBox = function parseViewBox(props) {
         height: height
       };
     }
-    if (isNumber(top) && isNumber(left)) {
+    if ((0, _DataUtils.isNumber)(top) && (0, _DataUtils.isNumber)(left)) {
       return {
         x: top,
         y: left,
@@ -375,7 +384,7 @@ var parseViewBox = function parseViewBox(props) {
       };
     }
   }
-  if (isNumber(x) && isNumber(y)) {
+  if ((0, _DataUtils.isNumber)(x) && (0, _DataUtils.isNumber)(y)) {
     return {
       x: x,
       y: y,
@@ -383,7 +392,7 @@ var parseViewBox = function parseViewBox(props) {
       height: 0
     };
   }
-  if (isNumber(cx) && isNumber(cy)) {
+  if ((0, _DataUtils.isNumber)(cx) && (0, _DataUtils.isNumber)(cy)) {
     return {
       cx: cx,
       cy: cy,
@@ -404,40 +413,40 @@ var parseLabel = function parseLabel(label, viewBox) {
     return null;
   }
   if (label === true) {
-    return /*#__PURE__*/React.createElement(Label, {
+    return /*#__PURE__*/_react["default"].createElement(Label, {
       key: "label-implicit",
       viewBox: viewBox
     });
   }
-  if (isNumOrStr(label)) {
-    return /*#__PURE__*/React.createElement(Label, {
+  if ((0, _DataUtils.isNumOrStr)(label)) {
+    return /*#__PURE__*/_react["default"].createElement(Label, {
       key: "label-implicit",
       viewBox: viewBox,
       value: label
     });
   }
-  if ( /*#__PURE__*/isValidElement(label)) {
+  if ( /*#__PURE__*/(0, _react.isValidElement)(label)) {
     if (label.type === Label) {
-      return /*#__PURE__*/cloneElement(label, {
+      return /*#__PURE__*/(0, _react.cloneElement)(label, {
         key: 'label-implicit',
         viewBox: viewBox
       });
     }
-    return /*#__PURE__*/React.createElement(Label, {
+    return /*#__PURE__*/_react["default"].createElement(Label, {
       key: "label-implicit",
       content: label,
       viewBox: viewBox
     });
   }
-  if (isFunction(label)) {
-    return /*#__PURE__*/React.createElement(Label, {
+  if ((0, _isFunction["default"])(label)) {
+    return /*#__PURE__*/_react["default"].createElement(Label, {
       key: "label-implicit",
       content: label,
       viewBox: viewBox
     });
   }
-  if (isObject(label)) {
-    return /*#__PURE__*/React.createElement(Label, _extends({
+  if ((0, _isObject["default"])(label)) {
+    return /*#__PURE__*/_react["default"].createElement(Label, _extends({
       viewBox: viewBox
     }, label, {
       key: "label-implicit"
@@ -452,8 +461,8 @@ var renderCallByParent = function renderCallByParent(parentProps, viewBox) {
   }
   var children = parentProps.children;
   var parentViewBox = parseViewBox(parentProps);
-  var explicitChildren = findAllByType(children, Label).map(function (child, index) {
-    return /*#__PURE__*/cloneElement(child, {
+  var explicitChildren = (0, _ReactUtils.findAllByType)(children, Label).map(function (child, index) {
+    return /*#__PURE__*/(0, _react.cloneElement)(child, {
       viewBox: viewBox || parentViewBox,
       // eslint-disable-next-line react/no-array-index-key
       key: "label-".concat(index)

@@ -1,20 +1,27 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AreaChart = void 0;
+var _generateCategoricalChart = require("./generateCategoricalChart");
+var _Area = require("../cartesian/Area");
+var _XAxis = require("../cartesian/XAxis");
+var _YAxis = require("../cartesian/YAxis");
+var _CartesianUtils = require("../util/CartesianUtils");
 /**
  * @fileOverview Area Chart
  */
-import { generateCategoricalChart } from './generateCategoricalChart';
-import { Area } from '../cartesian/Area';
-import { XAxis } from '../cartesian/XAxis';
-import { YAxis } from '../cartesian/YAxis';
-import { formatAxisMap } from '../util/CartesianUtils';
-export var AreaChart = generateCategoricalChart({
+
+var AreaChart = exports.AreaChart = (0, _generateCategoricalChart.generateCategoricalChart)({
   chartName: 'AreaChart',
-  GraphicalChild: Area,
+  GraphicalChild: _Area.Area,
   axisComponents: [{
     axisType: 'xAxis',
-    AxisComp: XAxis
+    AxisComp: _XAxis.XAxis
   }, {
     axisType: 'yAxis',
-    AxisComp: YAxis
+    AxisComp: _YAxis.YAxis
   }],
-  formatAxisMap: formatAxisMap
+  formatAxisMap: _CartesianUtils.formatAxisMap
 });

@@ -1,25 +1,32 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PieChart = void 0;
+var _generateCategoricalChart = require("./generateCategoricalChart");
+var _PolarAngleAxis = require("../polar/PolarAngleAxis");
+var _PolarRadiusAxis = require("../polar/PolarRadiusAxis");
+var _PolarUtils = require("../util/PolarUtils");
+var _Pie = require("../polar/Pie");
 /**
  * @fileOverview Pie Chart
  */
-import { generateCategoricalChart } from './generateCategoricalChart';
-import { PolarAngleAxis } from '../polar/PolarAngleAxis';
-import { PolarRadiusAxis } from '../polar/PolarRadiusAxis';
-import { formatAxisMap } from '../util/PolarUtils';
-import { Pie } from '../polar/Pie';
-export var PieChart = generateCategoricalChart({
+
+var PieChart = exports.PieChart = (0, _generateCategoricalChart.generateCategoricalChart)({
   chartName: 'PieChart',
-  GraphicalChild: Pie,
+  GraphicalChild: _Pie.Pie,
   validateTooltipEventTypes: ['item'],
   defaultTooltipEventType: 'item',
   legendContent: 'children',
   axisComponents: [{
     axisType: 'angleAxis',
-    AxisComp: PolarAngleAxis
+    AxisComp: _PolarAngleAxis.PolarAngleAxis
   }, {
     axisType: 'radiusAxis',
-    AxisComp: PolarRadiusAxis
+    AxisComp: _PolarRadiusAxis.PolarRadiusAxis
   }],
-  formatAxisMap: formatAxisMap,
+  formatAxisMap: _PolarUtils.formatAxisMap,
   defaultProps: {
     layout: 'centric',
     startAngle: 0,

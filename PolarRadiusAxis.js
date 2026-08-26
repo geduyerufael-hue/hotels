@@ -1,5 +1,25 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PolarRadiusAxis = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _maxBy = _interopRequireDefault(require("lodash/maxBy"));
+var _minBy = _interopRequireDefault(require("lodash/minBy"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _Text = require("../component/Text");
+var _Label = require("../component/Label");
+var _Layer = require("../container/Layer");
+var _PolarUtils = require("../util/PolarUtils");
+var _types = require("../util/types");
+var _ReactUtils = require("../util/ReactUtils");
 var _excluded = ["cx", "cy", "angle", "ticks", "axisLine"],
   _excluded2 = ["ticks", "tick", "angle", "tickFormatter", "stroke"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -18,22 +38,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @fileOverview The axis of polar coordinate system
  */
-import React, { PureComponent } from 'react';
-import maxBy from 'lodash/maxBy';
-import minBy from 'lodash/minBy';
-import isFunction from 'lodash/isFunction';
-import clsx from 'clsx';
-import { Text } from '../component/Text';
-import { Label } from '../component/Label';
-import { Layer } from '../container/Layer';
-import { getTickClassName, polarToCartesian } from '../util/PolarUtils';
-import { adaptEventsOfChild } from '../util/types';
-import { filterProps } from '../util/ReactUtils';
-export var PolarRadiusAxis = /*#__PURE__*/function (_PureComponent) {
+var PolarRadiusAxis = exports.PolarRadiusAxis = /*#__PURE__*/function (_PureComponent) {
   function PolarRadiusAxis() {
     _classCallCheck(this, PolarRadiusAxis);
     return _callSuper(this, PolarRadiusAxis, arguments);
@@ -53,7 +61,7 @@ export var PolarRadiusAxis = /*#__PURE__*/function (_PureComponent) {
         angle = _this$props.angle,
         cx = _this$props.cx,
         cy = _this$props.cy;
-      return polarToCartesian(cx, cy, coordinate, angle);
+      return (0, _PolarUtils.polarToCartesian)(cx, cy, coordinate, angle);
     }
   }, {
     key: "getTickTextAnchor",
@@ -81,10 +89,10 @@ export var PolarRadiusAxis = /*#__PURE__*/function (_PureComponent) {
         cy = _this$props2.cy,
         angle = _this$props2.angle,
         ticks = _this$props2.ticks;
-      var maxRadiusTick = maxBy(ticks, function (entry) {
+      var maxRadiusTick = (0, _maxBy["default"])(ticks, function (entry) {
         return entry.coordinate || 0;
       });
-      var minRadiusTick = minBy(ticks, function (entry) {
+      var minRadiusTick = (0, _minBy["default"])(ticks, function (entry) {
         return entry.coordinate || 0;
       });
       return {
@@ -109,17 +117,17 @@ export var PolarRadiusAxis = /*#__PURE__*/function (_PureComponent) {
       var extent = ticks.reduce(function (result, entry) {
         return [Math.min(result[0], entry.coordinate), Math.max(result[1], entry.coordinate)];
       }, [Infinity, -Infinity]);
-      var point0 = polarToCartesian(cx, cy, extent[0], angle);
-      var point1 = polarToCartesian(cx, cy, extent[1], angle);
-      var props = _objectSpread(_objectSpread(_objectSpread({}, filterProps(others, false)), {}, {
+      var point0 = (0, _PolarUtils.polarToCartesian)(cx, cy, extent[0], angle);
+      var point1 = (0, _PolarUtils.polarToCartesian)(cx, cy, extent[1], angle);
+      var props = _objectSpread(_objectSpread(_objectSpread({}, (0, _ReactUtils.filterProps)(others, false)), {}, {
         fill: 'none'
-      }, filterProps(axisLine, false)), {}, {
+      }, (0, _ReactUtils.filterProps)(axisLine, false)), {}, {
         x1: point0.x,
         y1: point0.y,
         x2: point1.x,
         y2: point1.y
       });
-      return /*#__PURE__*/React.createElement("line", _extends({
+      return /*#__PURE__*/_react["default"].createElement("line", _extends({
         className: "recharts-polar-radius-axis-line"
       }, props));
     }
@@ -135,8 +143,8 @@ export var PolarRadiusAxis = /*#__PURE__*/function (_PureComponent) {
         stroke = _this$props4.stroke,
         others = _objectWithoutProperties(_this$props4, _excluded2);
       var textAnchor = this.getTickTextAnchor();
-      var axisProps = filterProps(others, false);
-      var customTickProps = filterProps(tick, false);
+      var axisProps = (0, _ReactUtils.filterProps)(others, false);
+      var customTickProps = (0, _ReactUtils.filterProps)(tick, false);
       var items = ticks.map(function (entry, i) {
         var coord = _this.getTickValueCoord(entry);
         var tickProps = _objectSpread(_objectSpread(_objectSpread(_objectSpread({
@@ -150,12 +158,12 @@ export var PolarRadiusAxis = /*#__PURE__*/function (_PureComponent) {
         }, coord), {}, {
           payload: entry
         });
-        return /*#__PURE__*/React.createElement(Layer, _extends({
-          className: clsx('recharts-polar-radius-axis-tick', getTickClassName(tick)),
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, _extends({
+          className: (0, _clsx["default"])('recharts-polar-radius-axis-tick', (0, _PolarUtils.getTickClassName)(tick)),
           key: "tick-".concat(entry.coordinate)
-        }, adaptEventsOfChild(_this.props, entry, i)), PolarRadiusAxis.renderTickItem(tick, tickProps, tickFormatter ? tickFormatter(entry.value, i) : entry.value));
+        }, (0, _types.adaptEventsOfChild)(_this.props, entry, i)), PolarRadiusAxis.renderTickItem(tick, tickProps, tickFormatter ? tickFormatter(entry.value, i) : entry.value));
       });
-      return /*#__PURE__*/React.createElement(Layer, {
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-polar-radius-axis-ticks"
       }, items);
     }
@@ -169,27 +177,27 @@ export var PolarRadiusAxis = /*#__PURE__*/function (_PureComponent) {
       if (!ticks || !ticks.length) {
         return null;
       }
-      return /*#__PURE__*/React.createElement(Layer, {
-        className: clsx('recharts-polar-radius-axis', this.props.className)
-      }, axisLine && this.renderAxisLine(), tick && this.renderTicks(), Label.renderCallByParent(this.props, this.getViewBox()));
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
+        className: (0, _clsx["default"])('recharts-polar-radius-axis', this.props.className)
+      }, axisLine && this.renderAxisLine(), tick && this.renderTicks(), _Label.Label.renderCallByParent(this.props, this.getViewBox()));
     }
   }], [{
     key: "renderTickItem",
     value: function renderTickItem(option, props, value) {
       var tickItem;
-      if ( /*#__PURE__*/React.isValidElement(option)) {
-        tickItem = /*#__PURE__*/React.cloneElement(option, props);
-      } else if (isFunction(option)) {
+      if ( /*#__PURE__*/_react["default"].isValidElement(option)) {
+        tickItem = /*#__PURE__*/_react["default"].cloneElement(option, props);
+      } else if ((0, _isFunction["default"])(option)) {
         tickItem = option(props);
       } else {
-        tickItem = /*#__PURE__*/React.createElement(Text, _extends({}, props, {
+        tickItem = /*#__PURE__*/_react["default"].createElement(_Text.Text, _extends({}, props, {
           className: "recharts-polar-radius-axis-tick-value"
         }), value);
       }
       return tickItem;
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _defineProperty(PolarRadiusAxis, "displayName", 'PolarRadiusAxis');
 _defineProperty(PolarRadiusAxis, "axisType", 'radiusAxis');
 _defineProperty(PolarRadiusAxis, "defaultProps", {

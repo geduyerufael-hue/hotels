@@ -1,5 +1,28 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Sankey = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _maxBy = _interopRequireDefault(require("lodash/maxBy"));
+var _min = _interopRequireDefault(require("lodash/min"));
+var _get = _interopRequireDefault(require("lodash/get"));
+var _sumBy = _interopRequireDefault(require("lodash/sumBy"));
+var _isFunction = _interopRequireDefault(require("lodash/isFunction"));
+var _clsx = _interopRequireDefault(require("clsx"));
+var _Surface = require("../container/Surface");
+var _Layer = require("../container/Layer");
+var _Tooltip = require("../component/Tooltip");
+var _Rectangle = require("../shape/Rectangle");
+var _ShallowEqual = require("../util/ShallowEqual");
+var _ReactUtils = require("../util/ReactUtils");
+var _ChartUtils = require("../util/ChartUtils");
 var _excluded = ["width", "height", "className", "style", "children"],
   _excluded2 = ["sourceX", "sourceY", "sourceControlX", "targetX", "targetY", "targetControlX", "linkWidth"];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } } return target; }
@@ -18,24 +41,9 @@ function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbol
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-/**
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /**
  * @file TreemapChart
  */
-import React, { PureComponent } from 'react';
-import maxBy from 'lodash/maxBy';
-import min from 'lodash/min';
-import get from 'lodash/get';
-import sumBy from 'lodash/sumBy';
-import isFunction from 'lodash/isFunction';
-import clsx from 'clsx';
-import { Surface } from '../container/Surface';
-import { Layer } from '../container/Layer';
-import { Tooltip } from '../component/Tooltip';
-import { Rectangle } from '../shape/Rectangle';
-import { shallowEqual } from '../util/ShallowEqual';
-import { filterSvgElements, validateWidthHeight, findChildByType, filterProps } from '../util/ReactUtils';
-import { getValueByDataKey } from '../util/ChartUtils';
 var defaultCoordinateOfTooltip = {
   x: 0,
   y: 0
@@ -124,7 +132,7 @@ var getNodesTree = function getNodesTree(_ref, width, nodeWidth) {
       updateDepthOfTargets(tree, node);
     }
   }
-  var maxDepth = maxBy(tree, function (entry) {
+  var maxDepth = (0, _maxBy["default"])(tree, function (entry) {
     return entry.depth;
   }).depth;
   if (maxDepth >= 1) {
@@ -155,8 +163,8 @@ var getDepthTree = function getDepthTree(tree) {
   return result;
 };
 var updateYOfTree = function updateYOfTree(depthTree, height, nodePadding, links) {
-  var yRatio = min(depthTree.map(function (nodes) {
-    return (height - (nodes.length - 1) * nodePadding) / sumBy(nodes, getValue);
+  var yRatio = (0, _min["default"])(depthTree.map(function (nodes) {
+    return (height - (nodes.length - 1) * nodePadding) / (0, _sumBy["default"])(nodes, getValue);
   }));
   for (var d = 0, maxDepth = depthTree.length; d < maxDepth; d++) {
     for (var i = 0, len = depthTree[d].length; i < len; i++) {
@@ -302,22 +310,22 @@ var getPayloadOfTooltip = function getPayloadOfTooltip(el, type, nameKey) {
   if (type === 'node') {
     return [{
       payload: el,
-      name: getValueByDataKey(payload, nameKey, ''),
-      value: getValueByDataKey(payload, 'value')
+      name: (0, _ChartUtils.getValueByDataKey)(payload, nameKey, ''),
+      value: (0, _ChartUtils.getValueByDataKey)(payload, 'value')
     }];
   }
   if (payload.source && payload.target) {
-    var sourceName = getValueByDataKey(payload.source, nameKey, '');
-    var targetName = getValueByDataKey(payload.target, nameKey, '');
+    var sourceName = (0, _ChartUtils.getValueByDataKey)(payload.source, nameKey, '');
+    var targetName = (0, _ChartUtils.getValueByDataKey)(payload.target, nameKey, '');
     return [{
       payload: el,
       name: "".concat(sourceName, " - ").concat(targetName),
-      value: getValueByDataKey(payload, 'value')
+      value: (0, _ChartUtils.getValueByDataKey)(payload, 'value')
     }];
   }
   return [];
 };
-export var Sankey = /*#__PURE__*/function (_PureComponent) {
+var Sankey = exports.Sankey = /*#__PURE__*/function (_PureComponent) {
   function Sankey() {
     var _this;
     _classCallCheck(this, Sankey);
@@ -341,7 +349,7 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
       var _this$props = this.props,
         onMouseEnter = _this$props.onMouseEnter,
         children = _this$props.children;
-      var tooltipItem = findChildByType(children, Tooltip);
+      var tooltipItem = (0, _ReactUtils.findChildByType)(children, _Tooltip.Tooltip);
       if (tooltipItem) {
         this.setState(function (prev) {
           if (tooltipItem.props.trigger === 'hover') {
@@ -367,7 +375,7 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
       var _this$props2 = this.props,
         onMouseLeave = _this$props2.onMouseLeave,
         children = _this$props2.children;
-      var tooltipItem = findChildByType(children, Tooltip);
+      var tooltipItem = (0, _ReactUtils.findChildByType)(children, _Tooltip.Tooltip);
       if (tooltipItem) {
         this.setState(function (prev) {
           if (tooltipItem.props.trigger === 'hover') {
@@ -393,7 +401,7 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
       var _this$props3 = this.props,
         onClick = _this$props3.onClick,
         children = _this$props3.children;
-      var tooltipItem = findChildByType(children, Tooltip);
+      var tooltipItem = (0, _ReactUtils.findChildByType)(children, _Tooltip.Tooltip);
       if (tooltipItem && tooltipItem.props.trigger === 'click') {
         if (this.state.isTooltipActive) {
           this.setState(function (prev) {
@@ -423,9 +431,9 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
         linkCurvature = _this$props4.linkCurvature,
         linkContent = _this$props4.link,
         margin = _this$props4.margin;
-      var top = get(margin, 'top') || 0;
-      var left = get(margin, 'left') || 0;
-      return /*#__PURE__*/React.createElement(Layer, {
+      var top = (0, _get["default"])(margin, 'top') || 0;
+      var left = (0, _get["default"])(margin, 'left') || 0;
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-sankey-links",
         key: "recharts-sankey-links"
       }, links.map(function (link, i) {
@@ -456,13 +464,13 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
             source: source,
             target: target
           })
-        }, filterProps(linkContent, false));
+        }, (0, _ReactUtils.filterProps)(linkContent, false));
         var events = {
           onMouseEnter: _this2.handleMouseEnter.bind(_this2, linkProps, 'link'),
           onMouseLeave: _this2.handleMouseLeave.bind(_this2, linkProps, 'link'),
           onClick: _this2.handleClick.bind(_this2, linkProps, 'link')
         };
-        return /*#__PURE__*/React.createElement(Layer, _extends({
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, _extends({
           key: "link-".concat(link.source, "-").concat(link.target, "-").concat(link.value)
         }, events), _this2.constructor.renderLinkItem(linkContent, linkProps));
       }));
@@ -474,9 +482,9 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
       var _this$props5 = this.props,
         nodeContent = _this$props5.node,
         margin = _this$props5.margin;
-      var top = get(margin, 'top') || 0;
-      var left = get(margin, 'left') || 0;
-      return /*#__PURE__*/React.createElement(Layer, {
+      var top = (0, _get["default"])(margin, 'top') || 0;
+      var left = (0, _get["default"])(margin, 'left') || 0;
+      return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, {
         className: "recharts-sankey-nodes",
         key: "recharts-sankey-nodes"
       }, nodes.map(function (node, i) {
@@ -484,7 +492,7 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
           y = node.y,
           dx = node.dx,
           dy = node.dy;
-        var nodeProps = _objectSpread(_objectSpread({}, filterProps(nodeContent, false)), {}, {
+        var nodeProps = _objectSpread(_objectSpread({}, (0, _ReactUtils.filterProps)(nodeContent, false)), {}, {
           x: x + left,
           y: y + top,
           width: dx,
@@ -497,7 +505,7 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
           onMouseLeave: _this3.handleMouseLeave.bind(_this3, nodeProps, 'node'),
           onClick: _this3.handleClick.bind(_this3, nodeProps, 'node')
         };
-        return /*#__PURE__*/React.createElement(Layer, _extends({
+        return /*#__PURE__*/_react["default"].createElement(_Layer.Layer, _extends({
           key: "node-".concat(node.x, "-").concat(node.y, "-").concat(node.value)
         }, events), _this3.constructor.renderNodeItem(nodeContent, nodeProps));
       }));
@@ -510,7 +518,7 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
         width = _this$props6.width,
         height = _this$props6.height,
         nameKey = _this$props6.nameKey;
-      var tooltipItem = findChildByType(children, Tooltip);
+      var tooltipItem = (0, _ReactUtils.findChildByType)(children, _Tooltip.Tooltip);
       if (!tooltipItem) {
         return null;
       }
@@ -526,7 +534,7 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
       };
       var coordinate = activeElement ? getCoordinateOfTooltip(activeElement, activeElementType) : defaultCoordinateOfTooltip;
       var payload = activeElement ? getPayloadOfTooltip(activeElement, activeElementType, nameKey) : [];
-      return /*#__PURE__*/React.cloneElement(tooltipItem, {
+      return /*#__PURE__*/_react["default"].cloneElement(tooltipItem, {
         viewBox: viewBox,
         active: isTooltipActive,
         coordinate: coordinate,
@@ -537,7 +545,7 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
   }, {
     key: "render",
     value: function render() {
-      if (!validateWidthHeight(this)) {
+      if (!(0, _ReactUtils.validateWidthHeight)(this)) {
         return null;
       }
       var _this$props7 = this.props,
@@ -550,9 +558,9 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
       var _this$state2 = this.state,
         links = _this$state2.links,
         nodes = _this$state2.nodes;
-      var attrs = filterProps(others, false);
-      return /*#__PURE__*/React.createElement("div", {
-        className: clsx('recharts-wrapper', className),
+      var attrs = (0, _ReactUtils.filterProps)(others, false);
+      return /*#__PURE__*/_react["default"].createElement("div", {
+        className: (0, _clsx["default"])('recharts-wrapper', className),
         style: _objectSpread(_objectSpread({}, style), {}, {
           position: 'relative',
           cursor: 'default',
@@ -560,10 +568,10 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
           height: height
         }),
         role: "region"
-      }, /*#__PURE__*/React.createElement(Surface, _extends({}, attrs, {
+      }, /*#__PURE__*/_react["default"].createElement(_Surface.Surface, _extends({}, attrs, {
         width: width,
         height: height
-      }), filterSvgElements(children), this.renderLinks(links, nodes), this.renderNodes(nodes)), this.renderTooltip());
+      }), (0, _ReactUtils.filterSvgElements)(children), this.renderLinks(links, nodes), this.renderNodes(nodes)), this.renderTooltip());
     }
   }], [{
     key: "getDerivedStateFromProps",
@@ -576,7 +584,7 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
         nodeWidth = nextProps.nodeWidth,
         nodePadding = nextProps.nodePadding,
         sort = nextProps.sort;
-      if (data !== prevState.prevData || width !== prevState.prevWidth || height !== prevState.prevHeight || !shallowEqual(margin, prevState.prevMargin) || iterations !== prevState.prevIterations || nodeWidth !== prevState.prevNodeWidth || nodePadding !== prevState.prevNodePadding || sort !== prevState.sort) {
+      if (data !== prevState.prevData || width !== prevState.prevWidth || height !== prevState.prevHeight || !(0, _ShallowEqual.shallowEqual)(margin, prevState.prevMargin) || iterations !== prevState.prevIterations || nodeWidth !== prevState.prevNodeWidth || nodePadding !== prevState.prevNodePadding || sort !== prevState.sort) {
         var contentWidth = width - (margin && margin.left || 0) - (margin && margin.right || 0);
         var contentHeight = height - (margin && margin.top || 0) - (margin && margin.bottom || 0);
         var _computeData = computeData({
@@ -608,10 +616,10 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
   }, {
     key: "renderLinkItem",
     value: function renderLinkItem(option, props) {
-      if ( /*#__PURE__*/React.isValidElement(option)) {
-        return /*#__PURE__*/React.cloneElement(option, props);
+      if ( /*#__PURE__*/_react["default"].isValidElement(option)) {
+        return /*#__PURE__*/_react["default"].cloneElement(option, props);
       }
-      if (isFunction(option)) {
+      if ((0, _isFunction["default"])(option)) {
         return option(props);
       }
       var sourceX = props.sourceX,
@@ -622,34 +630,34 @@ export var Sankey = /*#__PURE__*/function (_PureComponent) {
         targetControlX = props.targetControlX,
         linkWidth = props.linkWidth,
         others = _objectWithoutProperties(props, _excluded2);
-      return /*#__PURE__*/React.createElement("path", _extends({
+      return /*#__PURE__*/_react["default"].createElement("path", _extends({
         className: "recharts-sankey-link",
         d: "\n          M".concat(sourceX, ",").concat(sourceY, "\n          C").concat(sourceControlX, ",").concat(sourceY, " ").concat(targetControlX, ",").concat(targetY, " ").concat(targetX, ",").concat(targetY, "\n        "),
         fill: "none",
         stroke: "#333",
         strokeWidth: linkWidth,
         strokeOpacity: "0.2"
-      }, filterProps(others, false)));
+      }, (0, _ReactUtils.filterProps)(others, false)));
     }
   }, {
     key: "renderNodeItem",
     value: function renderNodeItem(option, props) {
-      if ( /*#__PURE__*/React.isValidElement(option)) {
-        return /*#__PURE__*/React.cloneElement(option, props);
+      if ( /*#__PURE__*/_react["default"].isValidElement(option)) {
+        return /*#__PURE__*/_react["default"].cloneElement(option, props);
       }
-      if (isFunction(option)) {
+      if ((0, _isFunction["default"])(option)) {
         return option(props);
       }
-      return /*#__PURE__*/React.createElement(Rectangle, _extends({
+      return /*#__PURE__*/_react["default"].createElement(_Rectangle.Rectangle, _extends({
         className: "recharts-sankey-node",
         fill: "#0088fe",
         fillOpacity: "0.8"
-      }, filterProps(props, false), {
+      }, (0, _ReactUtils.filterProps)(props, false), {
         role: "img"
       }));
     }
   }]);
-}(PureComponent);
+}(_react.PureComponent);
 _defineProperty(Sankey, "displayName", 'Sankey');
 _defineProperty(Sankey, "defaultProps", {
   nameKey: 'name',
